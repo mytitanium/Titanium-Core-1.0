@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Titanium
+Comment=Ttm P2P Cryptocurrency
+Comment[de]=Verbinde mit dem Ttm peer-to-peer Netzwerk
+Comment[fr]=Ttm, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Ttm, eşten eşe kriptografik sanal para birimi
+Exec=ttm-qt %u
+Terminal=false
+Type=Application
+Icon=ttm128
+MimeType=x-scheme-handler/ttm;
+Categories=Office;Finance;

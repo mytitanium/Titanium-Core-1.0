@@ -1,0 +1,6 @@
+usr/local/bin/ttm-qt usr/bin
+share/pixmaps/ttm32.xpm usr/share/pixmaps
+share/pixmaps/ttm16.xpm usr/share/pixmaps
+share/pixmaps/ttm128.png usr/share/pixmaps
+debian/ttm-qt.desktop usr/share/applications
+debian/ttm-qt.protocol usr/share/kde4/services/

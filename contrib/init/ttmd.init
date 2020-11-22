@@ -1,0 +1,67 @@
+#!/bin/bash
+#
+#  ttmd The Titanium server.
+#
+#
+# chkconfig: 345 80 20
+# description: ttmd
+# processname: ttmd
+#
+
+# Source function library.
+. /etc/init.d/functions
+
+# you can override defaults in /etc/sysconfig/ttmd, see below
+if [ -f /etc/sysconfig/ttmd ]; then
+        . /etc/sysconfig/ttmd
+fi
+
+RETVAL=0
+
+prog=ttmd
+# you can override the lockfile via BITCOIND_LOCKFILE in /etc/sysconfig/ttmd
+lockfile=${BITCOIND_LOCKFILE-/var/lock/subsys/ttmd}
+
+# ttmd defaults to /usr/bin/ttmd, override with BITCOIND_BIN
+ttmd=${BITCOIND_BIN-/usr/bin/ttmd}
+
+# ttmd opts default to -disablewallet, override with BITCOIND_OPTS
+ttmd_opts=${BITCOIND_OPTS--disablewallet}
+
+start() {
+    echo -n $"Starting $prog: "
+    daemon $DAEMONOPTS $ttmd $ttmd_opts
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && touch $lockfile
+    return $RETVAL
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    killproc $prog
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && rm -f $lockfile
+    return $RETVAL
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status $prog
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage: service $prog {start|stop|status|restart}"
+        exit 1
+        ;;
+esac
