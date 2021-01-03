@@ -3175,7 +3175,7 @@ static bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, 
 static bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true)
 {
     // Check proof of work matches claimed amount
-    if(block.nHeight < 53875 ){
+    if(block.nTime < 1609698676  ){
 	    if (fCheckPOW && !CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
 	        return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
 	} else {
@@ -3266,7 +3266,7 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
 
     // Check proof of work
     const Consensus::Params& consensusParams = params.GetConsensus();
-    if(Params().NetworkIDString() == CBaseChainParams::MAIN && nHeight < 53875){
+    if(Params().NetworkIDString() == CBaseChainParams::MAIN && nTime < 1609698676 ){
         // architecture issues with DGW v1 and v2)
         unsigned int nBitsNext = GetNextWorkRequired(pindexPrev, &block, consensusParams);
         double n1 = ConvertBitsToDouble(block.nBits);
