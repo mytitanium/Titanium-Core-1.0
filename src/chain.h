@@ -422,7 +422,7 @@ public:
         READWRITE(nTime);
         READWRITE(nBits);
 
-        if (nHeight >= 53875 ) {
+        if (nTime >= 1609698676  ) {
             READWRITE(nHeight);
             READWRITE(nNonce64);
             READWRITE(mix_hash);
