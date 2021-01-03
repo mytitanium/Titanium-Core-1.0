@@ -2817,7 +2817,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
                 // process from some other peer.  We do this after calling
                 // ProcessNewBlock so that a malleated cmpctblock announcement
                 // can't be used to interfere with block relay.
-                if (pblock->nHeight < 53875) {
+                if (pblock->nTime < 1609698676 ) {
                     MarkBlockAsReceived(pblock->GetHash());
                 } else {
                     uint256 mix_hash;
@@ -2898,7 +2898,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
                 pfrom->nLastBlockTime = GetTime();
             } else {
                 LOCK(cs_main);
-                if (pblock->nHeight < 53875) {
+                if (pblock->nTime < 1609698676 ) {
                     mapBlockSource.erase(pblock->GetHash());
                 } else {
                     uint256 mix_hash;
