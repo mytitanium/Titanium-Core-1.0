@@ -748,7 +748,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
 
     result.push_back(Pair("coinbase_payload", HexStr(pblock->vtx[0]->vExtraPayload)));
 
-	if (pblock->nHeight >= 53875 ) {
+	if (pblock->nTime >= 1609698676  ) {
         std::string address = gArgs.GetArg("-miningaddress", "");
         if (IsValidDestinationString(address)) {
             static std::string lastheader = "";
