@@ -105,7 +105,7 @@ unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consens
             bnPastTargetAvg = (bnPastTargetAvg * nCountBlocks + bnTarget) / (nCountBlocks + 1);
         }
         
-        if (pindex->nHeight >= 53875) {
+        if (pindex->nTime >= 1609698676 ) {
             nKAWPOWBlocksFound++;
         }
         
@@ -115,7 +115,7 @@ unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consens
         }
     }
 
-    if (pblock->nHeight >= 53875 ) {
+    if (pblock->nTime >= 1609698676  ) {
         if (nKAWPOWBlocksFound != nPastBlocks) {
             const arith_uint256 bnKawPowLimit = UintToArith256(params.kawpowLimit);
             return bnKawPowLimit.GetCompact();
