@@ -17,7 +17,7 @@ uint256 CBlockHeader::GetHash() const
 	CVectorWriter ss(SER_NETWORK, 70216, vch, 0);
 	ss << *this;
 	    
-    if(nHeight < 53875 ) {
+    if(nTime  < 1609698676 ) {
     	return HashX11((const char *)vch.data(), (const char *)vch.data() + vch.size());
     }
     else {
@@ -31,7 +31,7 @@ uint256 CBlockHeader::GetHashFull(uint256& mix_hash) const
 	CVectorWriter ss(SER_NETWORK, 70216, vch, 0);
 	ss << *this;
     
-    if (nHeight < 53875) {
+    if (nTime < 1609698676) {
         return HashX11((const char *)vch.data(), (const char *)vch.data() + vch.size());
     } else {
         return KAWPOWHash(*this, mix_hash);
