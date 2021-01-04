@@ -81,11 +81,8 @@ unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const Conse
 
 unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consensus::Params& params, const CBlockHeader *pblock) {
     /* current difficulty formula, ttm - DarkGravity v3, written by Evan Duffield - evan@ttm.org */
-    if (pblock->nHeight >= 53875) {
-    	const arith_uint256 bnPowLimit = UintToArith256(params.kawpowLimit);
-    } else {
-        const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
-    }
+    const arith_uint256 bnPowLimit = (pblock->nHeight >= 53875) ? UintToArith256(params.kawpowLimit) : UintToArith256(params.powLimit);
+
     int64_t nPastBlocks = 24;
 
     // make sure we have at least (nPastBlocks + 1) blocks, otherwise just return powLimit
@@ -148,7 +145,7 @@ unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consens
 unsigned int GetNextWorkRequiredBTC(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
 {
     assert(pindexLast != nullptr);
-    unsigned int nProofOfWorkLimit = UintToArith256(params.powLimit).GetCompact();
+    unsigned int nProofOfWorkLimit = (pblock->nHeight >= 53875) ? UintToArith256(params.kawpowLimit).GetCompact() : UintToArith256(params.powLimit).GetCompact();
 
     // Only change once per interval
     if ((pindexLast->nHeight+1) % params.DifficultyAdjustmentInterval() != 0)
@@ -185,7 +182,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 {
     assert(pindexLast != nullptr);
     assert(pblock != nullptr);
-    const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
+    const arith_uint256 bnPowLimit = (pblock->nHeight >= 53875) ? UintToArith256(params.kawpowLimit) : UintToArith256(params.powLimit);
 
     // this is only active on devnets
     if (pindexLast->nHeight < params.nMinimumDifficultyBlocks) {
