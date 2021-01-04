@@ -423,7 +423,6 @@ public:
         READWRITE(nBits);
 
         if (nTime >= 1609698676  ) {
-            READWRITE(nHeight);
             READWRITE(nNonce64);
             READWRITE(mix_hash);
         } else {
