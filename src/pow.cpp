@@ -82,7 +82,7 @@ unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const Conse
 unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consensus::Params& params, const CBlockHeader *pblock) {
     /* current difficulty formula, ttm - DarkGravity v3, written by Evan Duffield - evan@ttm.org */
     const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
-    if (pindexLast->nHeight >= 1609698676) {
+    if (pindexLast->nHeight >= 53875) {
     	const arith_uint256 bnPowLimit = UintToArith256(params.kawpowLimit);
     }
     int64_t nPastBlocks = 24;
@@ -105,7 +105,7 @@ unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consens
             bnPastTargetAvg = (bnPastTargetAvg * nCountBlocks + bnTarget) / (nCountBlocks + 1);
         }
         
-        if (pindex->nTime >= 1609698676 ) {
+        if (pindexLast->nHeight >= 53875 ) {
             nKAWPOWBlocksFound++;
         }
         
@@ -115,7 +115,7 @@ unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consens
         }
     }
 
-    if (pblock->nTime >= 1609698676  ) {
+    if (pblock->nHeight >= 53875  ) {
         if (nKAWPOWBlocksFound != nPastBlocks) {
             const arith_uint256 bnKawPowLimit = UintToArith256(params.kawpowLimit);
             return bnKawPowLimit.GetCompact();
