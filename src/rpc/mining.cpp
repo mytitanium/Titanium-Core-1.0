@@ -748,8 +748,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
 
     result.push_back(Pair("coinbase_payload", HexStr(pblock->vtx[0]->vExtraPayload)));
 
-	if (pblock->nTime >= 1609698676  ) {
-        std::string address = gArgs.GetArg("-miningaddress", "");
+	std::string address = gArgs.GetArg("-miningaddress", "");
         if (IsValidDestinationString(address)) {
             static std::string lastheader = "";
             if (mapRVNKAWBlockTemplates.count(lastheader)) {
@@ -766,7 +765,6 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             mapRVNKAWBlockTemplates[pblock->GetKAWPOWHeaderHash().GetHex()] = *pblock;
             lastheader = pblock->GetKAWPOWHeaderHash().GetHex();
         }
-    }
     
     return result;
 }
