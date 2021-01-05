@@ -147,20 +147,13 @@ UniValue generateBlocks(std::shared_ptr<CReserveScript> coinbaseScript, int nGen
         }
         
         uint256 mix_hash;
-        //mix_hash = pblock->GetKAWPOWHeaderHash();
-        //pblock->GetHashFull(mix_hash);
-        //pblock->hashMerkleRoot = BlockMerkleRoot(*pblock);
-        
+        mix_hash = pblock->GetKAWPOWHeaderHash();
         
         while (nMaxTries > 0 && pblock->nNonce < nInnerLoopCount && !CheckProofOfWork(pblock->GetHashFull(mix_hash), pblock->nBits, Params().GetConsensus())) {
             if (pblock->nTime < 1604691440 + 10*60) {
                 ++pblock->nNonce;
             } else  {
                 ++pblock->nNonce64;
-                /*if ((pblock->nNonce64 & 0xFFF) == 0)
-                {
-                	printf("nonce %08X: hash = %s (target = %s)\n", pblock->nNonce64, pblock->GetHashFull(mix_hash).ToString().c_str(), pblock->GetHash().ToString().c_str());
-                }*/
             }
             --nMaxTries;
         }
