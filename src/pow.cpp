@@ -248,11 +248,14 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
     bool fNegative;
     bool fOverflow;
     arith_uint256 bnTarget;
+    arith_uint256 bnTargetresult;
 
     bnTarget.SetCompact(nBits, &fNegative, &fOverflow);
 
+    bnTargetresult = (pblock->nHeight >= 53875) ? UintToArith256(params.kawpowLimit) : UintToArith256(params.powLimit)
+        
     // Check range
-    if (fNegative || bnTarget == 0 || fOverflow || bnTarget > UintToArith256(params.powLimit))
+    if (fNegative || bnTarget == 0 || fOverflow || bnTarget > bnTargetresult )
         return false;
 
     // Check proof of work matches claimed amount
