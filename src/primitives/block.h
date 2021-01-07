@@ -83,6 +83,7 @@ public:
     
     uint256 GetHashFull(uint256& mix_hash) const;
     uint256 GetKAWPOWHeaderHash() const;
+    std::string ToString() const;
 };
 
 
