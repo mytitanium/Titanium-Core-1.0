@@ -252,7 +252,7 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
 
     bnTarget.SetCompact(nBits, &fNegative, &fOverflow);
 
-    bnTargetresult = (pblock->nHeight >= 53875) ? UintToArith256(params.kawpowLimit) : UintToArith256(params.powLimit)
+    bnTargetresult = UintToArith256(params.kawpowLimit) 
         
     // Check range
     if (fNegative || bnTarget == 0 || fOverflow || bnTarget > bnTargetresult )
