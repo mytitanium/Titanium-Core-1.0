@@ -118,9 +118,9 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = x86_64-pc-linux-gnu
-host_triplet = x86_64-w64-mingw32
+host_triplet = x86_64-pc-linux-gnu
 ##am__append_1 = -Wl,-wrap,_assert -Wl,-wrap,_wassert
-###am__append_2 = -Wl,-wrap,__assert_fail
+#am__append_2 = -Wl,-wrap,__assert_fail
 am__append_3 = $(LIBBITCOIN_CRYPTO_SSE41)
 am__append_4 = $(LIBBITCOIN_CRYPTO_AVX2)
 am__append_5 = $(LIBBITCOIN_CRYPTO_SHANI)
@@ -133,9 +133,9 @@ am__append_7 = ttm-cli ttm-tx
 am__append_8 = crypto/sha256_sse4.cpp
 #am__append_9 = compat/glibc_compat.cpp
 #am__append_10 = -Wl,--wrap=log2f -Wl,--wrap=__divmoddi4
-am__append_11 = ttmd-res.rc
-am__append_12 = ttm-cli-res.rc
-am__append_13 = ttm-tx-res.rc
+#am__append_11 = ttmd-res.rc
+#am__append_12 = ttm-cli-res.rc
+#am__append_13 = ttm-tx-res.rc
 #am__append_14 = compat/glibc_compat.cpp
 am__append_15 = $(LIBLEVELDB_INT) \
 	$(LIBMEMENV_INT) \
@@ -144,11 +144,11 @@ am__append_16 = $(LIBLEVELDB_INT)
 am__append_17 = $(LIBMEMENV_INT)
 am__append_18 = -I$(srcdir)/leveldb/include \
 	-I$(srcdir)/leveldb/helpers/memenv
-am__append_19 = -DLEVELDB_PLATFORM_WINDOWS -DWINVER=0x0500 -D__USE_MINGW_ANSI_STDIO=1
-#am__append_20 = -DLEVELDB_PLATFORM_POSIX
-am__append_21 = leveldb/util/env_win.cc \
-	leveldb/port/port_win.cc
-#am__append_22 = leveldb/port/port_posix.cc
+#am__append_19 = -DLEVELDB_PLATFORM_WINDOWS -DWINVER=0x0500 -D__USE_MINGW_ANSI_STDIO=1
+am__append_20 = -DLEVELDB_PLATFORM_POSIX
+#am__append_21 = leveldb/util/env_win.cc \
+#	leveldb/port/port_win.cc
+am__append_22 = leveldb/port/port_posix.cc
 am__append_23 = -DLEVELDB_PLATFORM_POSIX_SSE
 am__append_24 = $(SSE42_CXXFLAGS)
 #am__append_25 = test/test_ttm
@@ -172,10 +172,10 @@ am__append_24 = $(SSE42_CXXFLAGS)
 #am__append_35 = $(CLEAN_BITCOIN_BENCH)
 am__append_36 = qt/ttm-qt
 am__append_37 = qt/libttmqt.a
-am__append_38 = $(BITCOIN_QT_WINDOWS_CPP)
+#am__append_38 = $(BITCOIN_QT_WINDOWS_CPP)
 am__append_39 = $(BITCOIN_QT_WALLET_CPP)
 #am__append_40 = $(BITCOIN_MM)
-am__append_41 = $(BITCOIN_RC)
+#am__append_41 = $(BITCOIN_RC)
 am__append_42 = $(LIBBITCOIN_UTIL) $(LIBBITCOIN_WALLET)
 am__append_43 = $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
 am__append_44 = $(CLEAN_QT)
@@ -381,9 +381,9 @@ am__leveldb_libleveldb_a_SOURCES_DIST = leveldb/port/atomic_pointer.h \
 	leveldb/util/options.cc leveldb/util/status.cc \
 	leveldb/util/env_win.cc leveldb/port/port_win.cc \
 	leveldb/port/port_posix.cc
-am__objects_2 = leveldb/util/leveldb_libleveldb_a-env_win.$(OBJEXT) \
-	leveldb/port/leveldb_libleveldb_a-port_win.$(OBJEXT)
-#am__objects_3 = leveldb/port/leveldb_libleveldb_a-port_posix.$(OBJEXT)
+#am__objects_2 = leveldb/util/leveldb_libleveldb_a-env_win.$(OBJEXT) \
+#	leveldb/port/leveldb_libleveldb_a-port_win.$(OBJEXT)
+am__objects_3 = leveldb/port/leveldb_libleveldb_a-port_posix.$(OBJEXT)
 am_leveldb_libleveldb_a_OBJECTS = leveldb/db/leveldb_libleveldb_a-builder.$(OBJEXT) \
 	leveldb/db/leveldb_libleveldb_a-c.$(OBJEXT) \
 	leveldb/db/leveldb_libleveldb_a-dbformat.$(OBJEXT) \
@@ -870,7 +870,7 @@ am__objects_6 =  \
 	qt/qt_libttmqt_a-utilitydialog.$(OBJEXT)
 am__objects_7 =  \
 	qt/qt_libttmqt_a-winshutdownmonitor.$(OBJEXT)
-am__objects_8 = $(am__objects_7)
+#am__objects_8 = $(am__objects_7)
 am__objects_9 =  \
 	qt/qt_libttmqt_a-addressbookpage.$(OBJEXT) \
 	qt/qt_libttmqt_a-addresstablemodel.$(OBJEXT) \
@@ -1258,8 +1258,8 @@ am__objects_26 =  \
 #am__objects_27 =  \
 #	$(am__objects_26)
 am__objects_28 = qt/res/ttm-qt-res.$(OBJEXT)
-am__objects_29 =  \
-	$(am__objects_28)
+#am__objects_29 =  \
+#	$(am__objects_28)
 am_qt_ttm_qt_OBJECTS = qt/qt_ttm_qt-ttm.$(OBJEXT) \
 	$(am__objects_27) $(am__objects_29)
 qt_ttm_qt_OBJECTS = $(am_qt_ttm_qt_OBJECTS)
@@ -1460,7 +1460,7 @@ test_test_ttm_fuzzy_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(test_test_ttm_fuzzy_CXXFLAGS) $(CXXFLAGS) \
 	$(test_test_ttm_fuzzy_LDFLAGS) $(LDFLAGS) -o $@
 am__ttm_cli_SOURCES_DIST = ttm-cli.cpp ttm-cli-res.rc
-am__objects_33 = ttm-cli-res.$(OBJEXT)
+#am__objects_33 = ttm-cli-res.$(OBJEXT)
 am_ttm_cli_OBJECTS = ttm_cli-ttm-cli.$(OBJEXT) $(am__objects_33)
 ttm_cli_OBJECTS = $(am_ttm_cli_OBJECTS)
 ttm_cli_DEPENDENCIES = $(LIBBITCOIN_CLI) $(am__DEPENDENCIES_4) \
@@ -1472,7 +1472,7 @@ ttm_cli_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(ttm_cli_CXXFLAGS) \
 	$(CXXFLAGS) $(ttm_cli_LDFLAGS) $(LDFLAGS) -o $@
 am__ttm_tx_SOURCES_DIST = ttm-tx.cpp ttm-tx-res.rc
-am__objects_34 = ttm-tx-res.$(OBJEXT)
+#am__objects_34 = ttm-tx-res.$(OBJEXT)
 am_ttm_tx_OBJECTS = ttm_tx-ttm-tx.$(OBJEXT) $(am__objects_34)
 ttm_tx_OBJECTS = $(am_ttm_tx_OBJECTS)
 ttm_tx_DEPENDENCIES = $(am__DEPENDENCIES_4) $(LIBBITCOIN_COMMON) \
@@ -1484,7 +1484,7 @@ ttm_tx_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(ttm_tx_CXXFLAGS) \
 	$(CXXFLAGS) $(ttm_tx_LDFLAGS) $(LDFLAGS) -o $@
 am__ttmd_SOURCES_DIST = ttmd.cpp ttmd-res.rc
-am__objects_35 = ttmd-res.$(OBJEXT)
+#am__objects_35 = ttmd-res.$(OBJEXT)
 am_ttmd_OBJECTS = ttmd-ttmd.$(OBJEXT) $(am__objects_35)
 ttmd_OBJECTS = $(am_ttmd_OBJECTS)
 ttmd_DEPENDENCIES = $(LIBBITCOIN_SERVER) $(LIBBITCOIN_WALLET) \
@@ -1807,7 +1807,7 @@ am__set_TESTS_bases = \
   bases=`echo $$bases`
 RECHECK_LOGS = $(TEST_LOGS)
 TEST_SUITE_LOG = test-suite.log
-TEST_EXTENSIONS = .exe .test
+TEST_EXTENSIONS =  .test
 LOG_DRIVER = $(SHELL) $(top_srcdir)/build-aux/test-driver
 LOG_COMPILE = $(LOG_COMPILER) $(AM_LOG_FLAGS) $(LOG_FLAGS)
 am__set_b = \
@@ -1821,7 +1821,7 @@ am__set_b = \
       b='$*';; \
   esac
 am__test_logs1 = $(TESTS:=.log)
-am__test_logs2 = $(am__test_logs1:.exe.log=.log)
+am__test_logs2 = $(am__test_logs1:.log=.log)
 TEST_LOGS = $(am__test_logs2:.test.log=.log)
 TEST_LOG_DRIVER = $(SHELL) $(top_srcdir)/build-aux/test-driver
 TEST_LOG_COMPILE = $(TEST_LOG_COMPILER) $(AM_TEST_LOG_FLAGS) \
@@ -1862,7 +1862,7 @@ am__relativize = \
 ACLOCAL = ${SHELL} /home/freelancer/ttm-17/build-aux/missing aclocal-1.15
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 0
-AR = /usr/bin/x86_64-w64-mingw32-ar
+AR = /usr/bin/ar
 ARFLAGS = cr
 AUTOCONF = ${SHELL} /home/freelancer/ttm-17/build-aux/missing autoconf
 AUTOHEADER = ${SHELL} /home/freelancer/ttm-17/build-aux/missing autoheader
@@ -1876,42 +1876,42 @@ BITCOIN_CLI_NAME = ttm-cli
 BITCOIN_DAEMON_NAME = ttmd
 BITCOIN_GUI_NAME = ttm-qt
 BITCOIN_TX_NAME = ttm-tx
-BOOST_CHRONO_LIB = -lboost_chrono-mt-s
-BOOST_CPPFLAGS = -DBOOST_SP_USE_STD_ATOMIC -DBOOST_AC_USE_STD_ATOMIC -mthreads -I/root/dash/depends/x86_64-w64-mingw32/share/../include
-BOOST_FILESYSTEM_LIB = -lboost_filesystem-mt-s
-BOOST_LDFLAGS = -L/root/dash/depends/x86_64-w64-mingw32/share/../lib
-BOOST_LIBS = -L/root/dash/depends/x86_64-w64-mingw32/share/../lib -lboost_system-mt-s -lboost_filesystem-mt-s -lboost_program_options-mt-s -lboost_thread_win32-mt-s -lboost_chrono-mt-s
-BOOST_PROGRAM_OPTIONS_LIB = -lboost_program_options-mt-s
-BOOST_SYSTEM_LIB = -lboost_system-mt-s
-BOOST_THREAD_LIB = -lboost_thread_win32-mt-s
+BOOST_CHRONO_LIB = -lboost_chrono
+BOOST_CPPFLAGS = -DBOOST_SP_USE_STD_ATOMIC -DBOOST_AC_USE_STD_ATOMIC -pthread -I/usr/include
+BOOST_FILESYSTEM_LIB = -lboost_filesystem
+BOOST_LDFLAGS = -L/usr/lib/x86_64-linux-gnu
+BOOST_LIBS = -L/usr/lib/x86_64-linux-gnu -lboost_system -lboost_filesystem -lboost_program_options -lboost_thread -lboost_chrono
+BOOST_PROGRAM_OPTIONS_LIB = -lboost_program_options
+BOOST_SYSTEM_LIB = -lboost_system
+BOOST_THREAD_LIB = -lboost_thread
 BOOST_UNIT_TEST_FRAMEWORK_LIB = 
 BREW = 
-CC = /root/dash/depends/x86_64-w64-mingw32/share/../native/bin/ccache x86_64-w64-mingw32-gcc
-CCACHE = /root/dash/depends/x86_64-w64-mingw32/share/../native/bin/ccache
+CC = gcc
+CCACHE = 
 CCDEPMODE = depmode=gcc3
-CFLAGS = -pipe -O2  -g1 -fno-omit-frame-pointer
+CFLAGS = -g -O2 -g1 -fno-omit-frame-pointer
 CLIENT_VERSION_BUILD = 0
 CLIENT_VERSION_IS_RELEASE = false
-CLIENT_VERSION_MAJOR = 0
-CLIENT_VERSION_MINOR = 17
+CLIENT_VERSION_MAJOR = 1
+CLIENT_VERSION_MINOR = 4
 CLIENT_VERSION_REVISION = 0
 COPYRIGHT_HOLDERS = The %s developers
 COPYRIGHT_HOLDERS_FINAL = The Ttm Core developers
 COPYRIGHT_HOLDERS_SUBSTITUTION = Ttm Core
 COPYRIGHT_YEAR = 2020
-CPP = x86_64-w64-mingw32-gcc -E
-CPPFILT = /usr/bin/x86_64-w64-mingw32-c++filt
-CPPFLAGS = -I/root/dash/depends/x86_64-w64-mingw32/share/../include/  -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS -D_MT -DWIN32 -D_WINDOWS -DBOOST_THREAD_USE_LIB -D_FILE_OFFSET_BITS=64
+CPP = gcc -E
+CPPFILT = /usr/bin/c++filt
+CPPFLAGS =  -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS
 CRYPTO_CFLAGS = 
 CRYPTO_LIBS = -lcrypto
-CXX = /root/dash/depends/x86_64-w64-mingw32/share/../native/bin/ccache x86_64-w64-mingw32-g++ -std=c++14
-CXXCPP = x86_64-w64-mingw32-g++ -std=c++14 -E
+CXX = g++ -std=c++14
+CXXCPP = g++ -std=c++14 -E
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -pipe -static-libstdc++ -O2  -g1 -fno-omit-frame-pointer -Wa,-mbig-obj
+CXXFLAGS = -g -O2 -g1 -fno-omit-frame-pointer -Wall -Wextra -Wformat -Wvla -Wformat-security -Wno-unused-parameter -Wno-implicit-fallthrough
 CYGPATH_W = echo
 DEFS = -DHAVE_CONFIG_H
 DEPDIR = .deps
-DLLTOOL = x86_64-w64-mingw32-dlltool
+DLLTOOL = false
 DOXYGEN = 
 DSYMUTIL = 
 DSYMUTIL_FLAT = 
@@ -1923,12 +1923,12 @@ EGREP = /bin/grep -E
 ERROR_CXXFLAGS = 
 EVENT_CFLAGS = 
 EVENT_LIBS = -levent
-EVENT_PTHREADS_CFLAGS = 
-EVENT_PTHREADS_LIBS = 
-EXEEXT = .exe
+EVENT_PTHREADS_CFLAGS = -pthread
+EVENT_PTHREADS_LIBS = -levent_pthreads -levent
+EXEEXT = 
 EXTENDED_FUNCTIONAL_TESTS = 
 FGREP = /bin/grep -F
-GCOV = /usr/bin/x86_64-w64-mingw32-gcov
+GCOV = /usr/bin/gcov
 GENHTML = 
 GENISOIMAGE = 
 GIT = /usr/bin/git
@@ -1937,7 +1937,7 @@ GPROF_LDFLAGS =
 GREP = /bin/grep
 HARDENED_CPPFLAGS =  -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2
 HARDENED_CXXFLAGS =  -Wstack-protector -fstack-protector-all
-HARDENED_LDFLAGS =  -Wl,--dynamicbase -Wl,--nxcompat -Wl,--high-entropy-va -pie
+HARDENED_LDFLAGS =  -Wl,-z,relro -Wl,-z,now -pie
 HAVE_CXX14 = 1
 HEXDUMP = /usr/bin/hexdump
 IMAGEMAGICK_CONVERT = 
@@ -1949,67 +1949,67 @@ INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 LCOV = 
 LCOV_OPTS = 
-LD = /usr/bin/x86_64-w64-mingw32-ld
-LDFLAGS = -L/root/dash/depends/x86_64-w64-mingw32/share/../lib 
+LD = /usr/bin/ld -m elf_x86_64
+LDFLAGS = 
 LEVELDB_CPPFLAGS =  $(am__append_18)
-LEVELDB_TARGET_FLAGS = -DOS_WINDOWS
+LEVELDB_TARGET_FLAGS = -DOS_LINUX
 LIBLEVELDB =  $(am__append_16)
 LIBMEMENV =  $(am__append_17)
 LIBOBJS = 
-LIBS = -lQt5PlatformSupport -lssp -lcrypt32 -liphlpapi -lshlwapi -lmswsock -lws2_32 -ladvapi32 -lrpcrt4 -luuid -loleaut32 -lole32 -lcomctl32 -lshell32 -lwinmm -lwinspool -lcomdlg32 -lgdi32 -luser32 -lkernel32 -lmingwthrd 
+LIBS = 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
-LIBTOOL_APP_LDFLAGS =  -all-static
+LIBTOOL_APP_LDFLAGS = 
 LIPO = 
 LN_S = ln -s
-LRELEASE = /root/dash/depends/x86_64-w64-mingw32/share/../native/bin/lrelease
+LRELEASE = /usr/lib/qt5/bin/lrelease
 LTLIBOBJS = 
 LT_SYS_LIBRARY_PATH = 
-LUPDATE = /root/dash/depends/x86_64-w64-mingw32/share/../native/bin/lupdate
+LUPDATE = /usr/lib/qt5/bin/lupdate
 MAINT = 
 MAKEINFO = ${SHELL} /home/freelancer/ttm-17/build-aux/missing makeinfo
-MAKENSIS = /usr/bin/makensis
+MAKENSIS = 
 MANIFEST_TOOL = :
-MINIUPNPC_CPPFLAGS = -DSTATICLIB -DMINIUPNP_STATICLIB
-MINIUPNPC_LIBS = -lminiupnpc
+MINIUPNPC_CPPFLAGS = 
+MINIUPNPC_LIBS = 
 MKDIR_P = /bin/mkdir -p
-MOC = /root/dash/depends/x86_64-w64-mingw32/share/../native/bin/moc
+MOC = /usr/lib/qt5/bin/moc
 MOC_DEFS = -DHAVE_CONFIG_H -I$(srcdir)
-NM = x86_64-w64-mingw32-nm
+NM = /usr/bin/nm -B
 NMEDIT = 
-OBJCOPY = /usr/bin/x86_64-w64-mingw32-objcopy
-OBJCXX = x86_64-w64-mingw32-g++ -std=c++14
+OBJCOPY = /usr/bin/objcopy
+OBJCXX = g++ -std=c++14
 OBJCXXDEPMODE = depmode=gcc3
 OBJCXXFLAGS = 
-OBJDUMP = x86_64-w64-mingw32-objdump
+OBJDUMP = objdump
 OBJEXT = o
 OTOOL = 
 OTOOL64 = 
 PACKAGE = ttmcore
 PACKAGE_BUGREPORT = https://github.com/ttmpay/ttm/issues
 PACKAGE_NAME = Ttm Core
-PACKAGE_STRING = Ttm Core 0.17.0
+PACKAGE_STRING = Ttm Core 1.4.0
 PACKAGE_TARNAME = ttmcore
 PACKAGE_URL = https://ttm.org/
-PACKAGE_VERSION = 0.17.0
+PACKAGE_VERSION = 1.4.0
 PATH_SEPARATOR = :
-PIC_FLAGS = 
+PIC_FLAGS = -fPIC
 PIE_FLAGS = -fPIE
-PKG_CONFIG = /usr/bin/pkg-config --static
-PKG_CONFIG_LIBDIR = /root/dash/depends/x86_64-w64-mingw32/share/../lib/pkgconfig
-PKG_CONFIG_PATH = /root/dash/depends/x86_64-w64-mingw32/share/../share/pkgconfig
+PKG_CONFIG = /usr/bin/pkg-config
+PKG_CONFIG_LIBDIR = 
+PKG_CONFIG_PATH = 
 PORT = 
-PROTOBUF_CFLAGS = 
-PROTOBUF_LIBS = -lprotobuf
-PROTOC = /root/dash/depends/x86_64-w64-mingw32/share/../native/bin/protoc
-PTHREAD_CC = x86_64-w64-mingw32-gcc
+PROTOBUF_CFLAGS = -pthread
+PROTOBUF_LIBS = -lprotobuf -pthread -lpthread
+PROTOC = /usr/bin/protoc
+PTHREAD_CC = gcc
 PTHREAD_CFLAGS = -pthread
 PTHREAD_LIBS = 
 PYTHON = /usr/bin/python3.6
 PYTHONPATH = /root/dash/depends/x86_64-w64-mingw32/share/../native/lib/python/dist-packages:
 QR_CFLAGS = 
-QR_LIBS = -lqrencode
-QT5_CFLAGS = 
-QT5_LIBS = 
+QR_LIBS = 
+QT5_CFLAGS = -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/x86_64-linux-gnu/qt5
+QT5_LIBS = -lQt5Network -lQt5Widgets -lQt5Gui -lQt5Core
 QTACCESSIBILITY_CFLAGS = 
 QTACCESSIBILITY_LIBS = 
 QTCGL_CFLAGS = 
@@ -2032,22 +2032,22 @@ QTTHEME_CFLAGS =
 QTTHEME_LIBS = 
 QTXCBQPA_CFLAGS = 
 QTXCBQPA_LIBS = 
-QT_DBUS_CFLAGS = 
-QT_DBUS_INCLUDES = 
-QT_DBUS_LIBS = -lQt5DBus -L/root/dash/depends/x86_64-w64-mingw32/share/../lib
-QT_INCLUDES = -I/root/dash/depends/x86_64-w64-mingw32/share/../include -I/root/dash/depends/x86_64-w64-mingw32/share/../include/QtCore -I/root/dash/depends/x86_64-w64-mingw32/share/../include/QtGui -I/root/dash/depends/x86_64-w64-mingw32/share/../include/QtWidgets -I/root/dash/depends/x86_64-w64-mingw32/share/../include/QtNetwork -I/root/dash/depends/x86_64-w64-mingw32/share/../include/QtTest -I/root/dash/depends/x86_64-w64-mingw32/share/../include/QtDBus
-QT_LDFLAGS =  -mwindows
-QT_LIBS = -lqwindows -lqminimal -lQt5Widgets -lQt5Network -lQt5Gui     -lQt5Core    -lqtharfbuzzng -lqtpcre -lqtpng -lz  -limm32  -L/root/dash/depends/x86_64-w64-mingw32/share/../lib -L/root/dash/depends/x86_64-w64-mingw32/share/../plugins/platforms
-QT_PIE_FLAGS = -fPIE
+QT_DBUS_CFLAGS = -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/x86_64-linux-gnu/qt5
+QT_DBUS_INCLUDES = -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/x86_64-linux-gnu/qt5
+QT_DBUS_LIBS = -lQt5DBus -lQt5Core
+QT_INCLUDES = -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/x86_64-linux-gnu/qt5
+QT_LDFLAGS = 
+QT_LIBS = -lQt5Network -lQt5Widgets -lQt5Gui -lQt5Core
+QT_PIE_FLAGS = -fPIC
 QT_SELECT = qt5
-QT_TEST_CFLAGS = 
-QT_TEST_INCLUDES = 
-QT_TEST_LIBS = -lQt5Test -L/root/dash/depends/x86_64-w64-mingw32/share/../lib
-QT_TRANSLATION_DIR = /root/dash/depends/x86_64-w64-mingw32/share/../translations
-RANLIB = /usr/bin/x86_64-w64-mingw32-ranlib
-RCC = /root/dash/depends/x86_64-w64-mingw32/share/../native/bin/rcc
-RCCFLAGS = 
-READELF = /usr/bin/x86_64-w64-mingw32-readelf
+QT_TEST_CFLAGS = -I/usr/include/x86_64-linux-gnu/qt5/QtTest -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/x86_64-linux-gnu/qt5
+QT_TEST_INCLUDES = -I/usr/include/x86_64-linux-gnu/qt5/QtTest -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/x86_64-linux-gnu/qt5
+QT_TEST_LIBS = -lQt5Test -lQt5Core
+QT_TRANSLATION_DIR = 
+RANLIB = /usr/bin/ranlib
+RCC = /usr/lib/qt5/bin/rcc
+RCCFLAGS = --format-version 1
+READELF = /usr/bin/readelf
 RELDFLAGS = 
 RSVG_CONVERT = 
 SANITIZER_CXXFLAGS = 
@@ -2060,29 +2060,29 @@ SSE41_CXXFLAGS = -msse4.1
 SSE42_CXXFLAGS = -msse4.2
 SSL_CFLAGS = 
 SSL_LIBS = -lssl
-STRIP = /usr/bin/x86_64-w64-mingw32-strip
+STRIP = /usr/bin/strip
 TESTDEFS = 
 TIFFCP = 
-UIC = /root/dash/depends/x86_64-w64-mingw32/share/../native/bin/uic
+UIC = /usr/lib/qt5/bin/uic
 UNIVALUE_CFLAGS = -I$(srcdir)/univalue/include
 UNIVALUE_LIBS = univalue/libunivalue.la
 USE_QRCODE = 
 USE_UPNP = 
-VERSION = 0.17.0
-WINDOWS_BITS = 64
-WINDRES = /usr/bin/x86_64-w64-mingw32-windres
+VERSION = 1.4.0
+WINDOWS_BITS = 
+WINDRES = 
 X11XCB_CFLAGS = 
 X11XCB_LIBS = 
 XGETTEXT = /usr/bin/xgettext
-ZMQ_CFLAGS =  -DZMQ_STATIC
+ZMQ_CFLAGS = 
 ZMQ_LIBS = -lzmq
 abs_builddir = /home/freelancer/ttm-17/src
 abs_srcdir = /home/freelancer/ttm-17/src
 abs_top_builddir = /home/freelancer/ttm-17
 abs_top_srcdir = /home/freelancer/ttm-17
-ac_ct_AR = 
-ac_ct_CC = 
-ac_ct_CXX = 
+ac_ct_AR = ar
+ac_ct_CC = gcc
+ac_ct_CXX = g++
 ac_ct_DUMPBIN = 
 ac_ct_OBJCXX = 
 am__include = include
@@ -2103,11 +2103,11 @@ datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-host = x86_64-w64-mingw32
-host_alias = x86_64-w64-mingw32
+host = x86_64-pc-linux-gnu
+host_alias = 
 host_cpu = x86_64
-host_os = mingw32
-host_vendor = w64
+host_os = linux-gnu
+host_vendor = pc
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
@@ -2148,11 +2148,11 @@ EXTRA_LIBRARIES = $(LIBBITCOIN_CRYPTO) $(LIBBITCOIN_UTIL) \
 	$(LIBBITCOIN_ZMQ) $(am__append_15) $(am__append_37)
 
 # Wrap internal C++ ABI's so that we can attach stacktraces to exceptions
-##LDFLAGS_WRAP_EXCEPTIONS = -Wl,-wrap,__cxa_allocate_exception \
-##	-Wl,-wrap,__cxa_free_exception \
-##	$(am__append_1) \
-##	$(am__append_2)
-##BACKTRACE_LIB = -lbacktrace
+#LDFLAGS_WRAP_EXCEPTIONS = -Wl,-wrap,__cxa_allocate_exception \
+#	-Wl,-wrap,__cxa_free_exception \
+#	$(am__append_1) \
+#	$(am__append_2)
+BACKTRACE_LIB = -lbacktrace
 #BACKTRACE_LIB = -ldbghelp -lbacktrace
 #LIBUNIVALUE = $(UNIVALUE_LIBS)
 LIBUNIVALUE = univalue/libunivalue.la
@@ -12581,13 +12581,13 @@ qt/test/test_ttm-qt.log: qt/test/test_ttm-qt$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_TEST_LOG_DRIVER_FLAGS) $(TEST_LOG_DRIVER_FLAGS) -- $(TEST_LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-.test$(EXEEXT).log:
-	@p='$<'; \
-	$(am__set_b); \
-	$(am__check_pre) $(TEST_LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_TEST_LOG_DRIVER_FLAGS) $(TEST_LOG_DRIVER_FLAGS) -- $(TEST_LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
+#.test$(EXEEXT).log:
+#	@p='$<'; \
+#	$(am__set_b); \
+#	$(am__check_pre) $(TEST_LOG_DRIVER) --test-name "$$f" \
+#	--log-file $$b.log --trs-file $$b.trs \
+#	$(am__common_driver_flags) $(AM_TEST_LOG_DRIVER_FLAGS) $(TEST_LOG_DRIVER_FLAGS) -- $(TEST_LOG_COMPILE) \
+#	"$$tst" $(AM_TESTS_FD_REDIRECT)
 
 distdir: $(DISTFILES)
 	@srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*]/\\\\&/g'`; \
