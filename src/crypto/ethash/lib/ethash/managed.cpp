@@ -45,7 +45,7 @@ void update_local_context(int epoch_number)
     thread_local_context.reset();
 
     // Local context invalid, check the shared context.
-    LOCK(shared_context_cs);
+    //LOCK(shared_context_cs);
 
     if (!shared_context || shared_context->epoch_number != epoch_number)
     {
@@ -66,7 +66,7 @@ void update_local_context_full(int epoch_number)
     thread_local_context_full.reset();
 
     // Local context invalid, check the shared context.
-    LOCK(shared_context_full_cs);
+    //LOCK(shared_context_full_cs);
 
     if (!shared_context_full || shared_context_full->epoch_number != epoch_number)
     {

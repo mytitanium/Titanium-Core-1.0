@@ -25,6 +25,8 @@
 #include <ui_interface.h>
 #include <util.h>
 
+#include <QFont>
+
 #ifdef WIN32
 #ifdef _WIN32_WINNT
 #undef _WIN32_WINNT

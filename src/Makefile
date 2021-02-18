@@ -118,19 +118,19 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = x86_64-pc-linux-gnu
-host_triplet = x86_64-pc-linux-gnu
-##am__append_1 = -Wl,-wrap,_assert -Wl,-wrap,_wassert
-#am__append_2 = -Wl,-wrap,__assert_fail
-am__append_3 = $(LIBBITCOIN_CRYPTO_SSE41)
-am__append_4 = $(LIBBITCOIN_CRYPTO_AVX2)
-am__append_5 = $(LIBBITCOIN_CRYPTO_SHANI)
+host_triplet = x86_64-apple-darwin11
+###am__append_1 = -Wl,-wrap,_assert -Wl,-wrap,_wassert
+##am__append_2 = -Wl,-wrap,__assert_fail
+#am__append_3 = $(LIBBITCOIN_CRYPTO_SSE41)
+#am__append_4 = $(LIBBITCOIN_CRYPTO_AVX2)
+#am__append_5 = $(LIBBITCOIN_CRYPTO_SHANI)
 bin_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_3) \
 	$(am__EXEEXT_4) $(am__EXEEXT_5) $(am__EXEEXT_6)
 noinst_PROGRAMS = $(am__EXEEXT_7)
 TESTS = $(am__EXEEXT_3) $(am__EXEEXT_6)
 am__append_6 = ttmd
 am__append_7 = ttm-cli ttm-tx
-am__append_8 = crypto/sha256_sse4.cpp
+#am__append_8 = crypto/sha256_sse4.cpp
 #am__append_9 = compat/glibc_compat.cpp
 #am__append_10 = -Wl,--wrap=log2f -Wl,--wrap=__divmoddi4
 #am__append_11 = ttmd-res.rc
@@ -149,8 +149,8 @@ am__append_20 = -DLEVELDB_PLATFORM_POSIX
 #am__append_21 = leveldb/util/env_win.cc \
 #	leveldb/port/port_win.cc
 am__append_22 = leveldb/port/port_posix.cc
-am__append_23 = -DLEVELDB_PLATFORM_POSIX_SSE
-am__append_24 = $(SSE42_CXXFLAGS)
+#am__append_23 = -DLEVELDB_PLATFORM_POSIX_SSE
+#am__append_24 = $(SSE42_CXXFLAGS)
 #am__append_25 = test/test_ttm
 #am__append_26 = test/test_ttm
 #am__append_27 = test/test_ttm_fuzzy
@@ -174,7 +174,7 @@ am__append_36 = qt/ttm-qt
 am__append_37 = qt/libttmqt.a
 #am__append_38 = $(BITCOIN_QT_WINDOWS_CPP)
 am__append_39 = $(BITCOIN_QT_WALLET_CPP)
-#am__append_40 = $(BITCOIN_MM)
+am__append_40 = $(BITCOIN_MM)
 #am__append_41 = $(BITCOIN_RC)
 am__append_42 = $(LIBBITCOIN_UTIL) $(LIBBITCOIN_WALLET)
 am__append_43 = $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
@@ -280,7 +280,7 @@ am__crypto_libttm_crypto_base_a_SOURCES_DIST = crypto/aes.cpp \
 	crypto/sph_echo.h crypto/sph_groestl.h crypto/sph_jh.h \
 	crypto/sph_keccak.h crypto/sph_luffa.h crypto/sph_shavite.h \
 	crypto/sph_simd.h crypto/sph_skein.h crypto/sph_types.h
-am__objects_1 = crypto/crypto_libttm_crypto_base_a-sha256_sse4.$(OBJEXT)
+#am__objects_1 = crypto/crypto_libttm_crypto_base_a-sha256_sse4.$(OBJEXT)
 am_crypto_libttm_crypto_base_a_OBJECTS =  \
 	crypto/crypto_libttm_crypto_base_a-aes.$(OBJEXT) \
 	crypto/crypto_libttm_crypto_base_a-chacha_poly_aead.$(OBJEXT) \
@@ -1054,8 +1054,8 @@ am__libttmconsensus_la_SOURCES_DIST = support/cleanse.cpp \
 	span.h streams.h tinyformat.h uint256.cpp uint256.h \
 	utilstrencodings.cpp utilstrencodings.h version.h \
 	compat/glibc_compat.cpp
-am__objects_16 =  \
-	crypto/libttmconsensus_la-sha256_sse4.lo
+#am__objects_16 =  \
+#	crypto/libttmconsensus_la-sha256_sse4.lo
 am__objects_17 = crypto/libttmconsensus_la-aes.lo \
 	crypto/libttmconsensus_la-chacha_poly_aead.lo \
 	crypto/libttmconsensus_la-chacha20.lo \
@@ -1255,8 +1255,8 @@ am__objects_26 =  \
 	qt/qt_ttm_qt-macdockiconhandler.$(OBJEXT) \
 	qt/qt_ttm_qt-macnotificationhandler.$(OBJEXT) \
 	qt/qt_ttm_qt-macos_appnap.$(OBJEXT)
-#am__objects_27 =  \
-#	$(am__objects_26)
+am__objects_27 =  \
+	$(am__objects_26)
 am__objects_28 = qt/res/ttm-qt-res.$(OBJEXT)
 #am__objects_29 =  \
 #	$(am__objects_28)
@@ -1862,12 +1862,12 @@ am__relativize = \
 ACLOCAL = ${SHELL} /home/freelancer/ttm-17/build-aux/missing aclocal-1.15
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 0
-AR = /usr/bin/ar
+AR = /root/dash/depends/x86_64-apple-darwin11/native/bin/x86_64-apple-darwin11-ar
 ARFLAGS = cr
 AUTOCONF = ${SHELL} /home/freelancer/ttm-17/build-aux/missing autoconf
 AUTOHEADER = ${SHELL} /home/freelancer/ttm-17/build-aux/missing autoheader
 AUTOMAKE = ${SHELL} /home/freelancer/ttm-17/build-aux/missing automake-1.15
-AVX2_CXXFLAGS = -mavx -mavx2
+AVX2_CXXFLAGS = 
 AWK = gawk
 BDB_CFLAGS = 
 BDB_CPPFLAGS = 
@@ -1876,20 +1876,20 @@ BITCOIN_CLI_NAME = ttm-cli
 BITCOIN_DAEMON_NAME = ttmd
 BITCOIN_GUI_NAME = ttm-qt
 BITCOIN_TX_NAME = ttm-tx
-BOOST_CHRONO_LIB = -lboost_chrono
-BOOST_CPPFLAGS = -DBOOST_SP_USE_STD_ATOMIC -DBOOST_AC_USE_STD_ATOMIC -pthread -I/usr/include
-BOOST_FILESYSTEM_LIB = -lboost_filesystem
-BOOST_LDFLAGS = -L/usr/lib/x86_64-linux-gnu
-BOOST_LIBS = -L/usr/lib/x86_64-linux-gnu -lboost_system -lboost_filesystem -lboost_program_options -lboost_thread -lboost_chrono
-BOOST_PROGRAM_OPTIONS_LIB = -lboost_program_options
-BOOST_SYSTEM_LIB = -lboost_system
-BOOST_THREAD_LIB = -lboost_thread
+BOOST_CHRONO_LIB = -lboost_chrono-mt
+BOOST_CPPFLAGS = -DBOOST_SP_USE_STD_ATOMIC -DBOOST_AC_USE_STD_ATOMIC -pthread -I/root/dash/depends/x86_64-apple-darwin11/share/../include
+BOOST_FILESYSTEM_LIB = -lboost_filesystem-mt
+BOOST_LDFLAGS = -L/root/dash/depends/x86_64-apple-darwin11/share/../lib
+BOOST_LIBS = -L/root/dash/depends/x86_64-apple-darwin11/share/../lib -lboost_system-mt -lboost_filesystem-mt -lboost_program_options-mt -lboost_thread-mt -lboost_chrono-mt
+BOOST_PROGRAM_OPTIONS_LIB = -lboost_program_options-mt
+BOOST_SYSTEM_LIB = -lboost_system-mt
+BOOST_THREAD_LIB = -lboost_thread-mt
 BOOST_UNIT_TEST_FRAMEWORK_LIB = 
-BREW = 
-CC = gcc
-CCACHE = 
+BREW = no
+CC = /root/dash/depends/x86_64-apple-darwin11/share/../native/bin/ccache /root/dash/depends/x86_64-apple-darwin11/native/bin/clang -target x86_64-apple-darwin11 -mmacosx-version-min=10.8 --sysroot /root/dash/depends/SDKs/MacOSX10.11.sdk -mlinker-version=253.9
+CCACHE = /root/dash/depends/x86_64-apple-darwin11/share/../native/bin/ccache
 CCDEPMODE = depmode=gcc3
-CFLAGS = -g -O2 -g1 -fno-omit-frame-pointer
+CFLAGS = -pipe -O2  -g1 -fno-omit-frame-pointer
 CLIENT_VERSION_BUILD = 0
 CLIENT_VERSION_IS_RELEASE = false
 CLIENT_VERSION_MAJOR = 1
@@ -1899,72 +1899,72 @@ COPYRIGHT_HOLDERS = The %s developers
 COPYRIGHT_HOLDERS_FINAL = The Ttm Core developers
 COPYRIGHT_HOLDERS_SUBSTITUTION = Ttm Core
 COPYRIGHT_YEAR = 2020
-CPP = gcc -E
+CPP = /root/dash/depends/x86_64-apple-darwin11/native/bin/clang -target x86_64-apple-darwin11 -mmacosx-version-min=10.8 --sysroot /root/dash/depends/SDKs/MacOSX10.11.sdk -mlinker-version=253.9 -E
 CPPFILT = /usr/bin/c++filt
-CPPFLAGS =  -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS
-CRYPTO_CFLAGS = 
-CRYPTO_LIBS = -lcrypto
-CXX = g++ -std=c++14
-CXXCPP = g++ -std=c++14 -E
+CPPFLAGS = -Qunused-arguments -I/root/dash/depends/x86_64-apple-darwin11/share/../include/  -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS -DMAC_OSX -DOBJC_OLD_DISPATCH_PROTOTYPES=0
+CRYPTO_CFLAGS = -I/root/dash/depends/x86_64-apple-darwin11/include
+CRYPTO_LIBS = -L/root/dash/depends/x86_64-apple-darwin11/lib -lcrypto
+CXX = /root/dash/depends/x86_64-apple-darwin11/share/../native/bin/ccache /root/dash/depends/x86_64-apple-darwin11/native/bin/clang++ -target x86_64-apple-darwin11 -mmacosx-version-min=10.8 --sysroot /root/dash/depends/SDKs/MacOSX10.11.sdk -mlinker-version=253.9 -stdlib=libc++ -std=c++14
+CXXCPP = /root/dash/depends/x86_64-apple-darwin11/native/bin/clang++ -target x86_64-apple-darwin11 -mmacosx-version-min=10.8 --sysroot /root/dash/depends/SDKs/MacOSX10.11.sdk -mlinker-version=253.9 -stdlib=libc++ -std=c++14 -E
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -g -O2 -g1 -fno-omit-frame-pointer -Wall -Wextra -Wformat -Wvla -Wformat-security -Wno-unused-parameter -Wno-implicit-fallthrough
+CXXFLAGS = -pipe -O2  -g1 -fno-omit-frame-pointer
 CYGPATH_W = echo
 DEFS = -DHAVE_CONFIG_H
 DEPDIR = .deps
 DLLTOOL = false
 DOXYGEN = 
-DSYMUTIL = 
-DSYMUTIL_FLAT = 
+DSYMUTIL = /root/dash/depends/x86_64-apple-darwin11/share/../native/bin/x86_64-apple-darwin11-dsymutil
+DSYMUTIL_FLAT = /root/dash/depends/x86_64-apple-darwin11/share/../native/bin/x86_64-apple-darwin11-dsymutil
 DUMPBIN = 
 ECHO_C = 
 ECHO_N = -n
 ECHO_T = 
 EGREP = /bin/grep -E
 ERROR_CXXFLAGS = 
-EVENT_CFLAGS = 
-EVENT_LIBS = -levent
-EVENT_PTHREADS_CFLAGS = -pthread
-EVENT_PTHREADS_LIBS = -levent_pthreads -levent
+EVENT_CFLAGS = -I/root/dash/depends/x86_64-apple-darwin11/include
+EVENT_LIBS = -L/root/dash/depends/x86_64-apple-darwin11/lib -levent
+EVENT_PTHREADS_CFLAGS = -D_THREAD_SAFE -I/root/dash/depends/x86_64-apple-darwin11/include
+EVENT_PTHREADS_LIBS = -L/root/dash/depends/x86_64-apple-darwin11/lib -levent_pthreads -levent
 EXEEXT = 
 EXTENDED_FUNCTIONAL_TESTS = 
 FGREP = /bin/grep -F
 GCOV = /usr/bin/gcov
 GENHTML = 
-GENISOIMAGE = 
+GENISOIMAGE = /root/dash/depends/x86_64-apple-darwin11/share/../native/bin/genisoimage
 GIT = /usr/bin/git
 GPROF_CXXFLAGS = 
 GPROF_LDFLAGS = 
 GREP = /bin/grep
 HARDENED_CPPFLAGS =  -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2
 HARDENED_CXXFLAGS =  -Wstack-protector -fstack-protector-all
-HARDENED_LDFLAGS =  -Wl,-z,relro -Wl,-z,now -pie
+HARDENED_LDFLAGS = 
 HAVE_CXX14 = 1
 HEXDUMP = /usr/bin/hexdump
-IMAGEMAGICK_CONVERT = 
+IMAGEMAGICK_CONVERT = /usr/bin/convert
 INSTALL = /usr/bin/install -c
-INSTALLNAMETOOL = 
+INSTALLNAMETOOL = /root/dash/depends/x86_64-apple-darwin11/share/../native/bin/x86_64-apple-darwin11-install_name_tool
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 LCOV = 
 LCOV_OPTS = 
-LD = /usr/bin/ld -m elf_x86_64
-LDFLAGS = 
+LD = /root/dash/depends/x86_64-apple-darwin11/native/bin/x86_64-apple-darwin11-ld
+LDFLAGS = -L/root/dash/depends/x86_64-apple-darwin11/share/../lib  -Wl,-headerpad_max_install_names -Wl,-dead_strip
 LEVELDB_CPPFLAGS =  $(am__append_18)
-LEVELDB_TARGET_FLAGS = -DOS_LINUX
+LEVELDB_TARGET_FLAGS = -DOS_MACOSX
 LIBLEVELDB =  $(am__append_16)
 LIBMEMENV =  $(am__append_17)
 LIBOBJS = 
 LIBS = 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LIBTOOL_APP_LDFLAGS = 
-LIPO = 
+LIPO = x86_64-apple-darwin11-lipo
 LN_S = ln -s
-LRELEASE = /usr/lib/qt5/bin/lrelease
+LRELEASE = /root/dash/depends/x86_64-apple-darwin11/share/../native/bin/lrelease
 LTLIBOBJS = 
 LT_SYS_LIBRARY_PATH = 
-LUPDATE = /usr/lib/qt5/bin/lupdate
+LUPDATE = /root/dash/depends/x86_64-apple-darwin11/share/../native/bin/lupdate
 MAINT = 
 MAKEINFO = ${SHELL} /home/freelancer/ttm-17/build-aux/missing makeinfo
 MAKENSIS = 
@@ -1972,18 +1972,18 @@ MANIFEST_TOOL = :
 MINIUPNPC_CPPFLAGS = 
 MINIUPNPC_LIBS = 
 MKDIR_P = /bin/mkdir -p
-MOC = /usr/lib/qt5/bin/moc
-MOC_DEFS = -DHAVE_CONFIG_H -I$(srcdir)
-NM = /usr/bin/nm -B
-NMEDIT = 
+MOC = /root/dash/depends/x86_64-apple-darwin11/share/../native/bin/moc
+MOC_DEFS = -DHAVE_CONFIG_H -I$(srcdir) -DQ_OS_MAC
+NM = /root/dash/depends/x86_64-apple-darwin11/native/bin/x86_64-apple-darwin11-nm
+NMEDIT = x86_64-apple-darwin11-nmedit
 OBJCOPY = /usr/bin/objcopy
-OBJCXX = g++ -std=c++14
+OBJCXX = /root/dash/depends/x86_64-apple-darwin11/native/bin/clang++ -target x86_64-apple-darwin11 -mmacosx-version-min=10.8 --sysroot /root/dash/depends/SDKs/MacOSX10.11.sdk -mlinker-version=253.9 -stdlib=libc++ -std=c++14
 OBJCXXDEPMODE = depmode=gcc3
-OBJCXXFLAGS = 
+OBJCXXFLAGS = -pipe -O2  -g1 -fno-omit-frame-pointer
 OBJDUMP = objdump
 OBJEXT = o
-OTOOL = 
-OTOOL64 = 
+OTOOL = /root/dash/depends/x86_64-apple-darwin11/share/../native/bin/x86_64-apple-darwin11-otool
+OTOOL64 = :
 PACKAGE = ttmcore
 PACKAGE_BUGREPORT = https://github.com/ttmpay/ttm/issues
 PACKAGE_NAME = Ttm Core
@@ -1993,77 +1993,63 @@ PACKAGE_URL = https://ttm.org/
 PACKAGE_VERSION = 1.4.0
 PATH_SEPARATOR = :
 PIC_FLAGS = -fPIC
-PIE_FLAGS = -fPIE
-PKG_CONFIG = /usr/bin/pkg-config
-PKG_CONFIG_LIBDIR = 
-PKG_CONFIG_PATH = 
-PORT = 
-PROTOBUF_CFLAGS = -pthread
-PROTOBUF_LIBS = -lprotobuf -pthread -lpthread
-PROTOC = /usr/bin/protoc
-PTHREAD_CC = gcc
-PTHREAD_CFLAGS = -pthread
+PIE_FLAGS = 
+PKG_CONFIG = /usr/bin/pkg-config --static
+PKG_CONFIG_LIBDIR = /root/dash/depends/x86_64-apple-darwin11/share/../lib/pkgconfig
+PKG_CONFIG_PATH = /root/dash/depends/x86_64-apple-darwin11/share/../share/pkgconfig
+PORT = no
+PROTOBUF_CFLAGS = -D_THREAD_SAFE -I/root/dash/depends/x86_64-apple-darwin11/include
+PROTOBUF_LIBS = -L/root/dash/depends/x86_64-apple-darwin11/lib -lprotobuf -D_THREAD_SAFE -lz
+PROTOC = /root/dash/depends/x86_64-apple-darwin11/share/../native/bin/protoc
+PTHREAD_CC = /root/dash/depends/x86_64-apple-darwin11/native/bin/clang -target x86_64-apple-darwin11 -mmacosx-version-min=10.8 --sysroot /root/dash/depends/SDKs/MacOSX10.11.sdk -mlinker-version=253.9
+PTHREAD_CFLAGS = -Qunused-arguments -pthread
 PTHREAD_LIBS = 
 PYTHON = /usr/bin/python3.6
-PYTHONPATH = /root/dash/depends/x86_64-w64-mingw32/share/../native/lib/python/dist-packages:
-QR_CFLAGS = 
-QR_LIBS = 
-QT5_CFLAGS = -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/x86_64-linux-gnu/qt5
-QT5_LIBS = -lQt5Network -lQt5Widgets -lQt5Gui -lQt5Core
-QTACCESSIBILITY_CFLAGS = 
-QTACCESSIBILITY_LIBS = 
-QTCGL_CFLAGS = 
-QTCGL_LIBS = 
-QTCLIPBOARD_CFLAGS = 
-QTCLIPBOARD_LIBS = 
-QTDEVICEDISCOVERY_CFLAGS = 
-QTDEVICEDISCOVERY_LIBS = 
-QTEVENTDISPATCHER_CFLAGS = 
-QTEVENTDISPATCHER_LIBS = 
-QTFB_CFLAGS = 
-QTFB_LIBS = 
-QTFONTDATABASE_CFLAGS = 
-QTFONTDATABASE_LIBS = 
-QTGRAPHICS_CFLAGS = 
-QTGRAPHICS_LIBS = 
-QTPLATFORM_CFLAGS = 
-QTPLATFORM_LIBS = 
-QTTHEME_CFLAGS = 
-QTTHEME_LIBS = 
+PYTHONPATH = /root/dash/depends/x86_64-apple-darwin11/share/../native/lib/python/dist-packages:
+QR_CFLAGS = -I/root/dash/depends/x86_64-apple-darwin11/include
+QR_LIBS = -L/root/dash/depends/x86_64-apple-darwin11/lib -lqrencode -lpthread
+QT4_CFLAGS = 
+QT4_LIBS = 
+QT5_CFLAGS = -I/root/dash/depends/x86_64-apple-darwin11/include/QtNetwork -I/root/dash/depends/x86_64-apple-darwin11/include/QtWidgets -I/root/dash/depends/x86_64-apple-darwin11/include/QtGui -I/root/dash/depends/x86_64-apple-darwin11/include/QtCore
+QT5_LIBS = -L/root/dash/depends/x86_64-apple-darwin11/lib -lQt5Network -lQt5Core -framework DiskArbitration -framework IOKit -lz -lqtpcre -lm -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -framework Security -lz -framework SystemConfiguration -framework CoreFoundation -framework CoreServices -lssl -lcrypto -lQt5Widgets -lQt5Gui -framework DiskArbitration -framework IOKit -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -lqtpng -lqtharfbuzzng -framework OpenGL -framework AGL -lQt5Core -lz -lqtpcre -lm -framework AppKit -lz -framework Carbon -framework OpenGL -framework AGL -lQt5Gui -lQt5Core -framework DiskArbitration -framework IOKit -lz -lqtpcre -lm -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -framework AppKit -framework Foundation -lqtpng -lqtharfbuzzng -framework ApplicationServices -lz -framework OpenGL -framework AGL -lQt5Core -framework DiskArbitration -framework IOKit -lz -lqtpcre -lm -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation
+QTPLATFORM_CFLAGS = -I/root/dash/depends/x86_64-apple-darwin11/include/QtPlatformSupport -I/root/dash/depends/x86_64-apple-darwin11/include/QtGui -I/root/dash/depends/x86_64-apple-darwin11/include/QtCore
+QTPLATFORM_LIBS = -L/root/dash/depends/x86_64-apple-darwin11/lib -lQt5PlatformSupport -lQt5Gui -framework DiskArbitration -framework IOKit -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -lqtpng -lqtharfbuzzng -framework OpenGL -framework AGL -lQt5Core -lz -lqtpcre -lm -lz -framework AppKit -framework OpenGL -framework ApplicationServices -framework AGL -lQt5Gui -lQt5Core -framework DiskArbitration -framework IOKit -lz -lqtpcre -lm -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -framework AppKit -framework Foundation -lqtpng -lqtharfbuzzng -framework ApplicationServices -lz -framework OpenGL -framework AGL -lQt5Core -framework DiskArbitration -framework IOKit -lz -lqtpcre -lm -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation
+QTPRINT_CFLAGS = -I/root/dash/depends/x86_64-apple-darwin11/include/QtPrintSupport -I/root/dash/depends/x86_64-apple-darwin11/include/QtWidgets -I/root/dash/depends/x86_64-apple-darwin11/include/QtGui -I/root/dash/depends/x86_64-apple-darwin11/include/QtCore
+QTPRINT_LIBS = -L/root/dash/depends/x86_64-apple-darwin11/lib -lQt5PrintSupport -lQt5Widgets -framework DiskArbitration -framework IOKit -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -framework OpenGL -framework AGL -framework Carbon -lQt5Gui -lqtpng -lqtharfbuzzng -lQt5Core -lz -lqtpcre -lm -framework AppKit -framework OpenGL -framework AGL -lQt5Widgets -lQt5Gui -framework DiskArbitration -framework IOKit -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -lqtpng -lqtharfbuzzng -framework OpenGL -framework AGL -lQt5Core -lz -lqtpcre -lm -framework AppKit -lz -framework Carbon -framework OpenGL -framework AGL -lQt5Gui -lQt5Core -framework DiskArbitration -framework IOKit -lz -lqtpcre -lm -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -framework AppKit -framework Foundation -lqtpng -lqtharfbuzzng -framework ApplicationServices -lz -framework OpenGL -framework AGL -lQt5Core -framework DiskArbitration -framework IOKit -lz -lqtpcre -lm -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation
 QTXCBQPA_CFLAGS = 
 QTXCBQPA_LIBS = 
-QT_DBUS_CFLAGS = -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/x86_64-linux-gnu/qt5
-QT_DBUS_INCLUDES = -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/x86_64-linux-gnu/qt5
-QT_DBUS_LIBS = -lQt5DBus -lQt5Core
-QT_INCLUDES = -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/x86_64-linux-gnu/qt5
+QT_DBUS_CFLAGS = -I/root/dash/depends/x86_64-apple-darwin11/include/QtDBus -I/root/dash/depends/x86_64-apple-darwin11/include/QtCore
+QT_DBUS_INCLUDES = -I/root/dash/depends/x86_64-apple-darwin11/include/QtDBus -I/root/dash/depends/x86_64-apple-darwin11/include/QtCore
+QT_DBUS_LIBS = -L/root/dash/depends/x86_64-apple-darwin11/lib -lQt5DBus -lQt5Core -framework DiskArbitration -framework IOKit -lz -lqtpcre -lm -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -lQt5Core -framework DiskArbitration -framework IOKit -lz -lqtpcre -lm -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation
+QT_INCLUDES = -I/root/dash/depends/x86_64-apple-darwin11/include/QtNetwork -I/root/dash/depends/x86_64-apple-darwin11/include/QtWidgets -I/root/dash/depends/x86_64-apple-darwin11/include/QtGui -I/root/dash/depends/x86_64-apple-darwin11/include/QtCore
 QT_LDFLAGS = 
-QT_LIBS = -lQt5Network -lQt5Widgets -lQt5Gui -lQt5Core
-QT_PIE_FLAGS = -fPIC
+QT_LIBS = -lqcocoa -lqminimal -L/root/dash/depends/x86_64-apple-darwin11/lib -lQt5PrintSupport -lQt5Widgets -framework DiskArbitration -framework IOKit -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -framework OpenGL -framework AGL -framework Carbon -lQt5Gui -lqtpng -lqtharfbuzzng -lQt5Core -lz -lqtpcre -lm -framework AppKit -framework OpenGL -framework AGL -lQt5Widgets -lQt5Gui -framework DiskArbitration -framework IOKit -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -lqtpng -lqtharfbuzzng -framework OpenGL -framework AGL -lQt5Core -lz -lqtpcre -lm -framework AppKit -lz -framework Carbon -framework OpenGL -framework AGL -lQt5Gui -lQt5Core -framework DiskArbitration -framework IOKit -lz -lqtpcre -lm -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -framework AppKit -framework Foundation -lqtpng -lqtharfbuzzng -framework ApplicationServices -lz -framework OpenGL -framework AGL -lQt5Core -framework DiskArbitration -framework IOKit -lz -lqtpcre -lm -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -L/root/dash/depends/x86_64-apple-darwin11/lib -lQt5PlatformSupport -lQt5Gui -framework DiskArbitration -framework IOKit -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -lqtpng -lqtharfbuzzng -framework OpenGL -framework AGL -lQt5Core -lz -lqtpcre -lm -lz -framework AppKit -framework OpenGL -framework ApplicationServices -framework AGL -lQt5Gui -lQt5Core -framework DiskArbitration -framework IOKit -lz -lqtpcre -lm -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -framework AppKit -framework Foundation -lqtpng -lqtharfbuzzng -framework ApplicationServices -lz -framework OpenGL -framework AGL -lQt5Core -framework DiskArbitration -framework IOKit -lz -lqtpcre -lm -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -L/root/dash/depends/x86_64-apple-darwin11/lib -lQt5Network -lQt5Core -framework DiskArbitration -framework IOKit -lz -lqtpcre -lm -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -framework Security -lz -framework SystemConfiguration -framework CoreFoundation -framework CoreServices -lssl -lcrypto -lQt5Widgets -lQt5Gui -framework DiskArbitration -framework IOKit -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -lqtpng -lqtharfbuzzng -framework OpenGL -framework AGL -lQt5Core -lz -lqtpcre -lm -framework AppKit -lz -framework Carbon -framework OpenGL -framework AGL -lQt5Gui -lQt5Core -framework DiskArbitration -framework IOKit -lz -lqtpcre -lm -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -framework AppKit -framework Foundation -lqtpng -lqtharfbuzzng -framework ApplicationServices -lz -framework OpenGL -framework AGL -lQt5Core -framework DiskArbitration -framework IOKit -lz -lqtpcre -lm -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation -L/root/dash/depends/x86_64-apple-darwin11/share/../plugins/platforms -framework IOKit -framework Foundation -framework ApplicationServices -framework AppKit
+QT_PIE_FLAGS = 
 QT_SELECT = qt5
-QT_TEST_CFLAGS = -I/usr/include/x86_64-linux-gnu/qt5/QtTest -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/x86_64-linux-gnu/qt5
-QT_TEST_INCLUDES = -I/usr/include/x86_64-linux-gnu/qt5/QtTest -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/x86_64-linux-gnu/qt5
-QT_TEST_LIBS = -lQt5Test -lQt5Core
-QT_TRANSLATION_DIR = 
-RANLIB = /usr/bin/ranlib
-RCC = /usr/lib/qt5/bin/rcc
-RCCFLAGS = --format-version 1
+QT_TEST_CFLAGS = -I/root/dash/depends/x86_64-apple-darwin11/include/QtTest -I/root/dash/depends/x86_64-apple-darwin11/include/QtCore
+QT_TEST_INCLUDES = -I/root/dash/depends/x86_64-apple-darwin11/include/QtTest -I/root/dash/depends/x86_64-apple-darwin11/include/QtCore
+QT_TEST_LIBS = -L/root/dash/depends/x86_64-apple-darwin11/lib -lQt5Test -framework Security -framework Foundation -framework ApplicationServices -framework IOKit -lQt5Core -framework DiskArbitration -lz -lqtpcre -lm -framework CoreServices -framework AppKit -framework CoreFoundation -lQt5Core -framework DiskArbitration -framework IOKit -lz -lqtpcre -lm -framework Foundation -framework CoreServices -framework AppKit -framework ApplicationServices -framework CoreFoundation
+QT_TRANSLATION_DIR = /root/dash/depends/x86_64-apple-darwin11/share/../translations
+RANLIB = /root/dash/depends/x86_64-apple-darwin11/native/bin/x86_64-apple-darwin11-ranlib
+RCC = /root/dash/depends/x86_64-apple-darwin11/share/../native/bin/rcc
+RCCFLAGS = 
 READELF = /usr/bin/readelf
 RELDFLAGS = 
-RSVG_CONVERT = 
+RSVG_CONVERT = /usr/bin/rsvg-convert
 SANITIZER_CXXFLAGS = 
 SANITIZER_LDFLAGS = 
 SED = /bin/sed
 SET_MAKE = 
-SHANI_CXXFLAGS = -msse4 -msha
+SHANI_CXXFLAGS = 
 SHELL = /bin/bash
-SSE41_CXXFLAGS = -msse4.1
-SSE42_CXXFLAGS = -msse4.2
-SSL_CFLAGS = 
-SSL_LIBS = -lssl
-STRIP = /usr/bin/strip
+SSE41_CXXFLAGS = 
+SSE42_CXXFLAGS = 
+SSL_CFLAGS = -I/root/dash/depends/x86_64-apple-darwin11/include
+SSL_LIBS = -L/root/dash/depends/x86_64-apple-darwin11/lib -lssl -lcrypto
+STRIP = /root/dash/depends/x86_64-apple-darwin11/share/../native/bin/x86_64-apple-darwin11-strip
 TESTDEFS = 
-TIFFCP = 
-UIC = /usr/lib/qt5/bin/uic
+TIFFCP = /usr/bin/tiffcp
+UIC = /root/dash/depends/x86_64-apple-darwin11/share/../native/bin/uic
 UNIVALUE_CFLAGS = -I$(srcdir)/univalue/include
 UNIVALUE_LIBS = univalue/libunivalue.la
 USE_QRCODE = 
@@ -2074,15 +2060,15 @@ WINDRES =
 X11XCB_CFLAGS = 
 X11XCB_LIBS = 
 XGETTEXT = /usr/bin/xgettext
-ZMQ_CFLAGS = 
-ZMQ_LIBS = -lzmq
+ZMQ_CFLAGS = -I/root/dash/depends/x86_64-apple-darwin11/include
+ZMQ_LIBS = -L/root/dash/depends/x86_64-apple-darwin11/lib -lzmq
 abs_builddir = /home/freelancer/ttm-17/src
 abs_srcdir = /home/freelancer/ttm-17/src
 abs_top_builddir = /home/freelancer/ttm-17
 abs_top_srcdir = /home/freelancer/ttm-17
-ac_ct_AR = ar
-ac_ct_CC = gcc
-ac_ct_CXX = g++
+ac_ct_AR = 
+ac_ct_CC = 
+ac_ct_CXX = 
 ac_ct_DUMPBIN = 
 ac_ct_OBJCXX = 
 am__include = include
@@ -2103,11 +2089,11 @@ datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-host = x86_64-pc-linux-gnu
-host_alias = 
+host = x86_64-apple-darwin11
+host_alias = x86_64-apple-darwin11
 host_cpu = x86_64
-host_os = linux-gnu
-host_vendor = pc
+host_os = darwin11
+host_vendor = apple
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
@@ -2148,10 +2134,10 @@ EXTRA_LIBRARIES = $(LIBBITCOIN_CRYPTO) $(LIBBITCOIN_UTIL) \
 	$(LIBBITCOIN_ZMQ) $(am__append_15) $(am__append_37)
 
 # Wrap internal C++ ABI's so that we can attach stacktraces to exceptions
-#LDFLAGS_WRAP_EXCEPTIONS = -Wl,-wrap,__cxa_allocate_exception \
-#	-Wl,-wrap,__cxa_free_exception \
-#	$(am__append_1) \
-#	$(am__append_2)
+##LDFLAGS_WRAP_EXCEPTIONS = -Wl,-wrap,__cxa_allocate_exception \
+##	-Wl,-wrap,__cxa_free_exception \
+##	$(am__append_1) \
+##	$(am__append_2)
 BACKTRACE_LIB = -lbacktrace
 #BACKTRACE_LIB = -ldbghelp -lbacktrace
 #LIBUNIVALUE = $(UNIVALUE_LIBS)
@@ -2173,9 +2159,9 @@ LIBBITCOINCONSENSUS = libttmconsensus.la
 LIBBITCOIN_WALLET = libttm_wallet.a
 LIBBITCOIN_CRYPTO = $(LIBBITCOIN_CRYPTO_BASE) $(am__append_3) \
 	$(am__append_4) $(am__append_5)
-LIBBITCOIN_CRYPTO_SSE41 = crypto/libttm_crypto_sse41.a
-LIBBITCOIN_CRYPTO_AVX2 = crypto/libttm_crypto_avx2.a
-LIBBITCOIN_CRYPTO_SHANI = crypto/libttm_crypto_shani.a
+#LIBBITCOIN_CRYPTO_SSE41 = crypto/libttm_crypto_sse41.a
+#LIBBITCOIN_CRYPTO_AVX2 = crypto/libttm_crypto_avx2.a
+#LIBBITCOIN_CRYPTO_SHANI = crypto/libttm_crypto_shani.a
 lib_LTLIBRARIES = $(LIBBITCOINCONSENSUS)
 BENCHMARKS = 
 # ttm core #

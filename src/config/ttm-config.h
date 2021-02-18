@@ -39,22 +39,22 @@
 #define COPYRIGHT_YEAR 2020
 
 /* Define this symbol to use wrapped CXX ABIs for exception stacktraces */
-#define CRASH_HOOKS_WRAPPED_CXX_ABI 1
+/* #undef CRASH_HOOKS_WRAPPED_CXX_ABI */
 
 /* Define this symbol to build code that uses AVX2 intrinsics */
-#define ENABLE_AVX2 1
+/* #undef ENABLE_AVX2 */
 
 /* Define this symbol if crash hooks should be enabled */
 /* #undef ENABLE_CRASH_HOOKS */
 
 /* Define this symbol if in-wallet miner should be enabled */
-#define ENABLE_MINER 1
+/* #undef ENABLE_MINER */
 
 /* Define this symbol to build code that uses SHA-NI intrinsics */
-#define ENABLE_SHANI 1
+/* #undef ENABLE_SHANI */
 
 /* Define this symbol to build code that uses SSE4.1 intrinsics */
-#define ENABLE_SSE41 1
+/* #undef ENABLE_SSE41 */
 
 /* Define this symbol if stacktraces should be enabled */
 #define ENABLE_STACKTRACES 1
@@ -90,7 +90,7 @@
 /* #undef HAVE_BOOST_UNIT_TEST_FRAMEWORK */
 
 /* Define to 1 if you have the <byteswap.h> header file. */
-#define HAVE_BYTESWAP_H 1
+/* #undef HAVE_BYTESWAP_H */
 
 /* Define this symbol if the consensus lib has been built */
 #define HAVE_CONSENSUS_LIB 1
@@ -100,27 +100,27 @@
 
 /* Define to 1 if you have the declaration of `be16toh', and to 0 if you
    don't. */
-#define HAVE_DECL_BE16TOH 1
+#define HAVE_DECL_BE16TOH 0
 
 /* Define to 1 if you have the declaration of `be32toh', and to 0 if you
    don't. */
-#define HAVE_DECL_BE32TOH 1
+#define HAVE_DECL_BE32TOH 0
 
 /* Define to 1 if you have the declaration of `be64toh', and to 0 if you
    don't. */
-#define HAVE_DECL_BE64TOH 1
+#define HAVE_DECL_BE64TOH 0
 
 /* Define to 1 if you have the declaration of `bswap_16', and to 0 if you
    don't. */
-#define HAVE_DECL_BSWAP_16 1
+#define HAVE_DECL_BSWAP_16 0
 
 /* Define to 1 if you have the declaration of `bswap_32', and to 0 if you
    don't. */
-#define HAVE_DECL_BSWAP_32 1
+#define HAVE_DECL_BSWAP_32 0
 
 /* Define to 1 if you have the declaration of `bswap_64', and to 0 if you
    don't. */
-#define HAVE_DECL_BSWAP_64 1
+#define HAVE_DECL_BSWAP_64 0
 
 /* Define to 1 if you have the declaration of `daemon', and to 0 if you don't.
    */
@@ -128,43 +128,43 @@
 
 /* Define to 1 if you have the declaration of `EVP_MD_CTX_new', and to 0 if
    you don't. */
-#define HAVE_DECL_EVP_MD_CTX_NEW 1
+#define HAVE_DECL_EVP_MD_CTX_NEW 0
 
 /* Define to 1 if you have the declaration of `htobe16', and to 0 if you
    don't. */
-#define HAVE_DECL_HTOBE16 1
+#define HAVE_DECL_HTOBE16 0
 
 /* Define to 1 if you have the declaration of `htobe32', and to 0 if you
    don't. */
-#define HAVE_DECL_HTOBE32 1
+#define HAVE_DECL_HTOBE32 0
 
 /* Define to 1 if you have the declaration of `htobe64', and to 0 if you
    don't. */
-#define HAVE_DECL_HTOBE64 1
+#define HAVE_DECL_HTOBE64 0
 
 /* Define to 1 if you have the declaration of `htole16', and to 0 if you
    don't. */
-#define HAVE_DECL_HTOLE16 1
+#define HAVE_DECL_HTOLE16 0
 
 /* Define to 1 if you have the declaration of `htole32', and to 0 if you
    don't. */
-#define HAVE_DECL_HTOLE32 1
+#define HAVE_DECL_HTOLE32 0
 
 /* Define to 1 if you have the declaration of `htole64', and to 0 if you
    don't. */
-#define HAVE_DECL_HTOLE64 1
+#define HAVE_DECL_HTOLE64 0
 
 /* Define to 1 if you have the declaration of `le16toh', and to 0 if you
    don't. */
-#define HAVE_DECL_LE16TOH 1
+#define HAVE_DECL_LE16TOH 0
 
 /* Define to 1 if you have the declaration of `le32toh', and to 0 if you
    don't. */
-#define HAVE_DECL_LE32TOH 1
+#define HAVE_DECL_LE32TOH 0
 
 /* Define to 1 if you have the declaration of `le64toh', and to 0 if you
    don't. */
-#define HAVE_DECL_LE64TOH 1
+#define HAVE_DECL_LE64TOH 0
 
 /* Define to 1 if you have the declaration of `strerror_r', and to 0 if you
    don't. */
@@ -176,21 +176,21 @@
 
 /* Define to 1 if you have the declaration of `__builtin_clz', and to 0 if you
    don't. */
-#define HAVE_DECL___BUILTIN_CLZ 1
+#define HAVE_DECL___BUILTIN_CLZ 0
 
 /* Define to 1 if you have the declaration of `__builtin_clzl', and to 0 if
    you don't. */
-#define HAVE_DECL___BUILTIN_CLZL 1
+#define HAVE_DECL___BUILTIN_CLZL 0
 
 /* Define to 1 if you have the declaration of `__builtin_clzll', and to 0 if
    you don't. */
-#define HAVE_DECL___BUILTIN_CLZLL 1
+#define HAVE_DECL___BUILTIN_CLZLL 0
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #define HAVE_DLFCN_H 1
 
 /* Define to 1 if you have the <endian.h> header file. */
-#define HAVE_ENDIAN_H 1
+/* #undef HAVE_ENDIAN_H */
 
 /* Define to 1 if you have the <execinfo.h> header file. */
 #define HAVE_EXECINFO_H 1
@@ -202,14 +202,14 @@
 /* #undef HAVE_FUNC_ATTRIBUTE_DLLIMPORT */
 
 /* Define to 1 if the system has the `visibility' function attribute */
-#define HAVE_FUNC_ATTRIBUTE_VISIBILITY 1
+/* #undef HAVE_FUNC_ATTRIBUTE_VISIBILITY */
 
 /* Define this symbol if the BSD getentropy system call is available */
-#define HAVE_GETENTROPY 1
+/* #undef HAVE_GETENTROPY */
 
 /* Define this symbol if the BSD getentropy system call is available with
    sys/random.h */
-#define HAVE_GETENTROPY_RAND 1
+/* #undef HAVE_GETENTROPY_RAND */
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
@@ -284,10 +284,10 @@
 /* #undef HAVE_LIBZ_ */
 
 /* Define this symbol if you have malloc_info */
-#define HAVE_MALLOC_INFO 1
+/* #undef HAVE_MALLOC_INFO */
 
 /* Define this symbol if you have mallopt with M_ARENA_MAX */
-#define HAVE_MALLOPT_ARENA_MAX 1
+/* #undef HAVE_MALLOPT_ARENA_MAX */
 
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1
@@ -335,10 +335,10 @@
 /* #undef HAVE_SYS_ENDIAN_H */
 
 /* Define this symbol if the Linux getrandom system call is available */
-#define HAVE_SYS_GETRANDOM 1
+/* #undef HAVE_SYS_GETRANDOM */
 
 /* Define to 1 if you have the <sys/prctl.h> header file. */
-#define HAVE_SYS_PRCTL_H 1
+/* #undef HAVE_SYS_PRCTL_H */
 
 /* Define to 1 if you have the <sys/select.h> header file. */
 #define HAVE_SYS_SELECT_H 1
@@ -390,10 +390,10 @@
 /* #undef PTHREAD_CREATE_JOINABLE */
 
 /* Define this symbol if the qt platform is cocoa */
-/* #undef QT_QPA_PLATFORM_COCOA */
+#define QT_QPA_PLATFORM_COCOA 1
 
 /* Define this symbol if the minimal qt platform exists */
-/* #undef QT_QPA_PLATFORM_MINIMAL */
+#define QT_QPA_PLATFORM_MINIMAL 1
 
 /* Define this symbol if the qt platform is windows */
 /* #undef QT_QPA_PLATFORM_WINDOWS */
@@ -402,16 +402,16 @@
 /* #undef QT_QPA_PLATFORM_XCB */
 
 /* Define this symbol if qt plugins are static */
-/* #undef QT_STATICPLUGIN */
+#define QT_STATICPLUGIN 1
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
 
 /* Define to 1 if strerror_r returns char *. */
-#define STRERROR_R_CHAR_P 1
+/* #undef STRERROR_R_CHAR_P */
 
 /* Define this symbol to build in assembly routines */
-#define USE_ASM 1
+/* #undef USE_ASM */
 
 /* Define this symbol if coverage is enabled */
 /* #undef USE_COVERAGE */
@@ -420,7 +420,7 @@
 #define USE_DBUS 1
 
 /* Define if QR support should be compiled in */
-/* #undef USE_QRCODE */
+#define USE_QRCODE 1
 
 /* UPnP support not compiled if undefined, otherwise value (0 or 1) determines
    default state */
