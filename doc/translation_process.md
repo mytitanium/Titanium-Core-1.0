@@ -1,7 +1,7 @@
 Translations
 ============
 
-The Titanium project has been designed to support multiple localisations. This makes adding new phrases, and completely new languages easily achievable. For managing all application translations, Titanium makes use of the Transifex online translation management tool.
+The Ttm Core project has been designed to support multiple localisations. This makes adding new phrases, and completely new languages easily achievable. For managing all application translations, Ttm Core makes use of the Transifex online translation management tool.
 
 ### Helping to translate (using Transifex)
 Transifex is setup to monitor the GitHub repo for updates, and when code containing new translations is found, Transifex will process any changes. It may take several hours after a pull-request has been merged, to appear in the Transifex web interface.
@@ -53,7 +53,7 @@ The client it used to fetch updated translations. If you are having problems, or
 
 `pip install transifex-client`
 
-Setup your transifex client config as follows. Please *ignore the token field*.
+Setup your Transifex client config as follows. Please *ignore the token field*.
 
 ```ini
 nano ~/.transifexrc
@@ -69,7 +69,7 @@ username = USERNAME
 
 Please see [http://docs.transifex.com/developer/client/setup#windows](http://docs.transifex.com/developer/client/setup#windows) for details on installation.
 
-The Transifex Ttm project config file is included as part of the repo. It can be found at `.tx/config`, however you shouldn’t need change anything.
+The Transifex Ttm project config file is included as part of the repo. It can be found at `.tx/config`, however you shouldn’t need to change anything.
 
 ### Synchronising translations
 To assist in updating translations, we have created a script to help.

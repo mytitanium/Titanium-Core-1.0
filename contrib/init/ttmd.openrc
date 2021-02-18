@@ -18,7 +18,7 @@ BITCOIND_BIN=${BITCOIND_BIN:-/usr/bin/ttmd}
 BITCOIND_NICE=${BITCOIND_NICE:-${NICELEVEL:-0}}
 BITCOIND_OPTS="${BITCOIND_OPTS:-${BITCOIN_OPTS}}"
 
-name="Titanium Daemon"
+name="Ttm Core Daemon"
 description="Ttm cryptocurrency P2P network daemon"
 
 command="/usr/bin/ttmd"
@@ -76,15 +76,15 @@ checkconfig()
 		eerror ""
 		eerror "This password is security critical to securing wallets "
 		eerror "and must not be the same as the rpcuser setting."
-		eerror "You can generate a suitable random password using the following"
+		eerror "You can generate a suitable random password using the following "
 		eerror "command from the shell:"
 		eerror ""
 		eerror "bash -c 'tr -dc a-zA-Z0-9 < /dev/urandom | head -c32 && echo'"
 		eerror ""
-		eerror "It is also recommended that you also set alertnotify so you are "
+		eerror "It is recommended that you also set alertnotify so you are "
 		eerror "notified of problems:"
 		eerror ""
-		eerror "ie: alertnotify=echo %%s | mail -s \"Titanium Alert\"" \
+		eerror "ie: alertnotify=echo %%s | mail -s \"Ttm Core Alert\"" \
 			"admin@foo.com"
 		eerror ""
 		return 1

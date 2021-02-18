@@ -1,6 +1,6 @@
 [Desktop Entry]
-Encoding=UTF-8
-Name=Titanium
+Version=1.0
+Name=Ttm Core
 Comment=Ttm P2P Cryptocurrency
 Comment[de]=Verbinde mit dem Ttm peer-to-peer Netzwerk
 Comment[fr]=Ttm, monnaie virtuelle cryptographique pair à pair
@@ -11,3 +11,4 @@ Type=Application
 Icon=ttm128
 MimeType=x-scheme-handler/ttm;
 Categories=Office;Finance;
+StartupWMClass=Ttm-qt

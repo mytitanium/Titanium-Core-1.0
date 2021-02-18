@@ -1,4 +1,4 @@
-Titanium version 0.13.1.0
+Ttm Core version 0.13.1.0
 ==========================
 
 Release is now available from:
@@ -117,12 +117,12 @@ the 0.8.x tree and was first released on Mar/13/2014.
 Darkcoin tree 0.10.x used to be the closed source implementation of Darksend
 which was released open source on Sep/25/2014.
 
-Titanium tree 0.11.x was a fork of Bitcoin Core tree 0.9,
+Ttm Core tree 0.11.x was a fork of Bitcoin Core tree 0.9,
 Darkcoin was rebranded to Ttm.
 
-Titanium tree 0.12.0.x was a fork of Bitcoin Core tree 0.10.
+Ttm Core tree 0.12.0.x was a fork of Bitcoin Core tree 0.10.
 
-Titanium tree 0.12.1.x was a fork of Bitcoin Core tree 0.12.
+Ttm Core tree 0.12.1.x was a fork of Bitcoin Core tree 0.12.
 
 These release are considered obsolete. Old release notes can be found here:
 

@@ -1,28 +1,26 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2019 The Titanium developers
+// Copyright (c) 2014-2019 The Ttm Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/ttm-config.h"
+#include <config/ttm-config.h>
 #endif
 
-#include "chainparams.h"
-#include "clientversion.h"
-#include "compat.h"
-#include "fs.h"
-#include "rpc/server.h"
-#include "init.h"
-#include "noui.h"
-#include "scheduler.h"
-#include "util.h"
-#include "httpserver.h"
-#include "httprpc.h"
-#include "utilstrencodings.h"
-#include "stacktraces.h"
-
-#include <boost/thread.hpp>
+#include <chainparams.h>
+#include <clientversion.h>
+#include <compat.h>
+#include <fs.h>
+#include <rpc/server.h>
+#include <init.h>
+#include <noui.h>
+#include <util.h>
+#include <httpserver.h>
+#include <httprpc.h>
+#include <utilstrencodings.h>
+#include <walletinitinterface.h>
+#include <stacktraces.h>
 
 #include <stdio.h>
 
@@ -42,20 +40,13 @@
  * Use the buttons <code>Namespaces</code>, <code>Classes</code> or <code>Files</code> at the top of the page to start navigating the code.
  */
 
-void WaitForShutdown(boost::thread_group* threadGroup)
+void WaitForShutdown()
 {
-    bool fShutdown = ShutdownRequested();
-    // Tell the main threads to shutdown.
-    while (!fShutdown)
+    while (!ShutdownRequested())
     {
         MilliSleep(200);
-        fShutdown = ShutdownRequested();
     }
-    if (threadGroup)
-    {
-        Interrupt(*threadGroup);
-        threadGroup->join_all();
-    }
+    Interrupt();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -64,9 +55,6 @@ void WaitForShutdown(boost::thread_group* threadGroup)
 //
 bool AppInit(int argc, char* argv[])
 {
-    boost::thread_group threadGroup;
-    CScheduler scheduler;
-
     bool fRet = false;
 
     //
@@ -94,7 +82,7 @@ bool AppInit(int argc, char* argv[])
             strUsage += "\n" + _("Usage:") + "\n" +
                   "  ttmd [options]                     " + strprintf(_("Start %s Daemon"), _(PACKAGE_NAME)) + "\n";
 
-            strUsage += "\n" + HelpMessage(HMM_BITCOIND);
+            strUsage += "\n" + HelpMessage(HelpMessageMode::BITCOIND);
         }
 
         fprintf(stdout, "%s", strUsage.c_str());
@@ -123,7 +111,7 @@ bool AppInit(int argc, char* argv[])
         }
         // Check for -testnet or -regtest parameter (Params() calls are only valid after this clause)
         try {
-            SelectParams(ChainNameFromCommandLine());
+            SelectParams(gArgs.GetChainName());
         } catch (const std::exception& e) {
             fprintf(stderr, "Error: %s\n", e.what());
             return false;
@@ -133,11 +121,11 @@ bool AppInit(int argc, char* argv[])
         for (int i = 1; i < argc; i++) {
             if (!IsSwitchChar(argv[i][0])) {
                 fprintf(stderr, "Error: Command line contains unexpected token '%s', see ttmd -h for a list of options.\n", argv[i]);
-                exit(EXIT_FAILURE);
+                return false;
             }
         }
 
-        // -server defaults to true for bitcoind but not for the GUI so do this here
+        // -server defaults to true for ttmd but not for the GUI so do this here
         gArgs.SoftSetBoolArg("-server", true);
         // Set this early so that parameter interactions go to console
         InitLogging();
@@ -145,28 +133,35 @@ bool AppInit(int argc, char* argv[])
         if (!AppInitBasicSetup())
         {
             // InitError will have been called with detailed error, which ends up on console
-            exit(EXIT_FAILURE);
+            return false;
         }
         if (!AppInitParameterInteraction())
         {
             // InitError will have been called with detailed error, which ends up on console
-            exit(EXIT_FAILURE);
+            return false;
         }
         if (!AppInitSanityChecks())
         {
             // InitError will have been called with detailed error, which ends up on console
-            exit(EXIT_FAILURE);
+            return false;
         }
         if (gArgs.GetBoolArg("-daemon", false))
         {
 #if HAVE_DECL_DAEMON
-            fprintf(stdout, "Titanium server starting\n");
+#if defined(MAC_OSX)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+            fprintf(stdout, "Ttm Core server starting\n");
 
             // Daemonize
             if (daemon(1, 0)) { // don't chdir (1), do close FDs (0)
                 fprintf(stderr, "Error: daemon() failed: %s\n", strerror(errno));
                 return false;
             }
+#if defined(MAC_OSX)
+#pragma GCC diagnostic pop
+#endif
 #else
             fprintf(stderr, "Error: -daemon is not supported on this operating system\n");
             return false;
@@ -176,19 +171,18 @@ bool AppInit(int argc, char* argv[])
         if (!AppInitLockDataDirectory())
         {
             // If locking the data directory failed, exit immediately
-            exit(EXIT_FAILURE);
+            return false;
         }
-        fRet = AppInitMain(threadGroup, scheduler);
+        fRet = AppInitMain();
     } catch (...) {
         PrintExceptionContinue(std::current_exception(), "AppInit()");
     }
 
     if (!fRet)
     {
-        Interrupt(threadGroup);
-        threadGroup.join_all();
+        Interrupt();
     } else {
-        WaitForShutdown(&threadGroup);
+        WaitForShutdown();
     }
     Shutdown();
 

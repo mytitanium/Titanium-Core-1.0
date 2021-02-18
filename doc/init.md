@@ -10,14 +10,14 @@ can be found in the contrib/init folder.
     contrib/init/ttmd.conf:       Upstart service configuration file
     contrib/init/ttmd.init:       CentOS compatible SysV style init script
 
-1. Service User
+Service User
 ---------------------------------
 
 All three Linux startup configurations assume the existence of a "ttmcore" user
 and group.  They must be created before attempting to use these scripts.
 The OS X configuration assumes ttmd will be set up for the current user.
 
-2. Configuration
+Configuration
 ---------------------------------
 
 At a bare minimum, ttmd requires that the rpcpassword setting be set
@@ -46,10 +46,10 @@ relative to the data directory. `wallet` *only* supports relative paths.
 For an example configuration file that describes the configuration settings,
 see `contrib/debian/examples/ttm.conf`.
 
-3. Paths
+Paths
 ---------------------------------
 
-3a) Linux
+### Linux
 
 All three configurations assume several paths that might need to be adjusted.
 
@@ -65,17 +65,17 @@ reasons to make the configuration file and data directory only readable by the
 ttmcore user and group.  Access to ttm-cli and other ttmd rpc clients
 can then be controlled by group membership.
 
-3b) Mac OS X
+### Mac OS X
 
 Binary:              `/usr/local/bin/ttmd`  
 Configuration file:  `~/Library/Application Support/TtmCore/ttm.conf`  
-Data directory:      `~/Library/Application Support/TtmCore`
-Lock file:           `~/Library/Application Support/TtmCore/.lock`
+Data directory:      `~/Library/Application Support/TtmCore`  
+Lock file:           `~/Library/Application Support/TtmCore/.lock`  
 
-4. Installing Service Configuration
+Installing Service Configuration
 -----------------------------------
 
-4a) systemd
+### systemd
 
 Installing this .service file consists of just copying it to
 /usr/lib/systemd/system directory, followed by the command
@@ -84,14 +84,18 @@ Installing this .service file consists of just copying it to
 To test, run `systemctl start ttmd` and to enable for system startup run
 `systemctl enable ttmd`
 
-4b) OpenRC
+NOTE: When installing for systemd in Debian/Ubuntu the .service file needs to be copied to the /lib/systemd/system directory instead.
+
+### OpenRC
 
 Rename ttmd.openrc to ttmd and drop it in /etc/init.d.  Double
 check ownership and permissions and make it executable.  Test it with
 `/etc/init.d/ttmd start` and configure it to run on startup with
 `rc-update add ttmd`
 
-4c) Upstart (for Debian/Ubuntu based distributions)
+### Upstart (for Debian/Ubuntu based distributions)
+
+Upstart is the default init system for Debian/Ubuntu versions older than 15.04. If you are using version 15.04 or newer and haven't manually configured upstart you should follow the systemd instructions instead.
 
 Drop ttmd.conf in /etc/init.  Test by running `service ttmd start`
 it will automatically start on reboot.
@@ -99,7 +103,7 @@ it will automatically start on reboot.
 NOTE: This script is incompatible with CentOS 5 and Amazon Linux 2014 as they
 use old versions of Upstart and do not supply the start-stop-daemon utility.
 
-4d) CentOS
+### CentOS
 
 Copy ttmd.init to /etc/init.d/ttmd. Test by running `service ttmd start`.
 
@@ -107,7 +111,7 @@ Using this script, you can adjust the path and flags to the ttmd program by
 setting the TTMD and FLAGS environment variables in the file
 /etc/sysconfig/ttmd. You can also use the DAEMONOPTS environment variable here.
 
-4e) Mac OS X
+### Mac OS X
 
 Copy org.ttm.ttmd.plist into ~/Library/LaunchAgents. Load the launch agent by
 running `launchctl load ~/Library/LaunchAgents/org.ttm.ttmd.plist`.
@@ -118,7 +122,7 @@ NOTE: This approach is intended for those wanting to run ttmd as the current use
 You will need to modify org.ttm.ttmd.plist if you intend to use it as a
 Launch Daemon with a dedicated ttmcore user.
 
-5. Auto-respawn
+Auto-respawn
 -----------------------------------
 
 Auto respawning is currently only configured for Upstart and systemd.

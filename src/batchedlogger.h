@@ -1,11 +1,11 @@
-// Copyright (c) 2018-2019 The Titanium developers
+// Copyright (c) 2018-2019 The Ttm Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef TTM_BATCHEDLOGGER_H
-#define TTM_BATCHEDLOGGER_H
+#ifndef BITCOIN_BATCHEDLOGGER_H
+#define BITCOIN_BATCHEDLOGGER_H
 
-#include "tinyformat.h"
+#include <tinyformat.h>
 
 class CBatchedLogger
 {
@@ -29,4 +29,4 @@ public:
     void Flush();
 };
 
-#endif//TTM_BATCHEDLOGGER_H
+#endif//BITCOIN_BATCHEDLOGGER_H

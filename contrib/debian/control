@@ -37,7 +37,7 @@ Description: peer-to-peer network based digital currency - daemon
  Ttm is an experimental new digital currency that enables instant, private
  payments to anyone, anywhere in the world. Ttm uses peer-to-peer
  technology to operate with no central authority: managing transactions
- and issuing money are carried out collectively by the network. Titanium
+ and issuing money are carried out collectively by the network. Ttm Core
  is the name of the open source software which enables the use of this currency.
  .
  This package provides the daemon, ttmd, and the CLI tool
@@ -50,7 +50,7 @@ Description: peer-to-peer network based digital currency - Qt GUI
  Ttm is an experimental new digital currency that enables instant, private
  payments to anyone, anywhere in the world. Ttm uses peer-to-peer
  technology to operate with no central authority: managing transactions
- and issuing money are carried out collectively by the network. Titanium
+ and issuing money are carried out collectively by the network. Ttm Core
  is the name of the open source software which enables the use of this currency.
  .
  This package provides Ttm-Qt, a GUI for Ttm based on Qt.
@@ -62,7 +62,7 @@ Description: peer-to-peer digital currency - standalone transaction tool
  Ttm is an experimental new digital currency that enables instant, private
  payments to anyone, anywhere in the world. Ttm uses peer-to-peer
  technology to operate with no central authority: managing transactions
- and issuing money are carried out collectively by the network. Titanium
+ and issuing money are carried out collectively by the network. Ttm Core
  is the name of the open source software which enables the use of this currency.
  .
  This package provides ttm-tx, a command-line transaction creation

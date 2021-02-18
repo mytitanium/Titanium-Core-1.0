@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
-#  ttmd The Titanium server.
+#  ttmd The Ttm Core server.
 #
 #
 # chkconfig: 345 80 20

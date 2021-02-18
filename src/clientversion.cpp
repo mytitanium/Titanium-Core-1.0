@@ -2,18 +2,17 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "clientversion.h"
+#include <clientversion.h>
 
-#include "tinyformat.h"
+#include <tinyformat.h>
 
-#include <string>
 
 /**
  * Name of client reported in the 'version' message. Report the same name
  * for both ttmd and ttm-qt, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
-const std::string CLIENT_NAME("Titanium");
+const std::string CLIENT_NAME("Ttm Core");
 
 /**
  * Client version number
@@ -39,14 +38,14 @@ const std::string CLIENT_NAME("Titanium");
 
 //! First, include build.h if requested
 #ifdef HAVE_BUILD_INFO
-#include "build.h"
+#include <obj/build.h>
 #endif
 
 //! git will put "#define GIT_ARCHIVE 1" on the next line inside archives. 
 #define GIT_ARCHIVE 1
 #ifdef GIT_ARCHIVE
-#define GIT_COMMIT_ID "351fbf65efc9"
-#define GIT_COMMIT_DATE "Tue, 18 Feb 2020 13:05:20 +0300"
+#define GIT_COMMIT_ID "2493d851a74552db5739ee7916012af1715a1b43"
+#define GIT_COMMIT_DATE "Mon, 1 Feb 2021 11:17:29 -0500"
 #endif
 
 #define BUILD_DESC_WITH_SUFFIX(maj, min, rev, build, suffix) \
@@ -72,10 +71,7 @@ const std::string CLIENT_BUILD(BUILD_DESC CLIENT_VERSION_SUFFIX);
 
 std::string FormatVersion(int nVersion)
 {
-    if (nVersion % 100 == 0)
-        return strprintf("%d.%d.%d", nVersion / 1000000, (nVersion / 10000) % 100, (nVersion / 100) % 100);
-    else
-        return strprintf("%d.%d.%d.%d", nVersion / 1000000, (nVersion / 10000) % 100, (nVersion / 100) % 100, nVersion % 100);
+    return strprintf("%d.%d.%d.%d", nVersion / 1000000, (nVersion / 10000) % 100, (nVersion / 100) % 100, nVersion % 100);
 }
 
 std::string FormatFullVersion()
@@ -83,8 +79,8 @@ std::string FormatFullVersion()
     return CLIENT_BUILD;
 }
 
-/** 
- * Format the subversion field according to BIP 14 spec (https://github.com/bitcoin/bips/blob/master/bip-0014.mediawiki) 
+/**
+ * Format the subversion field according to BIP 14 spec (https://github.com/bitcoin/bips/blob/master/bip-0014.mediawiki)
  */
 std::string FormatSubVersion(const std::string& name, int nClientVersion, const std::vector<std::string>& comments)
 {

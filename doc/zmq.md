@@ -5,7 +5,7 @@ connections, inter-process communication, and shared-memory,
 providing various message-oriented semantics such as publish/subscribe,
 request/reply, and push/pull.
 
-The Titanium daemon can be configured to act as a trusted "border
+The Ttm Core daemon can be configured to act as a trusted "border
 router", implementing the ttm wire protocol and relay, making
 consensus decisions, maintaining the local blockchain database,
 broadcasting locally generated transactions into the network, and
@@ -33,7 +33,7 @@ buffering or reassembly.
 
 ## Prerequisites
 
-The ZeroMQ feature in Titanium requires ZeroMQ API version 4.x or
+The ZeroMQ feature in Ttm Core requires ZeroMQ API version 4.x or
 newer. Typically, it is packaged by distributions as something like
 *libzmq3-dev*. The C++ wrapper for ZeroMQ is *not* needed.
 
@@ -45,7 +45,7 @@ operation.
 
 By default, the ZeroMQ feature is automatically compiled in if the
 necessary prerequisites are found.  To disable, use --disable-zmq
-during the *configure* step of building bitcoind:
+during the *configure* step of building ttmd:
 
     $ ./configure --disable-zmq (other options)
 
@@ -63,6 +63,7 @@ Currently, the following notifications are supported:
     -zmqpubhashgovernancevote=address
     -zmqpubhashgovernanceobject=address
     -zmqpubhashinstantsenddoublespend=address
+    -zmqpubhashrecoveredsig=address
     -zmqpubrawblock=address
     -zmqpubrawchainlock=address
     -zmqpubrawchainlocksig=address
@@ -72,6 +73,7 @@ Currently, the following notifications are supported:
     -zmqpubrawgovernancevote=address
     -zmqpubrawgovernanceobject=address
     -zmqpubrawinstantsenddoublespend=address
+    -zmqpubrawrecoveredsig=address
 
 The socket type is PUB and the address must be a valid ZeroMQ socket
 address. The same address can be used in more than one notification.
@@ -84,7 +86,7 @@ For instance:
 Each PUB notification has a topic and body, where the header
 corresponds to the notification type. For instance, for the
 notification `-zmqpubhashtx` the topic is `hashtx` (no null
-terminator) and the body is the hexadecimal transaction hash (32
+terminator) and the body is the transaction hash (32
 bytes).
 
 These options can also be provided in ttm.conf.
@@ -113,6 +115,6 @@ and just the tip will be notified. It is up to the subscriber to
 retrieve the chain from the last known block to the new tip.
 
 There are several possibilities that ZMQ notification can get lost
-during transmission depending on the communication type your are
+during transmission depending on the communication type you are
 using. Ttmd appends an up-counting sequence number to each
 notification which allows listeners to detect lost notifications.

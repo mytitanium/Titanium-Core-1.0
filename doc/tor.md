@@ -1,7 +1,6 @@
-TOR SUPPORT IN TTM CORE
-=======================
+# TOR SUPPORT IN TTM CORE
 
-It is possible to run Titanium as a Tor hidden service, and connect to such services.
+It is possible to run Ttm Core as a Tor hidden service, and connect to such services.
 
 The following directions assume you have a Tor proxy running on port 9050. Many
 distributions default to having a SOCKS proxy listening on port 9050, but others
@@ -10,10 +9,9 @@ See [Tor Project FAQ:TBBSocksPort](https://www.torproject.org/docs/faq.html.en#T
 for how to properly configure Tor.
 
 
-1. Run Titanium behind a Tor proxy
-----------------------------------
+## 1. Run Ttm Core behind a Tor proxy
 
-The first step is running Titanium behind a Tor proxy. This will already make all
+The first step is running Ttm Core behind a Tor proxy. This will already make all
 outgoing connections be anonymized, but more is possible.
 
 	-proxy=ip:port  Set the proxy server. If SOCKS5 is selected (default), this proxy
@@ -44,12 +42,12 @@ In a typical situation, this suffices to run behind a Tor proxy:
 	./ttmd -proxy=127.0.0.1:9050
 
 
-2. Run a Titanium hidden server
--------------------------------
+## 2. Run a Ttm Core hidden server
 
 If you configure your Tor system accordingly, it is possible to make your node also
 reachable from the Tor network. Add these lines to your /etc/tor/torrc (or equivalent
-config file):
+config file): *Needed for Tor version 0.2.7.0 and older versions of Tor only. For newer
+versions of Tor see [Section 4](#4-automatically-listen-on-tor).*
 
 	HiddenServiceDir /var/lib/tor/ttmcore-service/
 	HiddenServicePort 9999 127.0.0.1:9999
@@ -58,7 +56,7 @@ config file):
 The directory can be different of course, but (both) port numbers should be equal to
 your ttmd's P2P listen port (9999 by default).
 
-	-externalip=X   You can tell Titanium about its publicly reachable address using
+	-externalip=X   You can tell Ttm Core about its publicly reachable address using
 	                this option, and this can be a .onion address. Given the above
 	                configuration, you can find your onion address in
 	                /var/lib/tor/ttmcore-service/hostname. Onion addresses are given
@@ -99,8 +97,7 @@ for normal IPv4/IPv6 communication, use:
 	./ttmd -onion=127.0.0.1:9050 -externalip=ssapp53tmftyjmjb.onion -discover
 
 
-3. List of known Titanium Tor relays
-------------------------------------
+## 3. List of known Ttm Core Tor relays
 
 Note: All these nodes are hosted by masternodehosting.com
 
@@ -116,18 +113,17 @@ Note: All these nodes are hosted by masternodehosting.com
 * fijy6aikzxfea54i.onion
 
 
-4. Automatically listen on Tor
---------------------------------
+## 4. Automatically listen on Tor
 
 Starting with Tor version 0.2.7.1 it is possible, through Tor's control socket
 API, to create and destroy 'ephemeral' hidden services programmatically.
-Titanium has been updated to make use of this.
+Ttm Core has been updated to make use of this.
 
 This means that if Tor is running (and proper authentication has been configured),
-Titanium automatically creates a hidden service to listen on. This will positively 
+Ttm Core automatically creates a hidden service to listen on. This will positively 
 affect the number of available .onion nodes.
 
-This new feature is enabled by default if Titanium is listening (`-listen`), and
+This new feature is enabled by default if Ttm Core is listening (`-listen`), and
 requires a Tor connection to work. It can be explicitly disabled with `-listenonion=0`
 and, if not disabled, configured using the `-torcontrol` and `-torpassword` settings.
 To show verbose debugging information, pass `-debug=tor`.
@@ -143,10 +139,9 @@ which has the appropriate permissions. An alternative authentication method is t
 of the `-torpassword` flag and a `hash-password` which can be enabled and specified in 
 Tor configuration.
 
-5. Privacy recommendations
----------------------------
+## 5. Privacy recommendations
 
-- Do not add anything but bitcoin ports to the hidden service created in section 2.
+- Do not add anything but Ttm Core ports to the hidden service created in section 2.
   If you run a web service too, create a new hidden service for that.
   Otherwise it is trivial to link them, which may reduce privacy. Hidden
   services created automatically (as in section 3) always have only one port

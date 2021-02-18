@@ -25,9 +25,10 @@ public:
     const std::string& DataDir() const { return strDataDir; }
     int RPCPort() const { return nRPCPort; }
 
-protected:
-    CBaseChainParams() {}
+    CBaseChainParams() = delete;
+    CBaseChainParams(const std::string& data_dir, int rpc_port) : nRPCPort(rpc_port), strDataDir(data_dir) {}
 
+private:
     int nRPCPort;
     std::string strDataDir;
 };
@@ -53,13 +54,5 @@ const CBaseChainParams& BaseParams();
 
 /** Sets the params returned by Params() to those for the given network. */
 void SelectBaseParams(const std::string& chain);
-
-/**
- * Looks for -regtest, -testnet and returns the appropriate BIP70 chain name.
- * @return CBaseChainParams::MAX_NETWORK_TYPES if an invalid combination is given. CBaseChainParams::MAIN by default.
- */
-std::string ChainNameFromCommandLine();
-
-std::string GetDevNetName();
 
 #endif // BITCOIN_CHAINPARAMSBASE_H

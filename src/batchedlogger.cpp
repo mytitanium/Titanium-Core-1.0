@@ -1,9 +1,9 @@
-// Copyright (c) 2018-2019 The Titanium developers
+// Copyright (c) 2018-2019 The Ttm Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "batchedlogger.h"
-#include "util.h"
+#include <batchedlogger.h>
+#include <util.h>
 
 CBatchedLogger::CBatchedLogger(uint64_t _category, const std::string& _header) :
     accept(LogAcceptCategory(_category)), header(_header)

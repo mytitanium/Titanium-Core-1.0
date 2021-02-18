@@ -3,13 +3,13 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "pow.h"
+#include <pow.h>
 
-#include "arith_uint256.h"
-#include "chain.h"
-#include "chainparams.h"
-#include "primitives/block.h"
-#include "uint256.h"
+#include <arith_uint256.h>
+#include <chain.h>
+#include <chainparams.h>
+#include <primitives/block.h>
+#include <uint256.h>
 
 #include <math.h>
 
@@ -79,22 +79,20 @@ unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const Conse
     return bnNew.GetCompact();
 }
 
-unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consensus::Params& params, const CBlockHeader *pblock) {
+unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consensus::Params& params) {
     /* current difficulty formula, ttm - DarkGravity v3, written by Evan Duffield - evan@ttm.org */
-    const arith_uint256 bnPowLimit = (pblock->nHeight >= 53875) ? UintToArith256(params.kawpowLimit) : UintToArith256(params.powLimit);
-
+    const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
     int64_t nPastBlocks = 24;
 
     // make sure we have at least (nPastBlocks + 1) blocks, otherwise just return powLimit
-    if (!pindexLast || pindexLast->nHeight < nPastBlocks ) {
+    if (!pindexLast || pindexLast->nHeight < nPastBlocks) {
         return bnPowLimit.GetCompact();
     }
 
     const CBlockIndex *pindex = pindexLast;
     arith_uint256 bnPastTargetAvg;
-    int nKAWPOWBlocksFound = 0;
-    
-    for (unsigned int nCountBlocks = 1; nCountBlocks <= nPastBlocks; nCountBlocks++) {
+
+	for (unsigned int nCountBlocks = 1; nCountBlocks <= nPastBlocks; nCountBlocks++) {
         arith_uint256 bnTarget = arith_uint256().SetCompact(pindex->nBits);
         if (nCountBlocks == 1) {
             bnPastTargetAvg = bnTarget;
@@ -102,21 +100,11 @@ unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consens
             // NOTE: that's not an average really...
             bnPastTargetAvg = (bnPastTargetAvg * nCountBlocks + bnTarget) / (nCountBlocks + 1);
         }
-        
-        if (pblock->nHeight >= 53875 ) {
-            nKAWPOWBlocksFound++;
-        }
+
         
         if(nCountBlocks != nPastBlocks) {
             assert(pindex->pprev); // should never fail
             pindex = pindex->pprev;
-        }
-    }
-
-    if (pblock->nHeight >= 53875  ) {
-        if (nKAWPOWBlocksFound != nPastBlocks) {
-            const arith_uint256 bnKawPowLimit = UintToArith256(params.kawpowLimit);
-            return bnKawPowLimit.GetCompact();
         }
     }
     
@@ -145,7 +133,7 @@ unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consens
 unsigned int GetNextWorkRequiredBTC(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
 {
     assert(pindexLast != nullptr);
-    unsigned int nProofOfWorkLimit = (pblock->nHeight >= 53875) ? UintToArith256(params.kawpowLimit).GetCompact() : UintToArith256(params.powLimit).GetCompact();
+    unsigned int nProofOfWorkLimit = UintToArith256(params.powLimit).GetCompact();
 
     // Only change once per interval
     if ((pindexLast->nHeight+1) % params.DifficultyAdjustmentInterval() != 0)
@@ -182,7 +170,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 {
     assert(pindexLast != nullptr);
     assert(pblock != nullptr);
-    const arith_uint256 bnPowLimit = (pblock->nHeight >= 53875) ? UintToArith256(params.kawpowLimit) : UintToArith256(params.powLimit);
+    const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
 
     // this is only active on devnets
     if (pindexLast->nHeight < params.nMinimumDifficultyBlocks) {
@@ -214,7 +202,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         return KimotoGravityWell(pindexLast, params);
     }
 
-    return DarkGravityWave(pindexLast, params, pblock);
+    return DarkGravityWave(pindexLast, params);
 }
 
 // for DIFF_BTC only!
@@ -248,14 +236,11 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
     bool fNegative;
     bool fOverflow;
     arith_uint256 bnTarget;
-    arith_uint256 bnTargetresult;
 
     bnTarget.SetCompact(nBits, &fNegative, &fOverflow);
 
-    bnTargetresult = UintToArith256(params.kawpowLimit) 
-        
     // Check range
-    if (fNegative || bnTarget == 0 || fOverflow || bnTarget > bnTargetresult )
+    if (fNegative || bnTarget == 0 || fOverflow || bnTarget > UintToArith256(params.powLimit))
         return false;
 
     // Check proof of work matches claimed amount

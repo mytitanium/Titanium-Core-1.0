@@ -1,7 +1,7 @@
 Gitian building
 ================
 
-*Setup instructions for a Gitian build of Titanium using a Debian VM or physical system.*
+*Setup instructions for a Gitian build of Ttm Core using a Debian VM or physical system.*
 
 Gitian is the deterministic build process that is used to build the Ttm
 Core executables. It provides a way to be reasonably sure that the
@@ -26,7 +26,7 @@ Table of Contents
 - [Installing Gitian](#installing-gitian)
 - [Setting up the Gitian image](#setting-up-the-gitian-image)
 - [Getting and building the inputs](#getting-and-building-the-inputs)
-- [Building Titanium](#building-ttm-core)
+- [Building Ttm Core](#building-ttm-core)
 - [Building an alternative repository](#building-an-alternative-repository)
 - [Signing externally](#signing-externally)
 - [Uploading signatures](#uploading-signatures)
@@ -310,7 +310,7 @@ cd ..
 
 **Note**: When sudo asks for a password, enter the password for the user *debian* not for *root*.
 
-Clone the git repositories for Titanium and Gitian.
+Clone the git repositories for Ttm Core and Gitian.
 
 ```bash
 git clone https://github.com/devrandom/gitian-builder.git
@@ -352,16 +352,16 @@ Getting and building the inputs
 At this point you have two options, you can either use the automated script (found in [contrib/gitian-build.py](/contrib/gitian-build.py)) or you could manually do everything by following this guide. If you're using the automated script, then run it with the "--setup" command. Afterwards, run it with the "--build" command (example: "contrib/gitian-building.sh -b signer 0.13.0"). Otherwise ignore this.
 
 Follow the instructions in [doc/release-process.md](release-process.md#fetch-and-create-inputs-first-time-or-when-dependency-versions-change)
-in the Titanium repository under 'Fetch and create inputs' to install sources which require
+in the Ttm Core repository under 'Fetch and create inputs' to install sources which require
 manual intervention. Also optionally follow the next step: 'Seed the Gitian sources cache
 and offline git repositories' which will fetch the remaining files required for building
 offline.
 
-Building Titanium
+Building Ttm Core
 ----------------
 
-To build Titanium (for Linux, OS X and Windows) just follow the steps under 'perform
-Gitian builds' in [doc/release-process.md](release-process.md#perform-gitian-builds) in the Titanium repository.
+To build Ttm Core (for Linux, OS X and Windows) just follow the steps under 'perform
+Gitian builds' in [doc/release-process.md](release-process.md#setup-and-perform-gitian-builds) in the Ttm Core repository.
 
 This may take some time as it will build all the dependencies needed for each descriptor.
 These dependencies will be cached after a successful build to avoid rebuilding them when possible.

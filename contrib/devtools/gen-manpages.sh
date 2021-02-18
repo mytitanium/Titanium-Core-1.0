@@ -1,13 +1,16 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
+export LC_ALL=C
 TOPDIR=${TOPDIR:-$(git rev-parse --show-toplevel)}
-SRCDIR=${SRCDIR:-$TOPDIR/src}
+BUILDDIR=${BUILDDIR:-$TOPDIR}
+
+BINDIR=${BINDIR:-$BUILDDIR/src}
 MANDIR=${MANDIR:-$TOPDIR/doc/man}
 
-BITCOIND=${BITCOIND:-$SRCDIR/ttmd}
-BITCOINCLI=${BITCOINCLI:-$SRCDIR/ttm-cli}
-BITCOINTX=${BITCOINTX:-$SRCDIR/ttm-tx}
-BITCOINQT=${BITCOINQT:-$SRCDIR/qt/ttm-qt}
+BITCOIND=${BITCOIND:-$BINDIR/ttmd}
+BITCOINCLI=${BITCOINCLI:-$BINDIR/ttm-cli}
+BITCOINTX=${BITCOINTX:-$BINDIR/ttm-tx}
+BITCOINQT=${BITCOINQT:-$BINDIR/qt/ttm-qt}
 
 [ ! -x $BITCOIND ] && echo "$BITCOIND not found or not executable." && exit 1
 
@@ -15,8 +18,8 @@ BITCOINQT=${BITCOINQT:-$SRCDIR/qt/ttm-qt}
 BTCVER=($($BITCOINCLI --version | head -n1 | awk -F'[ -]' '{ print $6, $7 }'))
 
 # Create a footer file with copyright content.
-# This gets autodetected fine for bitcoind if --version-string is not set,
-# but has different outcomes for bitcoin-qt and bitcoin-cli.
+# This gets autodetected fine for ttmd if --version-string is not set,
+# but has different outcomes for ttm-qt and ttm-cli.
 echo "[COPYRIGHT]" > footer.h2m
 $BITCOIND --version | sed -n '1!p' >> footer.h2m
 
