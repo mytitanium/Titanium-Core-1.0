@@ -258,11 +258,11 @@
 <context>
     <name>BitcoinGUI</name>
     <message>
-        <source>A fatal error occurred. Titanium can no longer continue safely and will quit.</source>
-        <translation>Възникна фатална грешка. Titanium не може да продължи безопасно и ще се изключи.</translation>
+        <source>A fatal error occurred. Ttm Core can no longer continue safely and will quit.</source>
+        <translation>Възникна фатална грешка. Ttm Core не може да продължи безопасно и ще се изключи.</translation>
     </message>
     <message>
-        <source>Titanium</source>
+        <source>Ttm Core</source>
         <translation>Ttm Ядро</translation>
     </message>
     <message>
@@ -322,8 +322,8 @@
         <translation>Изход от приложението</translation>
     </message>
     <message>
-        <source>Show information about Titanium</source>
-        <translation>Покаци информация за Titanium</translation>
+        <source>Show information about Ttm Core</source>
+        <translation>Покаци информация за Ttm Core</translation>
     </message>
     <message>
         <source>About &amp;Qt</source>
@@ -1331,8 +1331,8 @@
         <translation>Желан PrivateSend баланс</translation>
     </message>
     <message>
-        <source>Automatically open the Titanium client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Автоматично отваря порта за Titanium клиента в маршрутизатора. Това работи само когато вашият маршрутизатор поддържа UPnP и той е разрешен.</translation>
+        <source>Automatically open the Ttm Core client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Автоматично отваря порта за Ttm Core клиента в маршрутизатора. Това работи само когато вашият маршрутизатор поддържа UPnP и той е разрешен.</translation>
     </message>
     <message>
         <source>Connect to the Ttm network through a SOCKS5 proxy.</source>
@@ -4823,8 +4823,8 @@ https://www.transifex.com/projects/p/ttm/</translation>
         <translation>Опции на RPC сървъра:</translation>
     </message>
     <message>
-        <source>Titanium</source>
-        <translation>Titanium</translation>
+        <source>Ttm Core</source>
+        <translation>Ttm Core</translation>
     </message>
     <message>
         <source>The %s developers</source>

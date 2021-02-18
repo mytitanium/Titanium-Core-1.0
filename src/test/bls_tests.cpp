@@ -1,10 +1,10 @@
-// Copyright (c) 2019 The Titanium developers
+// Copyright (c) 2019 The Ttm Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "bls/bls.h"
-#include "bls/bls_batchverifier.h"
-#include "test/test_ttm.h"
+#include <bls/bls.h>
+#include <bls/bls_batchverifier.h>
+#include <test/test_ttm.h>
 
 #include <boost/test/unit_test.hpp>
 

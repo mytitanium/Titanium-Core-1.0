@@ -1,12 +1,12 @@
-// Copyright (c) 2014-2020 The Titanium developers
+// Copyright (c) 2014-2020 The Ttm Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PRIVATESENDSERVER_H
-#define PRIVATESENDSERVER_H
+#ifndef BITCOIN_PRIVATESEND_PRIVATESEND_SERVER_H
+#define BITCOIN_PRIVATESEND_PRIVATESEND_SERVER_H
 
-#include "net.h"
-#include "privatesend.h"
+#include <net.h>
+#include <privatesend/privatesend.h>
 
 class CPrivateSendServer;
 class UniValue;
@@ -22,9 +22,6 @@ private:
     // Mixing uses collateral transactions to trust parties entering the pool
     // to behave honestly. If they don't it takes their money.
     std::vector<CTransactionRef> vecSessionCollaterals;
-
-    // Maximum number of participants in a certain session, random between min and max.
-    int nSessionMaxParticipants;
 
     bool fUnitTest;
 
@@ -72,11 +69,11 @@ private:
 public:
     CPrivateSendServer() :
         vecSessionCollaterals(),
-        nSessionMaxParticipants(0),
         fUnitTest(false) {}
 
-    void ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStream& vRecv, CConnman& connman);
+    void ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStream& vRecv, CConnman& connman, bool enable_bip61);
 
+    bool HasTimedOut();
     void CheckTimeout(CConnman& connman);
     void CheckForCompleteQueue(CConnman& connman);
 
@@ -85,4 +82,4 @@ public:
     void GetJsonInfo(UniValue& obj) const;
 };
 
-#endif
+#endif // BITCOIN_PRIVATESEND_PRIVATESEND_SERVER_H

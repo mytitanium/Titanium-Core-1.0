@@ -1,74 +1,24 @@
-// Copyright (c) 2018-2019 The Titanium developers
+// Copyright (c) 2018-2019 The Ttm Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "bls.h"
+#include <bls/bls.h>
 
-#include "hash.h"
-#include "random.h"
-#include "tinyformat.h"
+#include <random.h>
+#include <tinyformat.h>
 
 #ifndef BUILD_BITCOIN_INTERNAL
-#include "support/allocators/mt_pooled_secure.h"
+#include <support/allocators/mt_pooled_secure.h>
 #endif
 
 #include <assert.h>
 #include <string.h>
 
-bool CBLSId::InternalSetBuf(const void* buf)
+CBLSId::CBLSId(const uint256& nHash) : CBLSWrapper<CBLSIdImplicit, BLS_CURVE_ID_SIZE, CBLSId>()
 {
-    memcpy(impl.begin(), buf, sizeof(uint256));
-    return true;
-}
-
-bool CBLSId::InternalGetBuf(void* buf) const
-{
-    memcpy(buf, impl.begin(), sizeof(uint256));
-    return true;
-}
-
-void CBLSId::SetInt(int x)
-{
-    impl.SetHex(strprintf("%x", x));
+    impl = nHash;
     fValid = true;
     UpdateHash();
-}
-
-void CBLSId::SetHash(const uint256& hash)
-{
-    impl = hash;
-    fValid = true;
-    UpdateHash();
-}
-
-CBLSId CBLSId::FromInt(int64_t i)
-{
-    CBLSId id;
-    id.SetInt(i);
-    return id;
-}
-
-CBLSId CBLSId::FromHash(const uint256& hash)
-{
-    CBLSId id;
-    id.SetHash(hash);
-    return id;
-}
-
-bool CBLSSecretKey::InternalSetBuf(const void* buf)
-{
-    try {
-        impl = bls::PrivateKey::FromBytes((const uint8_t*)buf);
-        return true;
-    } catch (...) {
-        return false;
-    }
-}
-
-bool CBLSSecretKey::InternalGetBuf(void* buf) const
-{
-    impl.Serialize((uint8_t*)buf);
-    return true;
 }
 
 void CBLSSecretKey::AggregateInsecure(const CBLSSecretKey& o)
@@ -90,9 +40,8 @@ CBLSSecretKey CBLSSecretKey::AggregateInsecure(const std::vector<CBLSSecretKey>&
         v.emplace_back(sk.impl);
     }
 
-    auto agg = bls::PrivateKey::AggregateInsecure(v);
     CBLSSecretKey ret;
-    ret.impl = agg;
+    ret.impl = bls::PrivateKey::AggregateInsecure(v);
     ret.fValid = true;
     ret.UpdateHash();
     return ret;
@@ -172,22 +121,6 @@ CBLSSignature CBLSSecretKey::Sign(const uint256& hash) const
     return sigRet;
 }
 
-bool CBLSPublicKey::InternalSetBuf(const void* buf)
-{
-    try {
-        impl = bls::PublicKey::FromBytes((const uint8_t*)buf);
-        return true;
-    } catch (...) {
-        return false;
-    }
-}
-
-bool CBLSPublicKey::InternalGetBuf(void* buf) const
-{
-    impl.Serialize((uint8_t*)buf);
-    return true;
-}
-
 void CBLSPublicKey::AggregateInsecure(const CBLSPublicKey& o)
 {
     assert(IsValid() && o.IsValid());
@@ -207,9 +140,8 @@ CBLSPublicKey CBLSPublicKey::AggregateInsecure(const std::vector<CBLSPublicKey>&
         v.emplace_back(pk.impl);
     }
 
-    auto agg = bls::PublicKey::AggregateInsecure(v);
     CBLSPublicKey ret;
-    ret.impl = agg;
+    ret.impl = bls::PublicKey::AggregateInsecure(v);
     ret.fValid = true;
     ret.UpdateHash();
     return ret;
@@ -258,22 +190,6 @@ bool CBLSPublicKey::DHKeyExchange(const CBLSSecretKey& sk, const CBLSPublicKey& 
     return true;
 }
 
-bool CBLSSignature::InternalSetBuf(const void* buf)
-{
-    try {
-        impl = bls::InsecureSignature::FromBytes((const uint8_t*)buf);
-        return true;
-    } catch (...) {
-        return false;
-    }
-}
-
-bool CBLSSignature::InternalGetBuf(void* buf) const
-{
-    impl.Serialize((uint8_t*)buf);
-    return true;
-}
-
 void CBLSSignature::AggregateInsecure(const CBLSSignature& o)
 {
     assert(IsValid() && o.IsValid());
@@ -293,9 +209,8 @@ CBLSSignature CBLSSignature::AggregateInsecure(const std::vector<CBLSSignature>&
         v.emplace_back(pk.impl);
     }
 
-    auto agg = bls::InsecureSignature::Aggregate(v);
     CBLSSignature ret;
-    ret.impl = agg;
+    ret.impl = bls::InsecureSignature::Aggregate(v);
     ret.fValid = true;
     ret.UpdateHash();
     return ret;
@@ -317,9 +232,8 @@ CBLSSignature CBLSSignature::AggregateSecure(const std::vector<CBLSSignature>& s
         v.emplace_back(bls::Signature::FromInsecureSig(sigs[i].impl, aggInfo));
     }
 
-    auto aggSig = bls::Signature::AggregateSigs(v);
     CBLSSignature ret;
-    ret.impl = aggSig.GetInsecureSig();
+    ret.impl = bls::Signature::AggregateSigs(v).GetInsecureSig();
     ret.fValid = true;
     ret.UpdateHash();
     return ret;

@@ -1,11 +1,11 @@
-// Copyright (c) 2018-2019 The Titanium developers
+// Copyright (c) 2018-2019 The Ttm Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef TTM_CRYPTO_BLS_BATCHVERIFIER_H
 #define TTM_CRYPTO_BLS_BATCHVERIFIER_H
 
-#include "bls.h"
+#include <bls/bls.h>
 
 #include <map>
 #include <vector>
@@ -61,6 +61,11 @@ public:
     {
         messages.clear();
         messagesBySource.clear();
+    }
+
+    size_t GetUniqueSourceCount() const
+    {
+        return messagesBySource.size();
     }
 
     void Verify()

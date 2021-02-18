@@ -1601,9 +1601,17 @@ else
 fi
 
 case "$host_os" in
-        darwin*)        _JTOPDIR=`echo "$_JTOPDIR" | sed -e 's:/[[^/]]*$::'`
-                        _JINC="$_JTOPDIR/Headers";;
-        *)              _JINC="$_JTOPDIR/include";;
+        darwin*)        # Apple Java headers are inside the Xcode bundle.
+            macos_version=$(sw_vers -productVersion | sed -n -e 's/^@<:@0-9@:>@*.\(@<:@0-9@:>@*\).@<:@0-9@:>@*/\1/p')
+            if @<:@ "$macos_version" -gt "7" @:>@; then
+                _JTOPDIR="$(xcrun --show-sdk-path)/System/Library/Frameworks/JavaVM.framework"
+                _JINC="$_JTOPDIR/Headers"
+            else
+                _JTOPDIR="/System/Library/Frameworks/JavaVM.framework"
+                _JINC="$_JTOPDIR/Headers"
+            fi
+            ;;
+        *) _JINC="$_JTOPDIR/include";;
 esac
 _AS_ECHO_LOG([_JTOPDIR=$_JTOPDIR])
 _AS_ECHO_LOG([_JINC=$_JINC])
@@ -1611,30 +1619,27 @@ _AS_ECHO_LOG([_JINC=$_JINC])
 # On Mac OS X 10.6.4, jni.h is a symlink:
 # /System/Library/Frameworks/JavaVM.framework/Versions/Current/Headers/jni.h
 # -> ../../CurrentJDK/Headers/jni.h.
-
 AC_CACHE_CHECK(jni headers, ac_cv_jni_header_path,
 [
-if test -f "$_JINC/jni.h"; then
-  ac_cv_jni_header_path="$_JINC"
-  JNI_INCLUDE_DIRS="$JNI_INCLUDE_DIRS $ac_cv_jni_header_path"
-else
-  _JTOPDIR=`echo "$_JTOPDIR" | sed -e 's:/[[^/]]*$::'`
-  if test -f "$_JTOPDIR/include/jni.h"; then
-    ac_cv_jni_header_path="$_JTOPDIR/include"
+  if test -f "$_JINC/jni.h"; then
+    ac_cv_jni_header_path="$_JINC"
     JNI_INCLUDE_DIRS="$JNI_INCLUDE_DIRS $ac_cv_jni_header_path"
   else
-    ac_cv_jni_header_path=none
+    _JTOPDIR=`echo "$_JTOPDIR" | sed -e 's:/[[^/]]*$::'`
+    if test -f "$_JTOPDIR/include/jni.h"; then
+      ac_cv_jni_header_path="$_JTOPDIR/include"
+      JNI_INCLUDE_DIRS="$JNI_INCLUDE_DIRS $ac_cv_jni_header_path"
+    else
+      ac_cv_jni_header_path=none
+    fi
   fi
-fi
 ])
-
-
 
 # get the likely subdirectories for system specific java includes
 case "$host_os" in
 bsdi*)          _JNI_INC_SUBDIRS="bsdos";;
-darwin*)        _JNI_INC_SUBDIRS="darwin";;
 freebsd*)       _JNI_INC_SUBDIRS="freebsd";;
+darwin*)        _JNI_INC_SUBDIRS="darwin";;
 linux*)         _JNI_INC_SUBDIRS="linux genunix";;
 osf*)           _JNI_INC_SUBDIRS="alpha";;
 solaris*)       _JNI_INC_SUBDIRS="solaris";;
@@ -1647,13 +1652,13 @@ if test "x$ac_cv_jni_header_path" != "xnone"; then
   # add any subdirectories that are present
   for JINCSUBDIR in $_JNI_INC_SUBDIRS
   do
-      if test -d "$_JTOPDIR/include/$JINCSUBDIR"; then
-           JNI_INCLUDE_DIRS="$JNI_INCLUDE_DIRS $_JTOPDIR/include/$JINCSUBDIR"
-      fi
+    if test -d "$_JTOPDIR/include/$JINCSUBDIR"; then
+         JNI_INCLUDE_DIRS="$JNI_INCLUDE_DIRS $_JTOPDIR/include/$JINCSUBDIR"
+    fi
   done
 fi
 ])
-m4trace:build-aux/m4/ax_jni_include_dir.m4:126: -1- AC_DEFUN([_ACJNI_FOLLOW_SYMLINKS], [
+m4trace:build-aux/m4/ax_jni_include_dir.m4:131: -1- AC_DEFUN([_ACJNI_FOLLOW_SYMLINKS], [
 # find the include directory relative to the javac executable
 _cur="$1"
 while ls -ld "$_cur" 2>/dev/null | grep " -> " >/dev/null; do
@@ -1805,13 +1810,12 @@ if test x"$has_libcrypto" = x"yes" && test x"$has_openssl_ec" = x; then
     EC_KEY_free(eckey);
     ECDSA_SIG *sig_openssl;
     sig_openssl = ECDSA_SIG_new();
-    (void)sig_openssl->r;
     ECDSA_SIG_free(sig_openssl);
   ]])],[has_openssl_ec=yes],[has_openssl_ec=no])
   AC_MSG_RESULT([$has_openssl_ec])
 fi
 ])
-m4trace:build-aux/m4/bitcoin_secp.m4:59: -1- AC_DEFUN([SECP_GMP_CHECK], [
+m4trace:build-aux/m4/bitcoin_secp.m4:58: -1- AC_DEFUN([SECP_GMP_CHECK], [
 if test x"$has_gmp" != x"yes"; then
   CPPFLAGS_TEMP="$CPPFLAGS"
   CPPFLAGS="$GMP_CPPFLAGS $CPPFLAGS"
@@ -3130,114 +3134,113 @@ m4trace:configure.ac:32: -1- _AM_SUBST_NOTMAKE([am__fastdepCCAS_FALSE])
 m4trace:configure.ac:37: -1- m4_pattern_allow([^BREW$])
 m4trace:configure.ac:54: -1- m4_pattern_allow([^PORT$])
 m4trace:configure.ac:154: -1- m4_pattern_allow([^HAVE___INT128$])
-m4trace:configure.ac:157: -1- m4_pattern_allow([^HAVE_BUILTIN_EXPECT$])
-m4trace:configure.ac:163: -1- m4_pattern_allow([^COVERAGE$])
-m4trace:configure.ac:199: -1- SECP_64BIT_ASM_CHECK
-m4trace:configure.ac:210: -1- SECP_64BIT_ASM_CHECK
-m4trace:configure.ac:230: -1- SECP_INT128_CHECK
-m4trace:configure.ac:243: -1- SECP_INT128_CHECK
-m4trace:configure.ac:258: -1- SECP_INT128_CHECK
-m4trace:configure.ac:269: -1- SECP_INT128_CHECK
-m4trace:configure.ac:283: -1- SECP_GMP_CHECK
-m4trace:configure.ac:283: -1- m4_pattern_allow([^HAVE_LIBGMP$])
-m4trace:configure.ac:295: -1- SECP_GMP_CHECK
-m4trace:configure.ac:295: -1- m4_pattern_allow([^HAVE_LIBGMP$])
-m4trace:configure.ac:313: -1- m4_pattern_allow([^USE_ASM_X86_64$])
-m4trace:configure.ac:328: -1- m4_pattern_allow([^USE_FIELD_5X52$])
-m4trace:configure.ac:331: -1- m4_pattern_allow([^USE_FIELD_10X26$])
-m4trace:configure.ac:341: -1- m4_pattern_allow([^HAVE_LIBGMP$])
-m4trace:configure.ac:342: -1- m4_pattern_allow([^USE_NUM_GMP$])
-m4trace:configure.ac:343: -1- m4_pattern_allow([^USE_FIELD_INV_NUM$])
-m4trace:configure.ac:344: -1- m4_pattern_allow([^USE_SCALAR_INV_NUM$])
-m4trace:configure.ac:347: -1- m4_pattern_allow([^USE_NUM_NONE$])
-m4trace:configure.ac:348: -1- m4_pattern_allow([^USE_FIELD_INV_BUILTIN$])
-m4trace:configure.ac:349: -1- m4_pattern_allow([^USE_SCALAR_INV_BUILTIN$])
-m4trace:configure.ac:359: -1- m4_pattern_allow([^USE_SCALAR_4X64$])
-m4trace:configure.ac:362: -1- m4_pattern_allow([^USE_SCALAR_8X32$])
-m4trace:configure.ac:370: -1- SECP_OPENSSL_CHECK
-m4trace:configure.ac:370: -1- PKG_CHECK_MODULES([CRYPTO], [libcrypto], [has_libcrypto=yes], [has_libcrypto=no])
-m4trace:configure.ac:370: -1- m4_pattern_allow([^CRYPTO_CFLAGS$])
-m4trace:configure.ac:370: -1- m4_pattern_allow([^CRYPTO_LIBS$])
-m4trace:configure.ac:370: -1- PKG_CHECK_EXISTS([libcrypto], [pkg_cv_[]CRYPTO_CFLAGS=`$PKG_CONFIG --[]cflags "libcrypto" 2>/dev/null`
+m4trace:configure.ac:157: -1- m4_pattern_allow([^COVERAGE$])
+m4trace:configure.ac:220: -1- SECP_64BIT_ASM_CHECK
+m4trace:configure.ac:231: -1- SECP_64BIT_ASM_CHECK
+m4trace:configure.ac:251: -1- SECP_INT128_CHECK
+m4trace:configure.ac:264: -1- SECP_INT128_CHECK
+m4trace:configure.ac:279: -1- SECP_INT128_CHECK
+m4trace:configure.ac:290: -1- SECP_INT128_CHECK
+m4trace:configure.ac:304: -1- SECP_GMP_CHECK
+m4trace:configure.ac:304: -1- m4_pattern_allow([^HAVE_LIBGMP$])
+m4trace:configure.ac:316: -1- SECP_GMP_CHECK
+m4trace:configure.ac:316: -1- m4_pattern_allow([^HAVE_LIBGMP$])
+m4trace:configure.ac:334: -1- m4_pattern_allow([^USE_ASM_X86_64$])
+m4trace:configure.ac:349: -1- m4_pattern_allow([^USE_FIELD_5X52$])
+m4trace:configure.ac:352: -1- m4_pattern_allow([^USE_FIELD_10X26$])
+m4trace:configure.ac:362: -1- m4_pattern_allow([^HAVE_LIBGMP$])
+m4trace:configure.ac:363: -1- m4_pattern_allow([^USE_NUM_GMP$])
+m4trace:configure.ac:364: -1- m4_pattern_allow([^USE_FIELD_INV_NUM$])
+m4trace:configure.ac:365: -1- m4_pattern_allow([^USE_SCALAR_INV_NUM$])
+m4trace:configure.ac:368: -1- m4_pattern_allow([^USE_NUM_NONE$])
+m4trace:configure.ac:369: -1- m4_pattern_allow([^USE_FIELD_INV_BUILTIN$])
+m4trace:configure.ac:370: -1- m4_pattern_allow([^USE_SCALAR_INV_BUILTIN$])
+m4trace:configure.ac:380: -1- m4_pattern_allow([^USE_SCALAR_4X64$])
+m4trace:configure.ac:383: -1- m4_pattern_allow([^USE_SCALAR_8X32$])
+m4trace:configure.ac:391: -1- SECP_OPENSSL_CHECK
+m4trace:configure.ac:391: -1- PKG_CHECK_MODULES([CRYPTO], [libcrypto], [has_libcrypto=yes], [has_libcrypto=no])
+m4trace:configure.ac:391: -1- m4_pattern_allow([^CRYPTO_CFLAGS$])
+m4trace:configure.ac:391: -1- m4_pattern_allow([^CRYPTO_LIBS$])
+m4trace:configure.ac:391: -1- PKG_CHECK_EXISTS([libcrypto], [pkg_cv_[]CRYPTO_CFLAGS=`$PKG_CONFIG --[]cflags "libcrypto" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes ], [pkg_failed=yes])
-m4trace:configure.ac:370: -1- PKG_CHECK_EXISTS([libcrypto], [pkg_cv_[]CRYPTO_LIBS=`$PKG_CONFIG --[]libs "libcrypto" 2>/dev/null`
+m4trace:configure.ac:391: -1- PKG_CHECK_EXISTS([libcrypto], [pkg_cv_[]CRYPTO_LIBS=`$PKG_CONFIG --[]libs "libcrypto" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes ], [pkg_failed=yes])
-m4trace:configure.ac:370: -1- _PKG_SHORT_ERRORS_SUPPORTED
-m4trace:configure.ac:370: -1- m4_pattern_allow([^HAVE_LIBCRYPTO$])
-m4trace:configure.ac:370: -1- m4_pattern_allow([^HAVE_LIBCRYPTO$])
-m4trace:configure.ac:373: -1- m4_pattern_allow([^ENABLE_OPENSSL_TESTS$])
-m4trace:configure.ac:395: -1- AX_JNI_INCLUDE_DIR
-m4trace:configure.ac:395: -1- m4_pattern_allow([^_ACJNI_JAVAC$])
-m4trace:configure.ac:395: -1- _ACJNI_FOLLOW_SYMLINKS(["$_ACJNI_JAVAC"])
-m4trace:configure.ac:423: -1- m4_pattern_allow([^USE_ENDOMORPHISM$])
-m4trace:configure.ac:427: -1- m4_pattern_allow([^USE_ECMULT_STATIC_PRECOMPUTATION$])
-m4trace:configure.ac:431: -1- m4_pattern_allow([^ENABLE_MODULE_ECDH$])
-m4trace:configure.ac:435: -1- m4_pattern_allow([^ENABLE_MODULE_RECOVERY$])
-m4trace:configure.ac:438: -1- m4_pattern_allow([^WORDS_BIGENDIAN$])
-m4trace:configure.ac:438: -1- m4_pattern_allow([^AC_APPLE_UNIVERSAL_BUILD$])
-m4trace:configure.ac:441: -1- m4_pattern_allow([^USE_EXTERNAL_ASM$])
-m4trace:configure.ac:472: -1- m4_pattern_allow([^JNI_INCLUDES$])
-m4trace:configure.ac:473: -1- m4_pattern_allow([^SECP_INCLUDES$])
-m4trace:configure.ac:474: -1- m4_pattern_allow([^SECP_LIBS$])
-m4trace:configure.ac:475: -1- m4_pattern_allow([^SECP_TEST_LIBS$])
-m4trace:configure.ac:476: -1- m4_pattern_allow([^SECP_TEST_INCLUDES$])
-m4trace:configure.ac:477: -1- AM_CONDITIONAL([ENABLE_COVERAGE], [test x"$enable_coverage" = x"yes"])
-m4trace:configure.ac:477: -1- m4_pattern_allow([^ENABLE_COVERAGE_TRUE$])
-m4trace:configure.ac:477: -1- m4_pattern_allow([^ENABLE_COVERAGE_FALSE$])
-m4trace:configure.ac:477: -1- _AM_SUBST_NOTMAKE([ENABLE_COVERAGE_TRUE])
-m4trace:configure.ac:477: -1- _AM_SUBST_NOTMAKE([ENABLE_COVERAGE_FALSE])
-m4trace:configure.ac:478: -1- AM_CONDITIONAL([USE_TESTS], [test x"$use_tests" != x"no"])
-m4trace:configure.ac:478: -1- m4_pattern_allow([^USE_TESTS_TRUE$])
-m4trace:configure.ac:478: -1- m4_pattern_allow([^USE_TESTS_FALSE$])
-m4trace:configure.ac:478: -1- _AM_SUBST_NOTMAKE([USE_TESTS_TRUE])
-m4trace:configure.ac:478: -1- _AM_SUBST_NOTMAKE([USE_TESTS_FALSE])
-m4trace:configure.ac:479: -1- AM_CONDITIONAL([USE_EXHAUSTIVE_TESTS], [test x"$use_exhaustive_tests" != x"no"])
-m4trace:configure.ac:479: -1- m4_pattern_allow([^USE_EXHAUSTIVE_TESTS_TRUE$])
-m4trace:configure.ac:479: -1- m4_pattern_allow([^USE_EXHAUSTIVE_TESTS_FALSE$])
-m4trace:configure.ac:479: -1- _AM_SUBST_NOTMAKE([USE_EXHAUSTIVE_TESTS_TRUE])
-m4trace:configure.ac:479: -1- _AM_SUBST_NOTMAKE([USE_EXHAUSTIVE_TESTS_FALSE])
-m4trace:configure.ac:480: -1- AM_CONDITIONAL([USE_BENCHMARK], [test x"$use_benchmark" = x"yes"])
-m4trace:configure.ac:480: -1- m4_pattern_allow([^USE_BENCHMARK_TRUE$])
-m4trace:configure.ac:480: -1- m4_pattern_allow([^USE_BENCHMARK_FALSE$])
-m4trace:configure.ac:480: -1- _AM_SUBST_NOTMAKE([USE_BENCHMARK_TRUE])
-m4trace:configure.ac:480: -1- _AM_SUBST_NOTMAKE([USE_BENCHMARK_FALSE])
-m4trace:configure.ac:481: -1- AM_CONDITIONAL([USE_ECMULT_STATIC_PRECOMPUTATION], [test x"$set_precomp" = x"yes"])
-m4trace:configure.ac:481: -1- m4_pattern_allow([^USE_ECMULT_STATIC_PRECOMPUTATION_TRUE$])
-m4trace:configure.ac:481: -1- m4_pattern_allow([^USE_ECMULT_STATIC_PRECOMPUTATION_FALSE$])
-m4trace:configure.ac:481: -1- _AM_SUBST_NOTMAKE([USE_ECMULT_STATIC_PRECOMPUTATION_TRUE])
-m4trace:configure.ac:481: -1- _AM_SUBST_NOTMAKE([USE_ECMULT_STATIC_PRECOMPUTATION_FALSE])
-m4trace:configure.ac:482: -1- AM_CONDITIONAL([ENABLE_MODULE_ECDH], [test x"$enable_module_ecdh" = x"yes"])
-m4trace:configure.ac:482: -1- m4_pattern_allow([^ENABLE_MODULE_ECDH_TRUE$])
-m4trace:configure.ac:482: -1- m4_pattern_allow([^ENABLE_MODULE_ECDH_FALSE$])
-m4trace:configure.ac:482: -1- _AM_SUBST_NOTMAKE([ENABLE_MODULE_ECDH_TRUE])
-m4trace:configure.ac:482: -1- _AM_SUBST_NOTMAKE([ENABLE_MODULE_ECDH_FALSE])
-m4trace:configure.ac:483: -1- AM_CONDITIONAL([ENABLE_MODULE_RECOVERY], [test x"$enable_module_recovery" = x"yes"])
-m4trace:configure.ac:483: -1- m4_pattern_allow([^ENABLE_MODULE_RECOVERY_TRUE$])
-m4trace:configure.ac:483: -1- m4_pattern_allow([^ENABLE_MODULE_RECOVERY_FALSE$])
-m4trace:configure.ac:483: -1- _AM_SUBST_NOTMAKE([ENABLE_MODULE_RECOVERY_TRUE])
-m4trace:configure.ac:483: -1- _AM_SUBST_NOTMAKE([ENABLE_MODULE_RECOVERY_FALSE])
-m4trace:configure.ac:484: -1- AM_CONDITIONAL([USE_JNI], [test x"$use_jni" == x"yes"])
-m4trace:configure.ac:484: -1- m4_pattern_allow([^USE_JNI_TRUE$])
-m4trace:configure.ac:484: -1- m4_pattern_allow([^USE_JNI_FALSE$])
-m4trace:configure.ac:484: -1- _AM_SUBST_NOTMAKE([USE_JNI_TRUE])
-m4trace:configure.ac:484: -1- _AM_SUBST_NOTMAKE([USE_JNI_FALSE])
-m4trace:configure.ac:485: -1- AM_CONDITIONAL([USE_EXTERNAL_ASM], [test x"$use_external_asm" = x"yes"])
-m4trace:configure.ac:485: -1- m4_pattern_allow([^USE_EXTERNAL_ASM_TRUE$])
-m4trace:configure.ac:485: -1- m4_pattern_allow([^USE_EXTERNAL_ASM_FALSE$])
-m4trace:configure.ac:485: -1- _AM_SUBST_NOTMAKE([USE_EXTERNAL_ASM_TRUE])
-m4trace:configure.ac:485: -1- _AM_SUBST_NOTMAKE([USE_EXTERNAL_ASM_FALSE])
-m4trace:configure.ac:486: -1- AM_CONDITIONAL([USE_ASM_ARM], [test x"$set_asm" = x"arm"])
-m4trace:configure.ac:486: -1- m4_pattern_allow([^USE_ASM_ARM_TRUE$])
-m4trace:configure.ac:486: -1- m4_pattern_allow([^USE_ASM_ARM_FALSE$])
-m4trace:configure.ac:486: -1- _AM_SUBST_NOTMAKE([USE_ASM_ARM_TRUE])
-m4trace:configure.ac:486: -1- _AM_SUBST_NOTMAKE([USE_ASM_ARM_FALSE])
-m4trace:configure.ac:493: -1- m4_pattern_allow([^LIB@&t@OBJS$])
-m4trace:configure.ac:493: -1- m4_pattern_allow([^LTLIBOBJS$])
-m4trace:configure.ac:493: -1- AM_CONDITIONAL([am__EXEEXT], [test -n "$EXEEXT"])
-m4trace:configure.ac:493: -1- m4_pattern_allow([^am__EXEEXT_TRUE$])
-m4trace:configure.ac:493: -1- m4_pattern_allow([^am__EXEEXT_FALSE$])
-m4trace:configure.ac:493: -1- _AM_SUBST_NOTMAKE([am__EXEEXT_TRUE])
-m4trace:configure.ac:493: -1- _AM_SUBST_NOTMAKE([am__EXEEXT_FALSE])
-m4trace:configure.ac:493: -1- _AC_AM_CONFIG_HEADER_HOOK(["$ac_file"])
-m4trace:configure.ac:493: -1- _AM_OUTPUT_DEPENDENCY_COMMANDS
-m4trace:configure.ac:493: -1- _LT_PROG_LTMAIN
+m4trace:configure.ac:391: -1- _PKG_SHORT_ERRORS_SUPPORTED
+m4trace:configure.ac:391: -1- m4_pattern_allow([^HAVE_LIBCRYPTO$])
+m4trace:configure.ac:391: -1- m4_pattern_allow([^HAVE_LIBCRYPTO$])
+m4trace:configure.ac:394: -1- m4_pattern_allow([^ENABLE_OPENSSL_TESTS$])
+m4trace:configure.ac:416: -1- AX_JNI_INCLUDE_DIR
+m4trace:configure.ac:416: -1- m4_pattern_allow([^_ACJNI_JAVAC$])
+m4trace:configure.ac:416: -1- _ACJNI_FOLLOW_SYMLINKS(["$_ACJNI_JAVAC"])
+m4trace:configure.ac:444: -1- m4_pattern_allow([^USE_ENDOMORPHISM$])
+m4trace:configure.ac:448: -1- m4_pattern_allow([^USE_ECMULT_STATIC_PRECOMPUTATION$])
+m4trace:configure.ac:452: -1- m4_pattern_allow([^ENABLE_MODULE_ECDH$])
+m4trace:configure.ac:456: -1- m4_pattern_allow([^ENABLE_MODULE_RECOVERY$])
+m4trace:configure.ac:459: -1- m4_pattern_allow([^WORDS_BIGENDIAN$])
+m4trace:configure.ac:459: -1- m4_pattern_allow([^AC_APPLE_UNIVERSAL_BUILD$])
+m4trace:configure.ac:462: -1- m4_pattern_allow([^USE_EXTERNAL_ASM$])
+m4trace:configure.ac:482: -1- m4_pattern_allow([^JNI_INCLUDES$])
+m4trace:configure.ac:483: -1- m4_pattern_allow([^SECP_INCLUDES$])
+m4trace:configure.ac:484: -1- m4_pattern_allow([^SECP_LIBS$])
+m4trace:configure.ac:485: -1- m4_pattern_allow([^SECP_TEST_LIBS$])
+m4trace:configure.ac:486: -1- m4_pattern_allow([^SECP_TEST_INCLUDES$])
+m4trace:configure.ac:487: -1- AM_CONDITIONAL([ENABLE_COVERAGE], [test x"$enable_coverage" = x"yes"])
+m4trace:configure.ac:487: -1- m4_pattern_allow([^ENABLE_COVERAGE_TRUE$])
+m4trace:configure.ac:487: -1- m4_pattern_allow([^ENABLE_COVERAGE_FALSE$])
+m4trace:configure.ac:487: -1- _AM_SUBST_NOTMAKE([ENABLE_COVERAGE_TRUE])
+m4trace:configure.ac:487: -1- _AM_SUBST_NOTMAKE([ENABLE_COVERAGE_FALSE])
+m4trace:configure.ac:488: -1- AM_CONDITIONAL([USE_TESTS], [test x"$use_tests" != x"no"])
+m4trace:configure.ac:488: -1- m4_pattern_allow([^USE_TESTS_TRUE$])
+m4trace:configure.ac:488: -1- m4_pattern_allow([^USE_TESTS_FALSE$])
+m4trace:configure.ac:488: -1- _AM_SUBST_NOTMAKE([USE_TESTS_TRUE])
+m4trace:configure.ac:488: -1- _AM_SUBST_NOTMAKE([USE_TESTS_FALSE])
+m4trace:configure.ac:489: -1- AM_CONDITIONAL([USE_EXHAUSTIVE_TESTS], [test x"$use_exhaustive_tests" != x"no"])
+m4trace:configure.ac:489: -1- m4_pattern_allow([^USE_EXHAUSTIVE_TESTS_TRUE$])
+m4trace:configure.ac:489: -1- m4_pattern_allow([^USE_EXHAUSTIVE_TESTS_FALSE$])
+m4trace:configure.ac:489: -1- _AM_SUBST_NOTMAKE([USE_EXHAUSTIVE_TESTS_TRUE])
+m4trace:configure.ac:489: -1- _AM_SUBST_NOTMAKE([USE_EXHAUSTIVE_TESTS_FALSE])
+m4trace:configure.ac:490: -1- AM_CONDITIONAL([USE_BENCHMARK], [test x"$use_benchmark" = x"yes"])
+m4trace:configure.ac:490: -1- m4_pattern_allow([^USE_BENCHMARK_TRUE$])
+m4trace:configure.ac:490: -1- m4_pattern_allow([^USE_BENCHMARK_FALSE$])
+m4trace:configure.ac:490: -1- _AM_SUBST_NOTMAKE([USE_BENCHMARK_TRUE])
+m4trace:configure.ac:490: -1- _AM_SUBST_NOTMAKE([USE_BENCHMARK_FALSE])
+m4trace:configure.ac:491: -1- AM_CONDITIONAL([USE_ECMULT_STATIC_PRECOMPUTATION], [test x"$set_precomp" = x"yes"])
+m4trace:configure.ac:491: -1- m4_pattern_allow([^USE_ECMULT_STATIC_PRECOMPUTATION_TRUE$])
+m4trace:configure.ac:491: -1- m4_pattern_allow([^USE_ECMULT_STATIC_PRECOMPUTATION_FALSE$])
+m4trace:configure.ac:491: -1- _AM_SUBST_NOTMAKE([USE_ECMULT_STATIC_PRECOMPUTATION_TRUE])
+m4trace:configure.ac:491: -1- _AM_SUBST_NOTMAKE([USE_ECMULT_STATIC_PRECOMPUTATION_FALSE])
+m4trace:configure.ac:492: -1- AM_CONDITIONAL([ENABLE_MODULE_ECDH], [test x"$enable_module_ecdh" = x"yes"])
+m4trace:configure.ac:492: -1- m4_pattern_allow([^ENABLE_MODULE_ECDH_TRUE$])
+m4trace:configure.ac:492: -1- m4_pattern_allow([^ENABLE_MODULE_ECDH_FALSE$])
+m4trace:configure.ac:492: -1- _AM_SUBST_NOTMAKE([ENABLE_MODULE_ECDH_TRUE])
+m4trace:configure.ac:492: -1- _AM_SUBST_NOTMAKE([ENABLE_MODULE_ECDH_FALSE])
+m4trace:configure.ac:493: -1- AM_CONDITIONAL([ENABLE_MODULE_RECOVERY], [test x"$enable_module_recovery" = x"yes"])
+m4trace:configure.ac:493: -1- m4_pattern_allow([^ENABLE_MODULE_RECOVERY_TRUE$])
+m4trace:configure.ac:493: -1- m4_pattern_allow([^ENABLE_MODULE_RECOVERY_FALSE$])
+m4trace:configure.ac:493: -1- _AM_SUBST_NOTMAKE([ENABLE_MODULE_RECOVERY_TRUE])
+m4trace:configure.ac:493: -1- _AM_SUBST_NOTMAKE([ENABLE_MODULE_RECOVERY_FALSE])
+m4trace:configure.ac:494: -1- AM_CONDITIONAL([USE_JNI], [test x"$use_jni" = x"yes"])
+m4trace:configure.ac:494: -1- m4_pattern_allow([^USE_JNI_TRUE$])
+m4trace:configure.ac:494: -1- m4_pattern_allow([^USE_JNI_FALSE$])
+m4trace:configure.ac:494: -1- _AM_SUBST_NOTMAKE([USE_JNI_TRUE])
+m4trace:configure.ac:494: -1- _AM_SUBST_NOTMAKE([USE_JNI_FALSE])
+m4trace:configure.ac:495: -1- AM_CONDITIONAL([USE_EXTERNAL_ASM], [test x"$use_external_asm" = x"yes"])
+m4trace:configure.ac:495: -1- m4_pattern_allow([^USE_EXTERNAL_ASM_TRUE$])
+m4trace:configure.ac:495: -1- m4_pattern_allow([^USE_EXTERNAL_ASM_FALSE$])
+m4trace:configure.ac:495: -1- _AM_SUBST_NOTMAKE([USE_EXTERNAL_ASM_TRUE])
+m4trace:configure.ac:495: -1- _AM_SUBST_NOTMAKE([USE_EXTERNAL_ASM_FALSE])
+m4trace:configure.ac:496: -1- AM_CONDITIONAL([USE_ASM_ARM], [test x"$set_asm" = x"arm"])
+m4trace:configure.ac:496: -1- m4_pattern_allow([^USE_ASM_ARM_TRUE$])
+m4trace:configure.ac:496: -1- m4_pattern_allow([^USE_ASM_ARM_FALSE$])
+m4trace:configure.ac:496: -1- _AM_SUBST_NOTMAKE([USE_ASM_ARM_TRUE])
+m4trace:configure.ac:496: -1- _AM_SUBST_NOTMAKE([USE_ASM_ARM_FALSE])
+m4trace:configure.ac:503: -1- m4_pattern_allow([^LIB@&t@OBJS$])
+m4trace:configure.ac:503: -1- m4_pattern_allow([^LTLIBOBJS$])
+m4trace:configure.ac:503: -1- AM_CONDITIONAL([am__EXEEXT], [test -n "$EXEEXT"])
+m4trace:configure.ac:503: -1- m4_pattern_allow([^am__EXEEXT_TRUE$])
+m4trace:configure.ac:503: -1- m4_pattern_allow([^am__EXEEXT_FALSE$])
+m4trace:configure.ac:503: -1- _AM_SUBST_NOTMAKE([am__EXEEXT_TRUE])
+m4trace:configure.ac:503: -1- _AM_SUBST_NOTMAKE([am__EXEEXT_FALSE])
+m4trace:configure.ac:503: -1- _AC_AM_CONFIG_HEADER_HOOK(["$ac_file"])
+m4trace:configure.ac:503: -1- _AM_OUTPUT_DEPENDENCY_COMMANDS
+m4trace:configure.ac:503: -1- _LT_PROG_LTMAIN

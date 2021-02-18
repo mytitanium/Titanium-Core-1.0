@@ -19,9 +19,6 @@
 /* Define this symbol if OpenSSL EC functions are available */
 #undef ENABLE_OPENSSL_TESTS
 
-/* Define this symbol if __builtin_expect is available */
-#undef HAVE_BUILTIN_EXPECT
-
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 

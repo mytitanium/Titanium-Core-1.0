@@ -1,14 +1,15 @@
-// Copyright (c) 2018-2019 The Titanium developers
+// Copyright (c) 2018-2019 The Ttm Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef TTM_QUORUMS_DEBUG_H
-#define TTM_QUORUMS_DEBUG_H
+#ifndef BITCOIN_LLMQ_QUORUMS_DEBUG_H
+#define BITCOIN_LLMQ_QUORUMS_DEBUG_H
 
-#include "consensus/params.h"
-#include "sync.h"
-#include "univalue.h"
+#include <consensus/params.h>
+#include <sync.h>
+#include <univalue.h>
 
+#include <functional>
 #include <set>
 
 class CDataStream;
@@ -107,4 +108,4 @@ extern CDKGDebugManager* quorumDKGDebugManager;
 
 } // namespace llmq
 
-#endif //TTM_QUORUMS_DEBUG_H
+#endif // BITCOIN_LLMQ_QUORUMS_DEBUG_H

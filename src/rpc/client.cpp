@@ -1,17 +1,15 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2020 The Titanium developers
+// Copyright (c) 2014-2020 The Ttm Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "rpc/client.h"
-#include "rpc/protocol.h"
-#include "util.h"
+#include <rpc/client.h>
+#include <rpc/protocol.h>
+#include <util.h>
 
 #include <set>
 #include <stdint.h>
-
-#include <univalue.h>
 
 class CRPCConvertParam
 {
@@ -43,22 +41,27 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "sendtoaddress", 5, "use_is" },
     { "sendtoaddress", 6, "use_ps" },
     { "sendtoaddress", 7, "conf_target" },
-    { "instantsendtoaddress", 1, "address" },
-    { "instantsendtoaddress", 4, "comment_to" },
     { "settxfee", 0, "amount" },
     { "getreceivedbyaddress", 1, "minconf" },
     { "getreceivedbyaddress", 2, "addlocked" },
     { "getreceivedbyaccount", 1, "minconf" },
     { "getreceivedbyaccount", 2, "addlocked" },
+    { "getreceivedbylabel", 1, "minconf" },
+    { "getreceivedbylabel", 2, "addlocked" },
     { "listaddressbalances", 0, "minamount" },
     { "listreceivedbyaddress", 0, "minconf" },
     { "listreceivedbyaddress", 1, "addlocked" },
     { "listreceivedbyaddress", 2, "include_empty" },
     { "listreceivedbyaddress", 3, "include_watchonly" },
+    { "listreceivedbyaddress", 4, "address_filter" },
     { "listreceivedbyaccount", 0, "minconf" },
     { "listreceivedbyaccount", 1, "addlocked" },
     { "listreceivedbyaccount", 2, "include_empty" },
     { "listreceivedbyaccount", 3, "include_watchonly" },
+    { "listreceivedbylabel", 0, "minconf" },
+    { "listreceivedbylabel", 1, "addlocked" },
+    { "listreceivedbylabel", 2, "include_empty" },
+    { "listreceivedbylabel", 3, "include_watchonly" },
     { "getbalance", 1, "minconf" },
     { "getbalance", 2, "addlocked" },
     { "getbalance", 3, "include_watchonly" },
@@ -117,6 +120,9 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "createrawtransaction", 2, "locktime" },
     { "signrawtransaction", 1, "prevtxs" },
     { "signrawtransaction", 2, "privkeys" },
+    { "signrawtransactionwithkey", 1, "privkeys" },
+    { "signrawtransactionwithkey", 2, "prevtxs" },
+    { "signrawtransactionwithwallet", 1, "prevtxs" },
     { "sendrawtransaction", 1, "allowhighfees" },
     { "sendrawtransaction", 2, "instantsend" },
     { "sendrawtransaction", 3, "bypasslimits" },
@@ -141,7 +147,6 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "pruneblockchain", 0, "height" },
     { "keypoolrefill", 0, "newsize" },
     { "getrawmempool", 0, "verbose" },
-    { "estimatefee", 0, "nblocks" },
     { "estimatesmartfee", 0, "conf_target" },
     { "estimaterawfee", 0, "conf_target" },
     { "estimaterawfee", 1, "threshold" },
@@ -182,8 +187,9 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "echojson", 7, "arg7" },
     { "echojson", 8, "arg8" },
     { "echojson", 9, "arg9" },
+    { "rescanblockchain", 0, "start_height"},
+    { "rescanblockchain", 1, "stop_height"},
     { "stop", 0, "wait" },
-    { "getkawpowhash", 3, "height"},
 };
 
 class CRPCConvertTable
@@ -254,7 +260,7 @@ UniValue RPCConvertNamedValues(const std::string &strMethod, const std::vector<s
     UniValue params(UniValue::VOBJ);
 
     for (const std::string &s: strParams) {
-        size_t pos = s.find("=");
+        size_t pos = s.find('=');
         if (pos == std::string::npos) {
             throw(std::runtime_error("No '=' in named argument '"+s+"', this needs to be present for every argument (even if it is empty)"));
         }

@@ -1,34 +1,35 @@
-Name "Titanium (-bit)"
+Name "Ttm Core (64-bit)"
 
 RequestExecutionLevel highest
 SetCompressor /SOLID lzma
 
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION 1.3.0
-!define COMPANY "Titanium project"
+!define VERSION 0.17.0
+!define COMPANY "Ttm Core project"
 !define URL https://ttm.org/
 
 # MUI Symbol Definitions
-!define MUI_ICON "/work/TTM/ttm/share/pixmaps/bitcoin.ico"
-!define MUI_WELCOMEFINISHPAGE_BITMAP "/work/TTM/ttm/share/pixmaps/nsis-wizard.bmp"
+!define MUI_ICON "/home/freelancer/ttm-17/share/pixmaps/ttm.ico"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "/home/freelancer/ttm-17/share/pixmaps/nsis-wizard.bmp"
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_RIGHT
-!define MUI_HEADERIMAGE_BITMAP "/work/TTM/ttm/share/pixmaps/nsis-header.bmp"
+!define MUI_HEADERIMAGE_BITMAP "/home/freelancer/ttm-17/share/pixmaps/nsis-header.bmp"
 !define MUI_FINISHPAGE_NOAUTOCLOSE
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT HKLM
 !define MUI_STARTMENUPAGE_REGISTRY_KEY ${REGKEY}
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME StartMenuGroup
-!define MUI_STARTMENUPAGE_DEFAULTFOLDER "Titanium"
-!define MUI_FINISHPAGE_RUN $INSTDIR\ttm-qt
+!define MUI_STARTMENUPAGE_DEFAULTFOLDER "Ttm Core"
+!define MUI_FINISHPAGE_RUN "$WINDIR\explorer.exe"
+!define MUI_FINISHPAGE_RUN_PARAMETERS $INSTDIR\ttm-qt.exe
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
-!define MUI_UNWELCOMEFINISHPAGE_BITMAP "/work/TTM/ttm/share/pixmaps/nsis-wizard.bmp"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "/home/freelancer/ttm-17/share/pixmaps/nsis-wizard.bmp"
 !define MUI_UNFINISHPAGE_NOAUTOCLOSE
 
 # Included files
 !include Sections.nsh
 !include MUI2.nsh
-!if "" == "64"
+!if "64" == "64"
 !include x64.nsh
 !endif
 
@@ -48,8 +49,8 @@ Var StartMenuGroup
 !insertmacro MUI_LANGUAGE English
 
 # Installer attributes
-OutFile /work/TTM/ttm/ttmcore-${VERSION}-win-setup.exe
-!if "" == "64"
+OutFile /home/freelancer/ttm-17/ttmcore-${VERSION}-win64-setup.exe
+!if "64" == "64"
 InstallDir $PROGRAMFILES64\TtmCore
 !else
 InstallDir $PROGRAMFILES\TtmCore
@@ -59,7 +60,7 @@ XPStyle on
 BrandingText " "
 ShowInstDetails show
 VIProductVersion ${VERSION}.0
-VIAddVersionKey ProductName "Titanium"
+VIAddVersionKey ProductName "Ttm Core"
 VIAddVersionKey ProductVersion "${VERSION}"
 VIAddVersionKey CompanyName "${COMPANY}"
 VIAddVersionKey CompanyWebsite "${URL}"
@@ -73,14 +74,14 @@ ShowUninstDetails show
 Section -Main SEC0000
     SetOutPath $INSTDIR
     SetOverwrite on
-    File /work/TTM/ttm/release/ttm-qt
-    File /oname=COPYING.txt /work/TTM/ttm/COPYING
-    File /oname=readme.txt /work/TTM/ttm/doc/README_windows.txt
+    File /home/freelancer/ttm-17/release/ttm-qt.exe
+    File /oname=COPYING.txt /home/freelancer/ttm-17/COPYING
+    File /oname=readme.txt /home/freelancer/ttm-17/doc/README_windows.txt
     SetOutPath $INSTDIR\daemon
-    File /work/TTM/ttm/release/ttmd
-    File /work/TTM/ttm/release/ttm-cli
+    File /home/freelancer/ttm-17/release/ttmd.exe
+    File /home/freelancer/ttm-17/release/ttm-cli.exe
     SetOutPath $INSTDIR\doc
-    File /r /work/TTM/ttm/doc\*.*
+    File /r /x Makefile* /home/freelancer/ttm-17/doc\*.*
     SetOutPath $INSTDIR
     WriteRegStr HKCU "${REGKEY}\Components" Main 1
 SectionEnd
@@ -91,8 +92,8 @@ Section -post SEC0001
     WriteUninstaller $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     CreateDirectory $SMPROGRAMS\$StartMenuGroup
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk" $INSTDIR\ttm-qt
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Titanium (testnet, -bit).lnk" "$INSTDIR\ttm-qt" "-testnet" "$INSTDIR\ttm-qt" 1
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk" $INSTDIR\ttm-qt.exe
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Ttm Core (testnet, 64-bit).lnk" "$INSTDIR\ttm-qt.exe" "-testnet" "$INSTDIR\ttm-qt.exe" 1
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_END
     WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
@@ -105,8 +106,8 @@ Section -post SEC0001
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoRepair 1
     WriteRegStr HKCR "ttmcore" "URL Protocol" ""
     WriteRegStr HKCR "ttmcore" "" "URL:Ttm"
-    WriteRegStr HKCR "ttmcore\DefaultIcon" "" $INSTDIR\ttm-qt
-    WriteRegStr HKCR "ttmcore\shell\open\command" "" '"$INSTDIR\ttm-qt" "%1"'
+    WriteRegStr HKCR "ttmcore\DefaultIcon" "" $INSTDIR\ttm-qt.exe
+    WriteRegStr HKCR "ttmcore\shell\open\command" "" '"$INSTDIR\ttm-qt.exe" "%1"'
 SectionEnd
 
 # Macro for selecting uninstaller sections
@@ -124,7 +125,7 @@ done${UNSECTION_ID}:
 
 # Uninstaller sections
 Section /o -un.Main UNSEC0000
-    Delete /REBOOTOK $INSTDIR\ttm-qt
+    Delete /REBOOTOK $INSTDIR\ttm-qt.exe
     Delete /REBOOTOK $INSTDIR\COPYING.txt
     Delete /REBOOTOK $INSTDIR\readme.txt
     RMDir /r /REBOOTOK $INSTDIR\daemon
@@ -136,7 +137,7 @@ Section -un.post UNSEC0001
     DeleteRegKey HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk"
-    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Titanium (testnet, -bit).lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Ttm Core (testnet, 64-bit).lnk"
     Delete /REBOOTOK "$SMSTARTUP\Ttm.lnk"
     Delete /REBOOTOK $INSTDIR\uninstall.exe
     Delete /REBOOTOK $INSTDIR\debug.log
@@ -158,7 +159,7 @@ SectionEnd
 # Installer functions
 Function .onInit
     InitPluginsDir
-!if "" == "64"
+!if "64" == "64"
     ${If} ${RunningX64}
       ; disable registry redirection (enable access to 64-bit portion of registry)
       SetRegView 64

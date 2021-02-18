@@ -1,21 +1,21 @@
-// Copyright (c) 2018-2019 The Titanium developers
+// Copyright (c) 2018-2019 The Ttm Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "quorums_init.h"
+#include <llmq/quorums_init.h>
 
-#include "quorums.h"
-#include "quorums_blockprocessor.h"
-#include "quorums_commitment.h"
-#include "quorums_chainlocks.h"
-#include "quorums_debug.h"
-#include "quorums_dkgsessionmgr.h"
-#include "quorums_instantsend.h"
-#include "quorums_signing.h"
-#include "quorums_signing_shares.h"
+#include <llmq/quorums.h>
+#include <llmq/quorums_blockprocessor.h>
+#include <llmq/quorums_commitment.h>
+#include <llmq/quorums_chainlocks.h>
+#include <llmq/quorums_debug.h>
+#include <llmq/quorums_dkgsessionmgr.h>
+#include <llmq/quorums_instantsend.h>
+#include <llmq/quorums_signing.h>
+#include <llmq/quorums_signing_shares.h>
+#include <llmq/quorums_utils.h>
 
-#include "dbwrapper.h"
-#include "scheduler.h"
+#include <dbwrapper.h>
 
 namespace llmq
 {
@@ -24,7 +24,7 @@ CBLSWorker* blsWorker;
 
 CDBWrapper* llmqDb;
 
-void InitLLMQSystem(CEvoDB& evoDb, CScheduler* scheduler, bool unitTests, bool fWipe)
+void InitLLMQSystem(CEvoDB& evoDb, bool unitTests, bool fWipe)
 {
     llmqDb = new CDBWrapper(unitTests ? "" : (GetDataDir() / "llmq"), 1 << 20, unitTests, fWipe);
     blsWorker = new CBLSWorker();
@@ -35,7 +35,7 @@ void InitLLMQSystem(CEvoDB& evoDb, CScheduler* scheduler, bool unitTests, bool f
     quorumManager = new CQuorumManager(evoDb, *blsWorker, *quorumDKGSessionManager);
     quorumSigSharesManager = new CSigSharesManager();
     quorumSigningManager = new CSigningManager(*llmqDb, unitTests);
-    chainLocksHandler = new CChainLocksHandler(scheduler);
+    chainLocksHandler = new CChainLocksHandler();
     quorumInstantSendManager = new CInstantSendManager(*llmqDb);
 }
 
@@ -61,17 +61,17 @@ void DestroyLLMQSystem()
     blsWorker = nullptr;
     delete llmqDb;
     llmqDb = nullptr;
+    LOCK(cs_llmq_vbc);
+    llmq_versionbitscache.Clear();
 }
 
 void StartLLMQSystem()
 {
-    quorumBlockProcessor->UpgradeDB();
-
     if (blsWorker) {
         blsWorker->Start();
     }
     if (quorumDKGSessionManager) {
-        quorumDKGSessionManager->StartMessageHandlerPool();
+        quorumDKGSessionManager->StartThreads();
     }
     if (quorumSigSharesManager) {
         quorumSigSharesManager->RegisterAsRecoveredSigsListener();
@@ -98,7 +98,7 @@ void StopLLMQSystem()
         quorumSigSharesManager->UnregisterAsRecoveredSigsListener();
     }
     if (quorumDKGSessionManager) {
-        quorumDKGSessionManager->StopMessageHandlerPool();
+        quorumDKGSessionManager->StopThreads();
     }
     if (blsWorker) {
         blsWorker->Stop();

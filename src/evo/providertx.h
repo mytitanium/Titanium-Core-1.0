@@ -1,18 +1,18 @@
-// Copyright (c) 2018-2020 The Titanium developers
+// Copyright (c) 2018-2020 The Ttm Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef TTM_PROVIDERTX_H
-#define TTM_PROVIDERTX_H
+#ifndef BITCOIN_EVO_PROVIDERTX_H
+#define BITCOIN_EVO_PROVIDERTX_H
 
-#include "bls/bls.h"
-#include "consensus/validation.h"
-#include "primitives/transaction.h"
+#include <bls/bls.h>
+#include <consensus/validation.h>
+#include <primitives/transaction.h>
 
-#include "base58.h"
-#include "netaddress.h"
-#include "pubkey.h"
-#include "univalue.h"
+#include <key_io.h>
+#include <netaddress.h>
+#include <pubkey.h>
+#include <univalue.h>
 
 class CBlockIndex;
 
@@ -67,22 +67,21 @@ public:
     {
         obj.clear();
         obj.setObject();
-        obj.push_back(Pair("version", nVersion));
-        obj.push_back(Pair("collateralHash", collateralOutpoint.hash.ToString()));
-        obj.push_back(Pair("collateralIndex", (int)collateralOutpoint.n));
-        obj.push_back(Pair("service", addr.ToString(false)));
-        obj.push_back(Pair("ownerAddress", CBitcoinAddress(keyIDOwner).ToString()));
-        obj.push_back(Pair("votingAddress", CBitcoinAddress(keyIDVoting).ToString()));
+        obj.pushKV("version", nVersion);
+        obj.pushKV("collateralHash", collateralOutpoint.hash.ToString());
+        obj.pushKV("collateralIndex", (int)collateralOutpoint.n);
+        obj.pushKV("service", addr.ToString(false));
+        obj.pushKV("ownerAddress", EncodeDestination(keyIDOwner));
+        obj.pushKV("votingAddress", EncodeDestination(keyIDVoting));
 
         CTxDestination dest;
         if (ExtractDestination(scriptPayout, dest)) {
-            CBitcoinAddress bitcoinAddress(dest);
-            obj.push_back(Pair("payoutAddress", bitcoinAddress.ToString()));
+            obj.pushKV("payoutAddress", EncodeDestination(dest));
         }
-        obj.push_back(Pair("pubKeyOperator", pubKeyOperator.ToString()));
-        obj.push_back(Pair("operatorReward", (double)nOperatorReward / 100));
+        obj.pushKV("pubKeyOperator", pubKeyOperator.ToString());
+        obj.pushKV("operatorReward", (double)nOperatorReward / 100);
 
-        obj.push_back(Pair("inputsHash", inputsHash.ToString()));
+        obj.pushKV("inputsHash", inputsHash.ToString());
     }
 };
 
@@ -122,15 +121,14 @@ public:
     {
         obj.clear();
         obj.setObject();
-        obj.push_back(Pair("version", nVersion));
-        obj.push_back(Pair("proTxHash", proTxHash.ToString()));
-        obj.push_back(Pair("service", addr.ToString(false)));
+        obj.pushKV("version", nVersion);
+        obj.pushKV("proTxHash", proTxHash.ToString());
+        obj.pushKV("service", addr.ToString(false));
         CTxDestination dest;
         if (ExtractDestination(scriptOperatorPayout, dest)) {
-            CBitcoinAddress bitcoinAddress(dest);
-            obj.push_back(Pair("operatorPayoutAddress", bitcoinAddress.ToString()));
+            obj.pushKV("operatorPayoutAddress", EncodeDestination(dest));
         }
-        obj.push_back(Pair("inputsHash", inputsHash.ToString()));
+        obj.pushKV("inputsHash", inputsHash.ToString());
     }
 };
 
@@ -174,16 +172,15 @@ public:
     {
         obj.clear();
         obj.setObject();
-        obj.push_back(Pair("version", nVersion));
-        obj.push_back(Pair("proTxHash", proTxHash.ToString()));
-        obj.push_back(Pair("votingAddress", CBitcoinAddress(keyIDVoting).ToString()));
+        obj.pushKV("version", nVersion);
+        obj.pushKV("proTxHash", proTxHash.ToString());
+        obj.pushKV("votingAddress", EncodeDestination(keyIDVoting));
         CTxDestination dest;
         if (ExtractDestination(scriptPayout, dest)) {
-            CBitcoinAddress bitcoinAddress(dest);
-            obj.push_back(Pair("payoutAddress", bitcoinAddress.ToString()));
+            obj.pushKV("payoutAddress", EncodeDestination(dest));
         }
-        obj.push_back(Pair("pubKeyOperator", pubKeyOperator.ToString()));
-        obj.push_back(Pair("inputsHash", inputsHash.ToString()));
+        obj.pushKV("pubKeyOperator", pubKeyOperator.ToString());
+        obj.pushKV("inputsHash", inputsHash.ToString());
     }
 };
 
@@ -230,10 +227,10 @@ public:
     {
         obj.clear();
         obj.setObject();
-        obj.push_back(Pair("version", nVersion));
-        obj.push_back(Pair("proTxHash", proTxHash.ToString()));
-        obj.push_back(Pair("reason", (int)nReason));
-        obj.push_back(Pair("inputsHash", inputsHash.ToString()));
+        obj.pushKV("version", nVersion);
+        obj.pushKV("proTxHash", proTxHash.ToString());
+        obj.pushKV("reason", (int)nReason);
+        obj.pushKV("inputsHash", inputsHash.ToString());
     }
 };
 
@@ -243,4 +240,4 @@ bool CheckProUpServTx(const CTransaction& tx, const CBlockIndex* pindexPrev, CVa
 bool CheckProUpRegTx(const CTransaction& tx, const CBlockIndex* pindexPrev, CValidationState& state);
 bool CheckProUpRevTx(const CTransaction& tx, const CBlockIndex* pindexPrev, CValidationState& state);
 
-#endif //TTM_PROVIDERTX_H
+#endif // BITCOIN_EVO_PROVIDERTX_H

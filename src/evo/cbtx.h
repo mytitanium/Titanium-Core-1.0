@@ -1,13 +1,13 @@
-// Copyright (c) 2017-2019 The Titanium developers
+// Copyright (c) 2017-2019 The Ttm Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef TTM_CBTX_H
-#define TTM_CBTX_H
+#ifndef BITCOIN_EVO_CBTX_H
+#define BITCOIN_EVO_CBTX_H
 
-#include "consensus/validation.h"
-#include "primitives/transaction.h"
-#include "univalue.h"
+#include <consensus/validation.h>
+#include <primitives/transaction.h>
+#include <univalue.h>
 
 class CBlock;
 class CBlockIndex;
@@ -45,11 +45,11 @@ public:
     {
         obj.clear();
         obj.setObject();
-        obj.push_back(Pair("version", (int)nVersion));
-        obj.push_back(Pair("height", (int)nHeight));
-        obj.push_back(Pair("merkleRootMNList", merkleRootMNList.ToString()));
+        obj.pushKV("version", (int)nVersion);
+        obj.pushKV("height", (int)nHeight);
+        obj.pushKV("merkleRootMNList", merkleRootMNList.ToString());
         if (nVersion >= 2) {
-            obj.push_back(Pair("merkleRootQuorums", merkleRootQuorums.ToString()));
+            obj.pushKV("merkleRootQuorums", merkleRootQuorums.ToString());
         }
     }
 };
@@ -60,4 +60,4 @@ bool CheckCbTxMerkleRoots(const CBlock& block, const CBlockIndex* pindex, CValid
 bool CalcCbTxMerkleRootMNList(const CBlock& block, const CBlockIndex* pindexPrev, uint256& merkleRootRet, CValidationState& state);
 bool CalcCbTxMerkleRootQuorums(const CBlock& block, const CBlockIndex* pindexPrev, uint256& merkleRootRet, CValidationState& state);
 
-#endif //TTM_CBTX_H
+#endif // BITCOIN_EVO_CBTX_H

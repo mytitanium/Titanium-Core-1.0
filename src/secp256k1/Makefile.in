@@ -93,7 +93,7 @@ build_triplet = @build@
 host_triplet = @host@
 noinst_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_3) \
 	$(am__EXEEXT_4) $(am__EXEEXT_5)
-@USE_BENCHMARK_TRUE@am__append_1 = bench_verify bench_sign bench_internal
+@USE_BENCHMARK_TRUE@am__append_1 = bench_verify bench_sign bench_internal bench_ecmult
 TESTS = $(am__EXEEXT_2) $(am__EXEEXT_3)
 @USE_TESTS_TRUE@am__append_2 = tests
 @ENABLE_COVERAGE_FALSE@@USE_TESTS_TRUE@am__append_3 = -DVERIFY
@@ -102,16 +102,15 @@ TESTS = $(am__EXEEXT_2) $(am__EXEEXT_3)
 @ENABLE_COVERAGE_FALSE@@USE_EXHAUSTIVE_TESTS_TRUE@am__append_6 = -DVERIFY
 @USE_EXHAUSTIVE_TESTS_TRUE@am__append_7 = exhaustive_tests
 @USE_ECMULT_STATIC_PRECOMPUTATION_TRUE@am__append_8 = -I$(top_srcdir)
-@USE_ECMULT_STATIC_PRECOMPUTATION_TRUE@am__append_9 = -Wall -Wextra -Wno-unused-function
-@ENABLE_MODULE_ECDH_TRUE@am__append_10 = include/secp256k1_ecdh.h
-@ENABLE_MODULE_ECDH_TRUE@am__append_11 = src/modules/ecdh/main_impl.h \
+@ENABLE_MODULE_ECDH_TRUE@am__append_9 = include/secp256k1_ecdh.h
+@ENABLE_MODULE_ECDH_TRUE@am__append_10 = src/modules/ecdh/main_impl.h \
 @ENABLE_MODULE_ECDH_TRUE@	src/modules/ecdh/tests_impl.h
-@ENABLE_MODULE_ECDH_TRUE@@USE_BENCHMARK_TRUE@am__append_12 = bench_ecdh
-@ENABLE_MODULE_RECOVERY_TRUE@am__append_13 = include/secp256k1_recovery.h
-@ENABLE_MODULE_RECOVERY_TRUE@am__append_14 =  \
+@ENABLE_MODULE_ECDH_TRUE@@USE_BENCHMARK_TRUE@am__append_11 = bench_ecdh
+@ENABLE_MODULE_RECOVERY_TRUE@am__append_12 = include/secp256k1_recovery.h
+@ENABLE_MODULE_RECOVERY_TRUE@am__append_13 =  \
 @ENABLE_MODULE_RECOVERY_TRUE@	src/modules/recovery/main_impl.h \
 @ENABLE_MODULE_RECOVERY_TRUE@	src/modules/recovery/tests_impl.h
-@ENABLE_MODULE_RECOVERY_TRUE@@USE_BENCHMARK_TRUE@am__append_15 = bench_recover
+@ENABLE_MODULE_RECOVERY_TRUE@@USE_BENCHMARK_TRUE@am__append_14 = bench_recover
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps =  \
@@ -190,7 +189,8 @@ libsecp256k1_jni_la_OBJECTS = $(am_libsecp256k1_jni_la_OBJECTS)
 @USE_JNI_TRUE@am_libsecp256k1_jni_la_rpath =
 @USE_BENCHMARK_TRUE@am__EXEEXT_1 = bench_verify$(EXEEXT) \
 @USE_BENCHMARK_TRUE@	bench_sign$(EXEEXT) \
-@USE_BENCHMARK_TRUE@	bench_internal$(EXEEXT)
+@USE_BENCHMARK_TRUE@	bench_internal$(EXEEXT) \
+@USE_BENCHMARK_TRUE@	bench_ecmult$(EXEEXT)
 @USE_TESTS_TRUE@am__EXEEXT_2 = tests$(EXEEXT)
 @USE_EXHAUSTIVE_TESTS_TRUE@am__EXEEXT_3 = exhaustive_tests$(EXEEXT)
 @ENABLE_MODULE_ECDH_TRUE@@USE_BENCHMARK_TRUE@am__EXEEXT_4 = bench_ecdh$(EXEEXT)
@@ -203,6 +203,12 @@ bench_ecdh_OBJECTS = $(am_bench_ecdh_OBJECTS)
 @ENABLE_MODULE_ECDH_TRUE@@USE_BENCHMARK_TRUE@	libsecp256k1.la \
 @ENABLE_MODULE_ECDH_TRUE@@USE_BENCHMARK_TRUE@	$(am__DEPENDENCIES_2) \
 @ENABLE_MODULE_ECDH_TRUE@@USE_BENCHMARK_TRUE@	$(am__DEPENDENCIES_3)
+am__bench_ecmult_SOURCES_DIST = src/bench_ecmult.c
+@USE_BENCHMARK_TRUE@am_bench_ecmult_OBJECTS =  \
+@USE_BENCHMARK_TRUE@	src/bench_ecmult-bench_ecmult.$(OBJEXT)
+bench_ecmult_OBJECTS = $(am_bench_ecmult_OBJECTS)
+@USE_BENCHMARK_TRUE@bench_ecmult_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+@USE_BENCHMARK_TRUE@	$(am__DEPENDENCIES_3)
 am__bench_internal_SOURCES_DIST = src/bench_internal.c
 @USE_BENCHMARK_TRUE@am_bench_internal_OBJECTS = src/bench_internal-bench_internal.$(OBJEXT)
 bench_internal_OBJECTS = $(am_bench_internal_OBJECTS)
@@ -234,7 +240,8 @@ am__exhaustive_tests_SOURCES_DIST = src/tests_exhaustive.c
 @USE_EXHAUSTIVE_TESTS_TRUE@am_exhaustive_tests_OBJECTS = src/exhaustive_tests-tests_exhaustive.$(OBJEXT)
 exhaustive_tests_OBJECTS = $(am_exhaustive_tests_OBJECTS)
 @USE_EXHAUSTIVE_TESTS_TRUE@exhaustive_tests_DEPENDENCIES =  \
-@USE_EXHAUSTIVE_TESTS_TRUE@	$(am__DEPENDENCIES_2)
+@USE_EXHAUSTIVE_TESTS_TRUE@	$(am__DEPENDENCIES_2) \
+@USE_EXHAUSTIVE_TESTS_TRUE@	$(am__DEPENDENCIES_3)
 exhaustive_tests_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(exhaustive_tests_LDFLAGS) $(LDFLAGS) \
@@ -291,12 +298,14 @@ am__v_CCAS_0 = @echo "  CCAS    " $@;
 am__v_CCAS_1 = 
 SOURCES = $(libsecp256k1_la_SOURCES) $(libsecp256k1_common_la_SOURCES) \
 	$(libsecp256k1_jni_la_SOURCES) $(bench_ecdh_SOURCES) \
-	$(bench_internal_SOURCES) $(bench_recover_SOURCES) \
-	$(bench_sign_SOURCES) $(bench_verify_SOURCES) \
-	$(exhaustive_tests_SOURCES) $(tests_SOURCES)
+	$(bench_ecmult_SOURCES) $(bench_internal_SOURCES) \
+	$(bench_recover_SOURCES) $(bench_sign_SOURCES) \
+	$(bench_verify_SOURCES) $(exhaustive_tests_SOURCES) \
+	$(tests_SOURCES)
 DIST_SOURCES = $(libsecp256k1_la_SOURCES) \
 	$(am__libsecp256k1_common_la_SOURCES_DIST) \
 	$(libsecp256k1_jni_la_SOURCES) $(am__bench_ecdh_SOURCES_DIST) \
+	$(am__bench_ecmult_SOURCES_DIST) \
 	$(am__bench_internal_SOURCES_DIST) \
 	$(am__bench_recover_SOURCES_DIST) \
 	$(am__bench_sign_SOURCES_DIST) \
@@ -323,10 +332,10 @@ am__noinst_HEADERS_DIST = src/scalar.h src/scalar_4x64.h \
 	src/field_5x52_asm_impl.h \
 	src/java/org_bitcoin_NativeSecp256k1.h \
 	src/java/org_bitcoin_Secp256k1Context.h src/util.h \
-	src/testrand.h src/testrand_impl.h src/hash.h src/hash_impl.h \
-	src/field.h src/field_impl.h src/bench.h \
-	contrib/lax_der_parsing.h contrib/lax_der_parsing.c \
-	contrib/lax_der_privatekey_parsing.h \
+	src/scratch.h src/scratch_impl.h src/testrand.h \
+	src/testrand_impl.h src/hash.h src/hash_impl.h src/field.h \
+	src/field_impl.h src/bench.h contrib/lax_der_parsing.h \
+	contrib/lax_der_parsing.c contrib/lax_der_privatekey_parsing.h \
 	contrib/lax_der_privatekey_parsing.c \
 	src/modules/ecdh/main_impl.h src/modules/ecdh/tests_impl.h \
 	src/modules/recovery/main_impl.h \
@@ -579,7 +588,7 @@ CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
-CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@ $(am__append_9)
+CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CPPFLAGS_FOR_BUILD = @CPPFLAGS_FOR_BUILD@ $(am__append_8)
@@ -707,8 +716,7 @@ lib_LTLIBRARIES = libsecp256k1.la
 @USE_JNI_TRUE@JNI_LIB = libsecp256k1_jni.la
 @USE_EXTERNAL_ASM_TRUE@noinst_LTLIBRARIES = $(COMMON_LIB)
 @USE_JNI_TRUE@noinst_LTLIBRARIES = $(JNI_LIB)
-include_HEADERS = include/secp256k1.h $(am__append_10) \
-	$(am__append_13)
+include_HEADERS = include/secp256k1.h $(am__append_9) $(am__append_12)
 noinst_HEADERS = src/scalar.h src/scalar_4x64.h src/scalar_8x32.h \
 	src/scalar_low.h src/scalar_impl.h src/scalar_4x64_impl.h \
 	src/scalar_8x32_impl.h src/scalar_low_impl.h src/group.h \
@@ -721,12 +729,12 @@ noinst_HEADERS = src/scalar.h src/scalar_4x64.h src/scalar_8x32.h \
 	src/field_5x52_int128_impl.h src/field_5x52_asm_impl.h \
 	src/java/org_bitcoin_NativeSecp256k1.h \
 	src/java/org_bitcoin_Secp256k1Context.h src/util.h \
-	src/testrand.h src/testrand_impl.h src/hash.h src/hash_impl.h \
-	src/field.h src/field_impl.h src/bench.h \
-	contrib/lax_der_parsing.h contrib/lax_der_parsing.c \
-	contrib/lax_der_privatekey_parsing.h \
-	contrib/lax_der_privatekey_parsing.c $(am__append_11) \
-	$(am__append_14)
+	src/scratch.h src/scratch_impl.h src/testrand.h \
+	src/testrand_impl.h src/hash.h src/hash_impl.h src/field.h \
+	src/field_impl.h src/bench.h contrib/lax_der_parsing.h \
+	contrib/lax_der_parsing.c contrib/lax_der_privatekey_parsing.h \
+	contrib/lax_der_privatekey_parsing.c $(am__append_10) \
+	$(am__append_13)
 @USE_EXTERNAL_ASM_FALSE@COMMON_LIB = 
 @USE_EXTERNAL_ASM_TRUE@COMMON_LIB = libsecp256k1_common.la
 pkgconfigdir = $(libdir)/pkgconfig
@@ -744,6 +752,9 @@ libsecp256k1_jni_la_CPPFLAGS = -DSECP256K1_BUILD $(JNI_INCLUDES)
 @USE_BENCHMARK_TRUE@bench_internal_SOURCES = src/bench_internal.c
 @USE_BENCHMARK_TRUE@bench_internal_LDADD = $(SECP_LIBS) $(COMMON_LIB)
 @USE_BENCHMARK_TRUE@bench_internal_CPPFLAGS = -DSECP256K1_BUILD $(SECP_INCLUDES)
+@USE_BENCHMARK_TRUE@bench_ecmult_SOURCES = src/bench_ecmult.c
+@USE_BENCHMARK_TRUE@bench_ecmult_LDADD = $(SECP_LIBS) $(COMMON_LIB)
+@USE_BENCHMARK_TRUE@bench_ecmult_CPPFLAGS = -DSECP256K1_BUILD $(SECP_INCLUDES)
 @USE_TESTS_TRUE@tests_SOURCES = src/tests.c
 @USE_TESTS_TRUE@tests_CPPFLAGS = -DSECP256K1_BUILD -I$(top_srcdir)/src \
 @USE_TESTS_TRUE@	-I$(top_srcdir)/include $(SECP_INCLUDES) \
@@ -755,7 +766,7 @@ libsecp256k1_jni_la_CPPFLAGS = -DSECP256K1_BUILD $(JNI_INCLUDES)
 @USE_EXHAUSTIVE_TESTS_TRUE@	-DSECP256K1_BUILD \
 @USE_EXHAUSTIVE_TESTS_TRUE@	-I$(top_srcdir)/src \
 @USE_EXHAUSTIVE_TESTS_TRUE@	$(SECP_INCLUDES) $(am__append_6)
-@USE_EXHAUSTIVE_TESTS_TRUE@exhaustive_tests_LDADD = $(SECP_LIBS)
+@USE_EXHAUSTIVE_TESTS_TRUE@exhaustive_tests_LDADD = $(SECP_LIBS) $(COMMON_LIB)
 @USE_EXHAUSTIVE_TESTS_TRUE@exhaustive_tests_LDFLAGS = -static
 JAVAROOT = src/java
 JAVAORG = org/bitcoin
@@ -926,6 +937,12 @@ src/bench_ecdh.$(OBJEXT): src/$(am__dirstamp) \
 bench_ecdh$(EXEEXT): $(bench_ecdh_OBJECTS) $(bench_ecdh_DEPENDENCIES) $(EXTRA_bench_ecdh_DEPENDENCIES) 
 	@rm -f bench_ecdh$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(bench_ecdh_OBJECTS) $(bench_ecdh_LDADD) $(LIBS)
+src/bench_ecmult-bench_ecmult.$(OBJEXT): src/$(am__dirstamp) \
+	src/$(DEPDIR)/$(am__dirstamp)
+
+bench_ecmult$(EXEEXT): $(bench_ecmult_OBJECTS) $(bench_ecmult_DEPENDENCIES) $(EXTRA_bench_ecmult_DEPENDENCIES) 
+	@rm -f bench_ecmult$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(bench_ecmult_OBJECTS) $(bench_ecmult_LDADD) $(LIBS)
 src/bench_internal-bench_internal.$(OBJEXT): src/$(am__dirstamp) \
 	src/$(DEPDIR)/$(am__dirstamp)
 
@@ -976,6 +993,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/bench_ecdh.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/bench_ecmult-bench_ecmult.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/bench_internal-bench_internal.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/bench_recover.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/bench_sign.Po@am__quote@
@@ -1030,6 +1048,20 @@ src/java/libsecp256k1_jni_la-org_bitcoin_Secp256k1Context.lo: src/java/org_bitco
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/java/org_bitcoin_Secp256k1Context.c' object='src/java/libsecp256k1_jni_la-org_bitcoin_Secp256k1Context.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libsecp256k1_jni_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o src/java/libsecp256k1_jni_la-org_bitcoin_Secp256k1Context.lo `test -f 'src/java/org_bitcoin_Secp256k1Context.c' || echo '$(srcdir)/'`src/java/org_bitcoin_Secp256k1Context.c
+
+src/bench_ecmult-bench_ecmult.o: src/bench_ecmult.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bench_ecmult_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT src/bench_ecmult-bench_ecmult.o -MD -MP -MF src/$(DEPDIR)/bench_ecmult-bench_ecmult.Tpo -c -o src/bench_ecmult-bench_ecmult.o `test -f 'src/bench_ecmult.c' || echo '$(srcdir)/'`src/bench_ecmult.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/bench_ecmult-bench_ecmult.Tpo src/$(DEPDIR)/bench_ecmult-bench_ecmult.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/bench_ecmult.c' object='src/bench_ecmult-bench_ecmult.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bench_ecmult_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o src/bench_ecmult-bench_ecmult.o `test -f 'src/bench_ecmult.c' || echo '$(srcdir)/'`src/bench_ecmult.c
+
+src/bench_ecmult-bench_ecmult.obj: src/bench_ecmult.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bench_ecmult_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT src/bench_ecmult-bench_ecmult.obj -MD -MP -MF src/$(DEPDIR)/bench_ecmult-bench_ecmult.Tpo -c -o src/bench_ecmult-bench_ecmult.obj `if test -f 'src/bench_ecmult.c'; then $(CYGPATH_W) 'src/bench_ecmult.c'; else $(CYGPATH_W) '$(srcdir)/src/bench_ecmult.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/bench_ecmult-bench_ecmult.Tpo src/$(DEPDIR)/bench_ecmult-bench_ecmult.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/bench_ecmult.c' object='src/bench_ecmult-bench_ecmult.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bench_ecmult_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o src/bench_ecmult-bench_ecmult.obj `if test -f 'src/bench_ecmult.c'; then $(CYGPATH_W) 'src/bench_ecmult.c'; else $(CYGPATH_W) '$(srcdir)/src/bench_ecmult.c'; fi`
 
 src/bench_internal-bench_internal.o: src/bench_internal.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bench_internal_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT src/bench_internal-bench_internal.o -MD -MP -MF src/$(DEPDIR)/bench_internal-bench_internal.Tpo -c -o src/bench_internal-bench_internal.o `test -f 'src/bench_internal.c' || echo '$(srcdir)/'`src/bench_internal.c
@@ -1693,11 +1725,12 @@ uninstall-am: uninstall-includeHEADERS uninstall-libLTLIBRARIES \
 @USE_ECMULT_STATIC_PRECOMPUTATION_TRUE@	$(CC_FOR_BUILD) $(CPPFLAGS_FOR_BUILD) $(CFLAGS_FOR_BUILD) -c $< -o $@
 
 @USE_ECMULT_STATIC_PRECOMPUTATION_TRUE@$(gen_context_BIN): $(gen_context_OBJECTS)
-@USE_ECMULT_STATIC_PRECOMPUTATION_TRUE@	$(CC_FOR_BUILD) $^ -o $@
+@USE_ECMULT_STATIC_PRECOMPUTATION_TRUE@	$(CC_FOR_BUILD) $(CFLAGS_FOR_BUILD) $(LDFLAGS_FOR_BUILD) $^ -o $@
 
 @USE_ECMULT_STATIC_PRECOMPUTATION_TRUE@$(libsecp256k1_la_OBJECTS): src/ecmult_static_context.h
 @USE_ECMULT_STATIC_PRECOMPUTATION_TRUE@$(tests_OBJECTS): src/ecmult_static_context.h
 @USE_ECMULT_STATIC_PRECOMPUTATION_TRUE@$(bench_internal_OBJECTS): src/ecmult_static_context.h
+@USE_ECMULT_STATIC_PRECOMPUTATION_TRUE@$(bench_ecmult_OBJECTS): src/ecmult_static_context.h
 
 @USE_ECMULT_STATIC_PRECOMPUTATION_TRUE@src/ecmult_static_context.h: $(gen_context_BIN)
 @USE_ECMULT_STATIC_PRECOMPUTATION_TRUE@	./$(gen_context_BIN)

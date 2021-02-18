@@ -1,15 +1,15 @@
-// Copyright (c) 2019-2020 The Titanium developers
+// Copyright (c) 2019-2020 The Ttm Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef TTM_QUORUMS_INSTANTSEND_H
-#define TTM_QUORUMS_INSTANTSEND_H
+#ifndef BITCOIN_LLMQ_QUORUMS_INSTANTSEND_H
+#define BITCOIN_LLMQ_QUORUMS_INSTANTSEND_H
 
-#include "quorums_signing.h"
+#include <llmq/quorums_signing.h>
 
-#include "coins.h"
-#include "unordered_lru_cache.h"
-#include "primitives/transaction.h"
+#include <coins.h>
+#include <unordered_lru_cache.h>
+#include <primitives/transaction.h>
 
 #include <unordered_map>
 #include <unordered_set>
@@ -50,14 +50,14 @@ private:
     unordered_lru_cache<COutPoint, uint256, SaltedOutpointHasher, 10000> outpointCache;
 
 public:
-    CInstantSendDb(CDBWrapper& _db) : db(_db) {}
+    explicit CInstantSendDb(CDBWrapper& _db) : db(_db) {}
 
     void WriteNewInstantSendLock(const uint256& hash, const CInstantSendLock& islock);
     void RemoveInstantSendLock(CDBBatch& batch, const uint256& hash, CInstantSendLockPtr islock);
 
     void WriteInstantSendLockMined(const uint256& hash, int nHeight);
     void RemoveInstantSendLockMined(const uint256& hash, int nHeight);
-    void WriteInstantSendLockArchived(CDBBatch& batch, const uint256& hash, int nHeight);
+    static void WriteInstantSendLockArchived(CDBBatch& batch, const uint256& hash, int nHeight);
     std::unordered_map<uint256, CInstantSendLockPtr> RemoveConfirmedInstantSendLocks(int nUntilHeight);
     void RemoveArchivedInstantSendLocks(int nUntilHeight);
     bool HasArchivedInstantSendLock(const uint256& islockHash);
@@ -97,7 +97,7 @@ private:
     std::unordered_map<uint256, CInstantSendLock*, StaticSaltedHasher> txToCreatingInstantSendLocks;
 
     // Incoming and not verified yet
-    std::unordered_map<uint256, std::pair<NodeId, CInstantSendLock>> pendingInstantSendLocks;
+    std::unordered_map<uint256, std::pair<NodeId, CInstantSendLockPtr>, StaticSaltedHasher> pendingInstantSendLocks;
 
     // TXs which are neither IS locked nor ChainLocked. We use this to determine for which TXs we need to retry IS locking
     // of child TXs
@@ -112,7 +112,7 @@ private:
     std::unordered_set<uint256, StaticSaltedHasher> pendingRetryTxs;
 
 public:
-    CInstantSendManager(CDBWrapper& _llmqDb);
+    explicit CInstantSendManager(CDBWrapper& _llmqDb);
     ~CInstantSendManager();
 
     void Start();
@@ -133,13 +133,12 @@ public:
 
     void TrySignInstantSendLock(const CTransaction& tx);
 
-    void ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStream& vRecv, CConnman& connman);
-    void ProcessMessageInstantSendLock(CNode* pfrom, const CInstantSendLock& islock, CConnman& connman);
-    bool PreVerifyInstantSendLock(NodeId nodeId, const CInstantSendLock& islock, bool& retBan);
+    void ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStream& vRecv);
+    void ProcessMessageInstantSendLock(CNode* pfrom, const CInstantSendLockPtr& islock);
+    static bool PreVerifyInstantSendLock(const CInstantSendLock& islock);
     bool ProcessPendingInstantSendLocks();
-    std::unordered_set<uint256> ProcessPendingInstantSendLocks(int signHeight, const std::unordered_map<uint256, std::pair<NodeId, CInstantSendLock>>& pend, bool ban);
-    void ProcessInstantSendLock(NodeId from, const uint256& hash, const CInstantSendLock& islock);
-    void UpdateWalletTransaction(const CTransactionRef& tx, const CInstantSendLock& islock);
+    std::unordered_set<uint256> ProcessPendingInstantSendLocks(int signOffset, const std::unordered_map<uint256, std::pair<NodeId, CInstantSendLockPtr>, StaticSaltedHasher>& pend, bool ban);
+    void ProcessInstantSendLock(NodeId from, const uint256& hash, const CInstantSendLockPtr& islock);
 
     void ProcessNewTransaction(const CTransactionRef& tx, const CBlockIndex* pindex, bool allowReSigning);
     void TransactionAddedToMempool(const CTransactionRef& tx);
@@ -159,11 +158,12 @@ public:
     void RemoveMempoolConflictsForLock(const uint256& hash, const CInstantSendLock& islock);
     void ResolveBlockConflicts(const uint256& islockHash, const CInstantSendLock& islock);
     void RemoveChainLockConflictingLock(const uint256& islockHash, const CInstantSendLock& islock);
-    void AskNodesForLockedTx(const uint256& txid);
+    static void AskNodesForLockedTx(const uint256& txid);
     bool ProcessPendingRetryLockTxs();
 
     bool AlreadyHave(const CInv& inv);
     bool GetInstantSendLockByHash(const uint256& hash, CInstantSendLock& ret);
+    CInstantSendLockPtr GetInstantSendLockByTxid(const uint256& txid);
     bool GetInstantSendLockHashByTxid(const uint256& txid, uint256& ret);
 
     size_t GetInstantSendLockCount();
@@ -174,7 +174,8 @@ public:
 extern CInstantSendManager* quorumInstantSendManager;
 
 bool IsInstantSendEnabled();
+bool RejectConflictingBlocks();
 
 } // namespace llmq
 
-#endif//TTM_QUORUMS_INSTANTSEND_H
+#endif // BITCOIN_LLMQ_QUORUMS_INSTANTSEND_H

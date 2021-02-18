@@ -1,18 +1,19 @@
-// Copyright (c) 2014-2020 The Titanium developers
+// Copyright (c) 2014-2020 The Ttm Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PRIVATESEND_H
-#define PRIVATESEND_H
+#ifndef BITCOIN_PRIVATESEND_PRIVATESEND_H
+#define BITCOIN_PRIVATESEND_PRIVATESEND_H
 
-#include "bls/bls.h"
-#include "chain.h"
-#include "chainparams.h"
-#include "primitives/transaction.h"
-#include "pubkey.h"
-#include "sync.h"
-#include "timedata.h"
-#include "tinyformat.h"
+#include <bls/bls.h>
+#include <chain.h>
+#include <chainparams.h>
+#include <primitives/transaction.h>
+#include <pubkey.h>
+#include <sync.h>
+#include <spork.h>
+#include <timedata.h>
+#include <tinyformat.h>
 
 class CPrivateSend;
 class CConnman;
@@ -65,9 +66,8 @@ enum PoolState : int32_t {
     POOL_STATE_ACCEPTING_ENTRIES,
     POOL_STATE_SIGNING,
     POOL_STATE_ERROR,
-    POOL_STATE_SUCCESS,
     POOL_STATE_MIN = POOL_STATE_IDLE,
-    POOL_STATE_MAX = POOL_STATE_SUCCESS
+    POOL_STATE_MAX = POOL_STATE_ERROR
 };
 template<> struct is_serializable_enum<PoolState> : std::true_type {};
 
@@ -124,18 +124,21 @@ public:
     // memory only
     CScript prevPubKey;
     bool fHasSig; // flag to indicate if signed
+    int nRounds;
 
-    CTxDSIn(const CTxIn& txin, const CScript& script) :
+    CTxDSIn(const CTxIn& txin, const CScript& script, int nRounds) :
         CTxIn(txin),
         prevPubKey(script),
-        fHasSig(false)
+        fHasSig(false),
+        nRounds(nRounds)
     {
     }
 
     CTxDSIn() :
         CTxIn(),
         prevPubKey(),
-        fHasSig(false)
+        fHasSig(false),
+        nRounds(-10)
     {
     }
 };
@@ -351,7 +354,7 @@ public:
     bool CheckSignature(const CBLSPublicKey& blsPubKey) const;
 
     void SetConfirmedHeight(int nConfirmedHeightIn) { nConfirmedHeight = nConfirmedHeightIn; }
-    bool IsExpired(const CBlockIndex* pindex);
+    bool IsExpired(const CBlockIndex* pindex) const;
     bool IsValidStructure();
 };
 
@@ -418,8 +421,8 @@ class CPrivateSend
 {
 private:
     // make constructor, destructor and copying not available
-    CPrivateSend() {}
-    ~CPrivateSend() {}
+    CPrivateSend() = default;
+    ~CPrivateSend() = default;
     CPrivateSend(CPrivateSend const&) = delete;
     CPrivateSend& operator=(CPrivateSend const&) = delete;
 
@@ -436,15 +439,12 @@ public:
     static std::vector<CAmount> GetStandardDenominations() { return vecStandardDenominations; }
     static CAmount GetSmallestDenomination() { return vecStandardDenominations.back(); }
 
-    /// Get the denominations for a specific amount of ttm.
-    static int GetDenominationsByAmounts(const std::vector<CAmount>& vecAmount);
-
     static bool IsDenominatedAmount(CAmount nInputAmount);
+    static bool IsValidDenomination(int nDenom);
 
-    /// Get the denominations for a list of outputs (returns a bitshifted integer)
-    static int GetDenominations(const std::vector<CTxOut>& vecTxOut, bool fSingleRandomDenom = false);
-    static std::string GetDenominationsToString(int nDenom);
-    static bool GetDenominationsBits(int nDenom, std::vector<int>& vecBitsRet);
+    static int AmountToDenomination(CAmount nInputAmount);
+    static CAmount DenominationToAmount(int nDenom);
+    static std::string DenominationToString(int nDenom);
 
     static std::string GetMessageByID(PoolMessage nMessageID);
 
@@ -474,4 +474,4 @@ public:
 
 };
 
-#endif
+#endif // BITCOIN_PRIVATESEND_PRIVATESEND_H

@@ -1,18 +1,18 @@
-// Copyright (c) 2014-2019 The Titanium developers
+// Copyright (c) 2014-2019 The Ttm Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef ACTIVEMASTERNODE_H
-#define ACTIVEMASTERNODE_H
+#ifndef BITCOIN_MASTERNODE_ACTIVEMASTERNODE_H
+#define BITCOIN_MASTERNODE_ACTIVEMASTERNODE_H
 
-#include "chainparams.h"
-#include "key.h"
-#include "net.h"
-#include "primitives/transaction.h"
-#include "validationinterface.h"
+#include <chainparams.h>
+#include <key.h>
+#include <net.h>
+#include <primitives/transaction.h>
+#include <validationinterface.h>
 
-#include "evo/deterministicmns.h"
-#include "evo/providertx.h"
+#include <evo/deterministicmns.h>
+#include <evo/providertx.h>
 
 struct CActiveMasternodeInfo;
 class CActiveMasternodeManager;
@@ -52,7 +52,7 @@ private:
 public:
     virtual void UpdatedBlockTip(const CBlockIndex* pindexNew, const CBlockIndex* pindexFork, bool fInitialDownload);
 
-    void Init();
+    void Init(const CBlockIndex* pindex);
 
     std::string GetStateString() const;
     std::string GetStatus() const;
@@ -63,4 +63,4 @@ private:
     bool GetLocalAddress(CService& addrRet);
 };
 
-#endif
+#endif // BITCOIN_MASTERNODE_ACTIVEMASTERNODE_H

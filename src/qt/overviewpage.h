@@ -5,7 +5,7 @@
 #ifndef BITCOIN_QT_OVERVIEWPAGE_H
 #define BITCOIN_QT_OVERVIEWPAGE_H
 
-#include "amount.h"
+#include <interfaces/wallet.h>
 
 #include <QWidget>
 #include <memory>
@@ -13,7 +13,6 @@
 class ClientModel;
 class TransactionFilterProxy;
 class TxViewDelegate;
-class PlatformStyle;
 class WalletModel;
 
 namespace Ui {
@@ -30,7 +29,7 @@ class OverviewPage : public QWidget
     Q_OBJECT
 
 public:
-    explicit OverviewPage(const PlatformStyle *platformStyle, QWidget *parent = 0);
+    explicit OverviewPage(QWidget* parent = 0);
     ~OverviewPage();
 
     void setClientModel(ClientModel *clientModel);
@@ -38,9 +37,8 @@ public:
     void showOutOfSyncWarning(bool fShow);
 
 public Q_SLOTS:
-    void privateSendStatus();
-    void setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, const CAmount& anonymizedBalance,
-                    const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance);
+    void privateSendStatus(bool fForce = false);
+    void setBalance(const interfaces::WalletBalances& balances);
 
 Q_SIGNALS:
     void transactionClicked(const QModelIndex &index);
@@ -51,13 +49,7 @@ private:
     Ui::OverviewPage *ui;
     ClientModel *clientModel;
     WalletModel *walletModel;
-    CAmount currentBalance;
-    CAmount currentUnconfirmedBalance;
-    CAmount currentImmatureBalance;
-    CAmount currentAnonymizedBalance;
-    CAmount currentWatchOnlyBalance;
-    CAmount currentWatchUnconfBalance;
-    CAmount currentWatchImmatureBalance;
+    interfaces::WalletBalances m_balances;
     int nDisplayUnit;
     bool fShowAdvancedPSUI;
     int cachedNumISLocks;

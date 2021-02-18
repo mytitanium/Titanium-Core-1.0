@@ -1,9 +1,9 @@
 // Copyright (c) 2017 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #include <map>
 #include <string>
-
 
 #ifndef BITCOIN_RPC_BLOCKCHAIN_H
 #define BITCOIN_RPC_BLOCKCHAIN_H
@@ -19,9 +19,7 @@ class UniValue;
  * @return A floating point number that is a multiple of the main net minimum
  * difficulty (4295032833 hashes).
  */
-double GetDifficulty(const CBlockIndex* blockindex = nullptr);
-
-extern std::map<std::string, CBlock> mapRVNKAWBlockTemplates;
+double GetDifficulty(const CBlockIndex* blockindex);
 
 /** Callback for when block tip changed. */
 void RPCNotifyBlockChange(bool ibd, const CBlockIndex *);
@@ -37,6 +35,6 @@ UniValue mempoolToJSON(bool fVerbose = false);
 
 /** Block header to JSON */
 UniValue blockheaderToJSON(const CBlockIndex* blockindex);
+UniValue decodeblockToJSON(const CBlock& block);
 
 #endif
-

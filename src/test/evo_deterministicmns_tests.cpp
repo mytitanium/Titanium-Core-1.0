@@ -1,23 +1,23 @@
-// Copyright (c) 2018-2019 The Titanium developers
+// Copyright (c) 2018-2019 The Ttm Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "test/test_ttm.h"
+#include <test/test_ttm.h>
 
-#include "script/interpreter.h"
-#include "script/standard.h"
-#include "script/sign.h"
-#include "validation.h"
-#include "base58.h"
-#include "netbase.h"
-#include "messagesigner.h"
-#include "policy/policy.h"
-#include "keystore.h"
-#include "spork.h"
+#include <script/interpreter.h>
+#include <script/standard.h>
+#include <script/sign.h>
+#include <validation.h>
+#include <base58.h>
+#include <netbase.h>
+#include <messagesigner.h>
+#include <policy/policy.h>
+#include <keystore.h>
+#include <spork.h>
 
-#include "evo/specialtx.h"
-#include "evo/providertx.h"
-#include "evo/deterministicmns.h"
+#include <evo/specialtx.h>
+#include <evo/providertx.h>
+#include <evo/deterministicmns.h>
 
 #include <boost/test/unit_test.hpp>
 
@@ -95,9 +95,6 @@ static CMutableTransaction CreateProRegTx(SimpleUTXOMap& utxos, int port, const 
     ownerKeyRet.MakeNewKey(true);
     operatorKeyRet.MakeNewKey();
 
-    CAmount change;
-    auto inputs = SelectUTXOs(utxos, 1000 * COIN, change);
-
     CProRegTx proTx;
     proTx.collateralOutpoint.n = 0;
     proTx.addr = LookupNumeric("1.1.1.1", port);
@@ -119,9 +116,6 @@ static CMutableTransaction CreateProRegTx(SimpleUTXOMap& utxos, int port, const 
 
 static CMutableTransaction CreateProUpServTx(SimpleUTXOMap& utxos, const uint256& proTxHash, const CBLSSecretKey& operatorKey, int port, const CScript& scriptOperatorPayout, const CKey& coinbaseKey)
 {
-    CAmount change;
-    auto inputs = SelectUTXOs(utxos, 1 * COIN, change);
-
     CProUpServTx proTx;
     proTx.proTxHash = proTxHash;
     proTx.addr = LookupNumeric("1.1.1.1", port);
@@ -141,9 +135,6 @@ static CMutableTransaction CreateProUpServTx(SimpleUTXOMap& utxos, const uint256
 
 static CMutableTransaction CreateProUpRegTx(SimpleUTXOMap& utxos, const uint256& proTxHash, const CKey& mnKey, const CBLSPublicKey& pubKeyOperator, const CKeyID& keyIDVoting, const CScript& scriptPayout, const CKey& coinbaseKey)
 {
-    CAmount change;
-    auto inputs = SelectUTXOs(utxos, 1 * COIN, change);
-
     CProUpRegTx proTx;
     proTx.proTxHash = proTxHash;
     proTx.pubKeyOperator = pubKeyOperator;
@@ -164,9 +155,6 @@ static CMutableTransaction CreateProUpRegTx(SimpleUTXOMap& utxos, const uint256&
 
 static CMutableTransaction CreateProUpRevTx(SimpleUTXOMap& utxos, const uint256& proTxHash, const CBLSSecretKey& operatorKey, const CKey& coinbaseKey)
 {
-    CAmount change;
-    auto inputs = SelectUTXOs(utxos, 1 * COIN, change);
-
     CProUpRevTx proTx;
     proTx.proTxHash = proTxHash;
 
@@ -246,8 +234,8 @@ BOOST_FIXTURE_TEST_CASE(dip3_activation, TestChainDIP3BeforeActivationSetup)
     auto utxos = BuildSimpleUtxoMap(coinbaseTxns);
     CKey ownerKey;
     CBLSSecretKey operatorKey;
-    CBitcoinAddress payoutAddress("yRq1Ky1AfFmf597rnotj7QRxsDUKePVWNF");
-    auto tx = CreateProRegTx(utxos, 1, GetScriptForDestination(payoutAddress.Get()), coinbaseKey, ownerKey, operatorKey);
+    CTxDestination payoutDest = DecodeDestination("yRq1Ky1AfFmf597rnotj7QRxsDUKePVWNF");
+    auto tx = CreateProRegTx(utxos, 1, GetScriptForDestination(payoutDest), coinbaseKey, ownerKey, operatorKey);
     std::vector<CMutableTransaction> txns = {tx};
 
     int nHeight = chainActive.Height();
@@ -276,11 +264,8 @@ BOOST_FIXTURE_TEST_CASE(dip3_protx, TestChainDIP3Setup)
 {
     CKey sporkKey;
     sporkKey.MakeNewKey(false);
-    CBitcoinSecret sporkSecret(sporkKey);
-    CBitcoinAddress sporkAddress;
-    sporkAddress.Set(sporkKey.GetPubKey().GetID());
-    sporkManager.SetSporkAddress(sporkAddress.ToString());
-    sporkManager.SetPrivKey(sporkSecret.ToString());
+    sporkManager.SetSporkAddress(EncodeDestination(sporkKey.GetPubKey().GetID()));
+    sporkManager.SetPrivKey(EncodeSecret(sporkKey));
 
     auto utxos = BuildSimpleUtxoMap(coinbaseTxns);
 
@@ -384,7 +369,7 @@ BOOST_FIXTURE_TEST_CASE(dip3_protx, TestChainDIP3Setup)
     nHeight++;
 
     dmn = deterministicMNManager->GetListAtChainTip().GetMN(dmnHashes[0]);
-    BOOST_ASSERT(dmn != nullptr && dmn->pdmnState->nPoSeBanHeight == nHeight);
+    BOOST_ASSERT(dmn != nullptr && dmn->pdmnState->GetBannedHeight() == nHeight);
 
     // test that the revoked MN does not get paid anymore
     for (size_t i = 0; i < 20; i++) {
@@ -428,7 +413,7 @@ BOOST_FIXTURE_TEST_CASE(dip3_protx, TestChainDIP3Setup)
 
     dmn = deterministicMNManager->GetListAtChainTip().GetMN(dmnHashes[0]);
     BOOST_ASSERT(dmn != nullptr && dmn->pdmnState->addr.GetPort() == 100);
-    BOOST_ASSERT(dmn != nullptr && dmn->pdmnState->nPoSeBanHeight == -1);
+    BOOST_ASSERT(dmn != nullptr && !dmn->pdmnState->IsBanned());
 
     // test that the revived MN gets payments again
     bool foundRevived = false;

@@ -5,8 +5,12 @@
 #ifndef BITCOIN_WALLET_RPCWALLET_H
 #define BITCOIN_WALLET_RPCWALLET_H
 
+#include <string>
+
 class CRPCTable;
+class CWallet;
 class JSONRPCRequest;
+class UniValue;
 
 void RegisterWalletRPCCommands(CRPCTable &t);
 
@@ -22,4 +26,6 @@ std::string HelpRequiringPassphrase(CWallet *);
 void EnsureWalletIsUnlocked(CWallet *);
 bool EnsureWalletIsAvailable(CWallet *, bool avoidException);
 
+UniValue getaddressinfo(const JSONRPCRequest& request);
+UniValue signrawtransactionwithwallet(const JSONRPCRequest& request);
 #endif //BITCOIN_WALLET_RPCWALLET_H

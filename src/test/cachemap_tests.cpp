@@ -1,8 +1,8 @@
-// Copyright (c) 2014-2019 The Titanium developers
+// Copyright (c) 2014-2019 The Ttm Core developers
 
-#include "cachemap.h"
+#include <cachemap.h>
 
-#include "test/test_ttm.h"
+#include <test/test_ttm.h>
 
 #include <boost/test/unit_test.hpp>
 

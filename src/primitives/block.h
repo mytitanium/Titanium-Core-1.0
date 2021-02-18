@@ -6,9 +6,9 @@
 #ifndef BITCOIN_PRIMITIVES_BLOCK_H
 #define BITCOIN_PRIMITIVES_BLOCK_H
 
-#include "primitives/transaction.h"
-#include "serialize.h"
-#include "uint256.h"
+#include <primitives/transaction.h>
+#include <serialize.h>
+#include <uint256.h>
 
 /** Nodes collect new transactions into a block, hash them into a hash tree,
  * and scan through nonce values to make the block's hash satisfy proof-of-work
@@ -24,13 +24,12 @@ public:
     int32_t nVersion;
     uint256 hashPrevBlock;
     uint256 hashMerkleRoot;
+    uint256 mix_hash;
     uint32_t nTime;
     uint32_t nBits;
     uint32_t nNonce;
-    
-    uint256 mix_hash;
     uint32_t nHeight;
-    uint32_t nNonce64;
+    uint64_t nNonce64;
 
     CBlockHeader()
     {
@@ -46,13 +45,14 @@ public:
         READWRITE(hashMerkleRoot);
         READWRITE(nTime);
         READWRITE(nBits);
-        if(nTime >= 1609698676  ) {
-        	READWRITE(nHeight);
-        	READWRITE(nNonce64);
-        	READWRITE(mix_hash);
-        } else {
-        	READWRITE(nNonce);
-        }
+        if(nTime <= 1613414171 ){
+			READWRITE(nNonce);
+	    } else {
+	    	READWRITE(nHeight);
+	    	READWRITE(nNonce64);
+            READWRITE(mix_hash);
+	    }
+        
     }
 
     void SetNull()
@@ -60,13 +60,12 @@ public:
         nVersion = 0;
         hashPrevBlock.SetNull();
         hashMerkleRoot.SetNull();
+        mix_hash.SetNull();
         nTime = 0;
         nBits = 0;
         nNonce = 0;
-        
-        nHeight = 0;
         nNonce64 = 0;
-        mix_hash.SetNull();
+        nHeight = 0;
     }
 
     bool IsNull() const
@@ -75,15 +74,13 @@ public:
     }
 
     uint256 GetHash() const;
+    uint256 GetHashFull(uint256& mix_hash) const;
+    uint256 GetKAWPOWHeaderHash() const;
 
     int64_t GetBlockTime() const
     {
         return (int64_t)nTime;
     }
-    
-    uint256 GetHashFull(uint256& mix_hash) const;
-    uint256 GetKAWPOWHeaderHash() const;
-    std::string ToString() const;
 };
 
 
@@ -104,14 +101,14 @@ public:
     CBlock(const CBlockHeader &header)
     {
         SetNull();
-        *((CBlockHeader*)this) = header;
+        *(static_cast<CBlockHeader*>(this)) = header;
     }
 
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action) {
-        READWRITE(*(CBlockHeader*)this);
+        READWRITEAS(CBlockHeader, *this);
         READWRITE(vtx);
     }
 
@@ -131,10 +128,9 @@ public:
         block.nTime          = nTime;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
-        
-        block.nHeight        = nHeight;
         block.nNonce64       = nNonce64;
         block.mix_hash       = mix_hash;
+        block.nHeight        = nHeight;
         return block;
     }
 
@@ -152,7 +148,7 @@ struct CBlockLocator
 
     CBlockLocator() {}
 
-    CBlockLocator(const std::vector<uint256>& vHaveIn) : vHave(vHaveIn) {}
+    explicit CBlockLocator(const std::vector<uint256>& vHaveIn) : vHave(vHaveIn) {}
 
     ADD_SERIALIZE_METHODS;
 
@@ -194,6 +190,7 @@ public:
         READWRITE(nTime);
         READWRITE(nBits);
         READWRITE(nHeight);
+        READWRITE(nNonce);
     }
 };
 

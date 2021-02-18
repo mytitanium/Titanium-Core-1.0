@@ -1478,7 +1478,7 @@ Optional Features:
   --disable-dependency-tracking 
                           speeds up one-time build
   --disable-libtool-lock  avoid locking (might break parallel builds)
-  --enable-benchmark      compile benchmark (default is no)
+  --enable-benchmark      compile benchmark (default is yes)
   --enable-coverage       enable compiler flags to support kcov coverage
                           analysis
   --enable-tests          compile tests (default is yes)
@@ -1494,7 +1494,7 @@ Optional Features:
   --enable-module-ecdh    enable ECDH shared secret computation (experimental)
   --enable-module-recovery 
                           enable ECDSA pubkey recovery module (default is no)
-  --enable-jni            enable libsecp256k1_jni (default is auto)
+  --enable-jni            enable libsecp256k1_jni (default is no)
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -13829,7 +13829,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 if test "${enable_benchmark+set}" = set; then :
   enableval=$enable_benchmark; use_benchmark=$enableval
 else
-  use_benchmark=no
+  use_benchmark=yes
 fi
 
 
@@ -13909,7 +13909,7 @@ fi
 if test "${enable_jni+set}" = set; then :
   enableval=$enable_jni; use_jni=$enableval
 else
-  use_jni=auto
+  use_jni=no
 fi
 
 
@@ -13960,24 +13960,6 @@ _ACEOF
 fi
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for __builtin_expect" >&5
-$as_echo_n "checking for __builtin_expect... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-void myfunc() {__builtin_expect(0,0);}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; };
-$as_echo "@%:@define HAVE_BUILTIN_EXPECT 1" >>confdefs.h
- 
-else
-   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-    
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-
 if test x"$enable_coverage" = x"yes"; then
     
 $as_echo "@%:@define COVERAGE 1" >>confdefs.h
@@ -13989,12 +13971,40 @@ else
 fi
 
 if test x"$use_ecmult_static_precomputation" != x"no"; then
+  # Temporarily switch to an environment for the native compiler
   save_cross_compiling=$cross_compiling
   cross_compiling=no
-  TEMP_CC="$CC"
+  SAVE_CC="$CC"
   CC="$CC_FOR_BUILD"
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking native compiler: ${CC_FOR_BUILD}" >&5
-$as_echo_n "checking native compiler: ${CC_FOR_BUILD}... " >&6; }
+  SAVE_CFLAGS="$CFLAGS"
+  CFLAGS="$CFLAGS_FOR_BUILD"
+  SAVE_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS_FOR_BUILD"
+  SAVE_LDFLAGS="$LDFLAGS"
+  LDFLAGS="$LDFLAGS_FOR_BUILD"
+
+  warn_CFLAGS_FOR_BUILD="-Wall -Wextra -Wno-unused-function"
+  saved_CFLAGS="$CFLAGS"
+  CFLAGS="$CFLAGS $warn_CFLAGS_FOR_BUILD"
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking if native ${CC_FOR_BUILD} supports ${warn_CFLAGS_FOR_BUILD}" >&5
+$as_echo_n "checking if native ${CC_FOR_BUILD} supports ${warn_CFLAGS_FOR_BUILD}... " >&6; }
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+char foo;
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; } 
+else
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+        CFLAGS="$saved_CFLAGS"
+      
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for working native compiler: ${CC_FOR_BUILD}" >&5
+$as_echo_n "checking for working native compiler: ${CC_FOR_BUILD}... " >&6; }
   if test "$cross_compiling" = yes; then :
   else
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
@@ -14003,7 +14013,7 @@ $as_echo_n "checking native compiler: ${CC_FOR_BUILD}... " >&6; }
 int
 main ()
 {
-return 0
+
   ;
   return 0;
 }
@@ -14017,20 +14027,30 @@ rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
 fi
 
-  CC="$TEMP_CC"
+
+  CFLAGS_FOR_BUILD="$CFLAGS"
+
+  # Restore the environment
   cross_compiling=$save_cross_compiling
+  CC="$SAVE_CC"
+  CFLAGS="$SAVE_CFLAGS"
+  CPPFLAGS="$SAVE_CPPFLAGS"
+  LDFLAGS="$SAVE_LDFLAGS"
 
   if test x"$working_native_cc" = x"no"; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
     set_precomp=no
+    
     if test x"$use_ecmult_static_precomputation" = x"yes";  then
-      as_fn_error $? "${CC_FOR_BUILD} does not produce working binaries. Please set CC_FOR_BUILD" "$LINENO" 5
+      as_fn_error $? "native compiler ${CC_FOR_BUILD} does not produce working binaries. Please set CC_FOR_BUILD, CFLAGS_FOR_BUILD, CPPFLAGS_FOR_BUILD, and/or LDFLAGS_FOR_BUILD." "$LINENO" 5
     else
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${CC_FOR_BUILD} does not produce working binaries. Please set CC_FOR_BUILD" >&5
-$as_echo "${CC_FOR_BUILD} does not produce working binaries. Please set CC_FOR_BUILD" >&6; }
+      { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Disabling statically generated ecmult table because the native compiler ${CC_FOR_BUILD} does not produce working binaries. Please set CC_FOR_BUILD, CFLAGS_FOR_BUILD, CPPFLAGS_FOR_BUILD, and/or LDFLAGS_FOR_BUILD." >&5
+$as_echo "$as_me: WARNING: Disabling statically generated ecmult table because the native compiler ${CC_FOR_BUILD} does not produce working binaries. Please set CC_FOR_BUILD, CFLAGS_FOR_BUILD, CPPFLAGS_FOR_BUILD, and/or LDFLAGS_FOR_BUILD." >&2;}
     fi
   else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: ok" >&5
-$as_echo "ok" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
     set_precomp=yes
   fi
 else
@@ -14592,7 +14612,6 @@ main ()
     EC_KEY_free(eckey);
     ECDSA_SIG *sig_openssl;
     sig_openssl = ECDSA_SIG_new();
-    (void)sig_openssl->r;
     ECDSA_SIG_free(sig_openssl);
   
   ;
@@ -14711,9 +14730,17 @@ _ACJNI_FOLLOWED="$_cur"
 fi
 
 case "$host_os" in
-        darwin*)        _JTOPDIR=`echo "$_JTOPDIR" | sed -e 's:/[^/]*$::'`
-                        _JINC="$_JTOPDIR/Headers";;
-        *)              _JINC="$_JTOPDIR/include";;
+        darwin*)        # Apple Java headers are inside the Xcode bundle.
+            macos_version=$(sw_vers -productVersion | sed -n -e 's/^@<:@0-9@:>@*.\(@<:@0-9@:>@*\).@<:@0-9@:>@*/\1/p')
+            if @<:@ "$macos_version" -gt "7" @:>@; then
+                _JTOPDIR="$(xcrun --show-sdk-path)/System/Library/Frameworks/JavaVM.framework"
+                _JINC="$_JTOPDIR/Headers"
+            else
+                _JTOPDIR="/System/Library/Frameworks/JavaVM.framework"
+                _JINC="$_JTOPDIR/Headers"
+            fi
+            ;;
+        *) _JINC="$_JTOPDIR/include";;
 esac
 $as_echo "$as_me:${as_lineno-$LINENO}: _JTOPDIR=$_JTOPDIR" >&5
 $as_echo "$as_me:${as_lineno-$LINENO}: _JINC=$_JINC" >&5
@@ -14721,37 +14748,34 @@ $as_echo "$as_me:${as_lineno-$LINENO}: _JINC=$_JINC" >&5
 # On Mac OS X 10.6.4, jni.h is a symlink:
 # /System/Library/Frameworks/JavaVM.framework/Versions/Current/Headers/jni.h
 # -> ../../CurrentJDK/Headers/jni.h.
-
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking jni headers" >&5
 $as_echo_n "checking jni headers... " >&6; }
 if ${ac_cv_jni_header_path+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   
-if test -f "$_JINC/jni.h"; then
-  ac_cv_jni_header_path="$_JINC"
-  JNI_INCLUDE_DIRS="$JNI_INCLUDE_DIRS $ac_cv_jni_header_path"
-else
-  _JTOPDIR=`echo "$_JTOPDIR" | sed -e 's:/[^/]*$::'`
-  if test -f "$_JTOPDIR/include/jni.h"; then
-    ac_cv_jni_header_path="$_JTOPDIR/include"
+  if test -f "$_JINC/jni.h"; then
+    ac_cv_jni_header_path="$_JINC"
     JNI_INCLUDE_DIRS="$JNI_INCLUDE_DIRS $ac_cv_jni_header_path"
   else
-    ac_cv_jni_header_path=none
+    _JTOPDIR=`echo "$_JTOPDIR" | sed -e 's:/[^/]*$::'`
+    if test -f "$_JTOPDIR/include/jni.h"; then
+      ac_cv_jni_header_path="$_JTOPDIR/include"
+      JNI_INCLUDE_DIRS="$JNI_INCLUDE_DIRS $ac_cv_jni_header_path"
+    else
+      ac_cv_jni_header_path=none
+    fi
   fi
-fi
 
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_jni_header_path" >&5
 $as_echo "$ac_cv_jni_header_path" >&6; }
 
-
-
 # get the likely subdirectories for system specific java includes
 case "$host_os" in
 bsdi*)          _JNI_INC_SUBDIRS="bsdos";;
-darwin*)        _JNI_INC_SUBDIRS="darwin";;
 freebsd*)       _JNI_INC_SUBDIRS="freebsd";;
+darwin*)        _JNI_INC_SUBDIRS="darwin";;
 linux*)         _JNI_INC_SUBDIRS="linux genunix";;
 osf*)           _JNI_INC_SUBDIRS="alpha";;
 solaris*)       _JNI_INC_SUBDIRS="solaris";;
@@ -14764,9 +14788,9 @@ if test "x$ac_cv_jni_header_path" != "xnone"; then
   # add any subdirectories that are present
   for JINCSUBDIR in $_JNI_INC_SUBDIRS
   do
-      if test -d "$_JTOPDIR/include/$JINCSUBDIR"; then
-           JNI_INCLUDE_DIRS="$JNI_INCLUDE_DIRS $_JTOPDIR/include/$JINCSUBDIR"
-      fi
+    if test -d "$_JTOPDIR/include/$JINCSUBDIR"; then
+         JNI_INCLUDE_DIRS="$JNI_INCLUDE_DIRS $_JTOPDIR/include/$JINCSUBDIR"
+    fi
   done
 fi
 
@@ -15052,27 +15076,6 @@ $as_echo "@%:@define USE_EXTERNAL_ASM 1" >>confdefs.h
 
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: Using static precomputation: $set_precomp" >&5
-$as_echo "$as_me: Using static precomputation: $set_precomp" >&6;}
-{ $as_echo "$as_me:${as_lineno-$LINENO}: Using assembly optimizations: $set_asm" >&5
-$as_echo "$as_me: Using assembly optimizations: $set_asm" >&6;}
-{ $as_echo "$as_me:${as_lineno-$LINENO}: Using field implementation: $set_field" >&5
-$as_echo "$as_me: Using field implementation: $set_field" >&6;}
-{ $as_echo "$as_me:${as_lineno-$LINENO}: Using bignum implementation: $set_bignum" >&5
-$as_echo "$as_me: Using bignum implementation: $set_bignum" >&6;}
-{ $as_echo "$as_me:${as_lineno-$LINENO}: Using scalar implementation: $set_scalar" >&5
-$as_echo "$as_me: Using scalar implementation: $set_scalar" >&6;}
-{ $as_echo "$as_me:${as_lineno-$LINENO}: Using endomorphism optimizations: $use_endomorphism" >&5
-$as_echo "$as_me: Using endomorphism optimizations: $use_endomorphism" >&6;}
-{ $as_echo "$as_me:${as_lineno-$LINENO}: Building for coverage analysis: $enable_coverage" >&5
-$as_echo "$as_me: Building for coverage analysis: $enable_coverage" >&6;}
-{ $as_echo "$as_me:${as_lineno-$LINENO}: Building ECDH module: $enable_module_ecdh" >&5
-$as_echo "$as_me: Building ECDH module: $enable_module_ecdh" >&6;}
-{ $as_echo "$as_me:${as_lineno-$LINENO}: Building ECDSA pubkey recovery module: $enable_module_recovery" >&5
-$as_echo "$as_me: Building ECDSA pubkey recovery module: $enable_module_recovery" >&6;}
-{ $as_echo "$as_me:${as_lineno-$LINENO}: Using jni: $use_jni" >&5
-$as_echo "$as_me: Using jni: $use_jni" >&6;}
-
 if test x"$enable_experimental" = x"yes"; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: ******" >&5
 $as_echo "$as_me: ******" >&6;}
@@ -15158,7 +15161,7 @@ else
   ENABLE_MODULE_RECOVERY_FALSE=
 fi
 
- if test x"$use_jni" == x"yes"; then
+ if test x"$use_jni" = x"yes"; then
   USE_JNI_TRUE=
   USE_JNI_FALSE='#'
 else
@@ -17517,3 +17520,24 @@ if test -n "$ac_unrecognized_opts" && test "$enable_option_checking" != no; then
 $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 fi
 
+
+echo
+echo "Build Options:"
+echo "  with endomorphism   = $use_endomorphism"
+echo "  with ecmult precomp = $set_precomp"
+echo "  with jni            = $use_jni"
+echo "  with benchmarks     = $use_benchmark"
+echo "  with coverage       = $enable_coverage"
+echo "  module ecdh         = $enable_module_ecdh"
+echo "  module recovery     = $enable_module_recovery"
+echo
+echo "  asm                 = $set_asm"
+echo "  bignum              = $set_bignum"
+echo "  field               = $set_field"
+echo "  scalar              = $set_scalar"
+echo
+echo "  CC                  = $CC"
+echo "  CFLAGS              = $CFLAGS"
+echo "  CPPFLAGS            = $CPPFLAGS"
+echo "  LDFLAGS             = $LDFLAGS"
+echo

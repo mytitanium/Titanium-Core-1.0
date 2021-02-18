@@ -1,17 +1,17 @@
-// Copyright (c) 2018-2020 The Titanium developers
+// Copyright (c) 2018-2020 The Ttm Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef TTM_QUORUMS_SIGNING_H
-#define TTM_QUORUMS_SIGNING_H
+#ifndef BITCOIN_LLMQ_QUORUMS_SIGNING_H
+#define BITCOIN_LLMQ_QUORUMS_SIGNING_H
 
-#include "llmq/quorums.h"
+#include <llmq/quorums.h>
 
-#include "net.h"
-#include "chainparams.h"
-#include "saltedhasher.h"
-#include "univalue.h"
-#include "unordered_lru_cache.h"
+#include <net.h>
+#include <chainparams.h>
+#include <saltedhasher.h>
+#include <univalue.h>
+#include <unordered_lru_cache.h>
 
 #include <unordered_map>
 
@@ -72,7 +72,7 @@ private:
     unordered_lru_cache<uint256, bool, StaticSaltedHasher, 30000> hasSigForHashCache;
 
 public:
-    CRecoveredSigsDb(CDBWrapper& _db);
+    explicit CRecoveredSigsDb(CDBWrapper& _db);
 
     void ConvertInvalidTimeKeys();
     void AddVoteTimeKeys();
@@ -104,7 +104,7 @@ private:
 class CRecoveredSigsListener
 {
 public:
-    virtual ~CRecoveredSigsListener() {}
+    virtual ~CRecoveredSigsListener() = default;
 
     virtual void HandleNewRecoveredSig(const CRecoveredSig& recoveredSig) = 0;
 };
@@ -125,8 +125,8 @@ private:
     CRecoveredSigsDb db;
 
     // Incoming and not verified yet
-    std::unordered_map<NodeId, std::list<CRecoveredSig>> pendingRecoveredSigs;
-    std::list<std::pair<CRecoveredSig, CQuorumCPtr>> pendingReconstructedRecoveredSigs;
+    std::unordered_map<NodeId, std::list<std::shared_ptr<const CRecoveredSig>>> pendingRecoveredSigs;
+    std::unordered_map<uint256, std::shared_ptr<const CRecoveredSig>, StaticSaltedHasher> pendingReconstructedRecoveredSigs;
 
     // must be protected by cs
     FastRandomContext rnd;
@@ -141,11 +141,11 @@ public:
     bool AlreadyHave(const CInv& inv);
     bool GetRecoveredSigForGetData(const uint256& hash, CRecoveredSig& ret);
 
-    void ProcessMessage(CNode* pnode, const std::string& strCommand, CDataStream& vRecv, CConnman& connman);
+    void ProcessMessage(CNode* pnode, const std::string& strCommand, CDataStream& vRecv);
 
     // This is called when a recovered signature was was reconstructed from another P2P message and is known to be valid
     // This is the case for example when a signature appears as part of InstantSend or ChainLocks
-    void PushReconstructedRecoveredSig(const CRecoveredSig& recoveredSig, const CQuorumCPtr& quorum);
+    void PushReconstructedRecoveredSig(const std::shared_ptr<const CRecoveredSig>& recoveredSig);
 
     // This is called when a recovered signature can be safely removed from the DB. This is only safe when some other
     // mechanism prevents possible conflicts. As an example, ChainLocks prevent conflicts in confirmed TXs InstantSend votes
@@ -154,15 +154,15 @@ public:
     void TruncateRecoveredSig(Consensus::LLMQType llmqType, const uint256& id);
 
 private:
-    void ProcessMessageRecoveredSig(CNode* pfrom, const CRecoveredSig& recoveredSig, CConnman& connman);
-    bool PreVerifyRecoveredSig(NodeId nodeId, const CRecoveredSig& recoveredSig, bool& retBan);
+    void ProcessMessageRecoveredSig(CNode* pfrom, const std::shared_ptr<const CRecoveredSig>& recoveredSig);
+    static bool PreVerifyRecoveredSig(const CRecoveredSig& recoveredSig, bool& retBan);
 
     void CollectPendingRecoveredSigsToVerify(size_t maxUniqueSessions,
-            std::unordered_map<NodeId, std::list<CRecoveredSig>>& retSigShares,
+            std::unordered_map<NodeId, std::list<std::shared_ptr<const CRecoveredSig>>>& retSigShares,
             std::unordered_map<std::pair<Consensus::LLMQType, uint256>, CQuorumCPtr, StaticSaltedHasher>& retQuorums);
     void ProcessPendingReconstructedRecoveredSigs();
-    bool ProcessPendingRecoveredSigs(CConnman& connman); // called from the worker thread of CSigSharesManager
-    void ProcessRecoveredSig(NodeId nodeId, const CRecoveredSig& recoveredSig, const CQuorumCPtr& quorum, CConnman& connman);
+    bool ProcessPendingRecoveredSigs(); // called from the worker thread of CSigSharesManager
+    void ProcessRecoveredSig(const std::shared_ptr<const CRecoveredSig>& recoveredSig);
     void Cleanup(); // called from the worker thread of CSigSharesManager
 
 public:
@@ -170,7 +170,7 @@ public:
     void RegisterRecoveredSigsListener(CRecoveredSigsListener* l);
     void UnregisterRecoveredSigsListener(CRecoveredSigsListener* l);
 
-    bool AsyncSignIfMember(Consensus::LLMQType llmqType, const uint256& id, const uint256& msgHash, bool allowReSign = false);
+    bool AsyncSignIfMember(Consensus::LLMQType llmqType, const uint256& id, const uint256& msgHash, const uint256& quorumHash = uint256(), bool allowReSign = false);
     bool HasRecoveredSig(Consensus::LLMQType llmqType, const uint256& id, const uint256& msgHash);
     bool HasRecoveredSigForId(Consensus::LLMQType llmqType, const uint256& id);
     bool HasRecoveredSigForSession(const uint256& signHash);
@@ -180,15 +180,15 @@ public:
     bool HasVotedOnId(Consensus::LLMQType llmqType, const uint256& id);
     bool GetVoteForId(Consensus::LLMQType llmqType, const uint256& id, uint256& msgHashRet);
 
-    std::vector<CQuorumCPtr> GetActiveQuorumSet(Consensus::LLMQType llmqType, int signHeight);
-    CQuorumCPtr SelectQuorumForSigning(Consensus::LLMQType llmqType, int signHeight, const uint256& selectionHash);
+    static std::vector<CQuorumCPtr> GetActiveQuorumSet(Consensus::LLMQType llmqType, int signHeight);
+    static CQuorumCPtr SelectQuorumForSigning(Consensus::LLMQType llmqType, const uint256& selectionHash, int signHeight = -1 /*chain tip*/, int signOffset = SIGN_HEIGHT_OFFSET);
 
     // Verifies a recovered sig that was signed while the chain tip was at signedAtTip
-    bool VerifyRecoveredSig(Consensus::LLMQType llmqType, int signedAtHeight, const uint256& id, const uint256& msgHash, const CBLSSignature& sig);
+    static bool VerifyRecoveredSig(Consensus::LLMQType llmqType, int signedAtHeight, const uint256& id, const uint256& msgHash, const CBLSSignature& sig);
 };
 
 extern CSigningManager* quorumSigningManager;
 
 } // namespace llmq
 
-#endif //TTM_QUORUMS_SIGNING_H
+#endif // BITCOIN_LLMQ_QUORUMS_SIGNING_H

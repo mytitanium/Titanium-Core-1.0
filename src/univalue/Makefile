@@ -90,9 +90,10 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = x86_64-pc-linux-gnu
-host_triplet = x86_64-pc-linux-gnu
-TESTS = test/unitester$(EXEEXT)
-noinst_PROGRAMS = $(am__EXEEXT_1)
+host_triplet = x86_64-w64-mingw32
+TESTS = test/object$(EXEEXT) test/unitester$(EXEEXT) \
+	test/no_nul$(EXEEXT)
+noinst_PROGRAMS = $(am__EXEEXT_1) test/test_json$(EXEEXT)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/build-aux/m4/libtool.m4 \
@@ -145,6 +146,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libunivalue_la_LIBADD =
 am__dirstamp = $(am__leading_dot)dirstamp
 am_libunivalue_la_OBJECTS = lib/libunivalue_la-univalue.lo \
+	lib/libunivalue_la-univalue_get.lo \
 	lib/libunivalue_la-univalue_read.lo \
 	lib/libunivalue_la-univalue_write.lo
 libunivalue_la_OBJECTS = $(am_libunivalue_la_OBJECTS)
@@ -156,8 +158,28 @@ libunivalue_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(libunivalue_la_CXXFLAGS) $(CXXFLAGS) \
 	$(libunivalue_la_LDFLAGS) $(LDFLAGS) -o $@
-am__EXEEXT_1 = test/unitester$(EXEEXT)
+am__EXEEXT_1 = test/object$(EXEEXT) test/unitester$(EXEEXT) \
+	test/no_nul$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
+am_test_no_nul_OBJECTS = test/test_no_nul-no_nul.$(OBJEXT)
+test_no_nul_OBJECTS = $(am_test_no_nul_OBJECTS)
+test_no_nul_DEPENDENCIES = libunivalue.la
+test_no_nul_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(test_no_nul_CXXFLAGS) \
+	$(CXXFLAGS) $(test_no_nul_LDFLAGS) $(LDFLAGS) -o $@
+am_test_object_OBJECTS = test/test_object-object.$(OBJEXT)
+test_object_OBJECTS = $(am_test_object_OBJECTS)
+test_object_DEPENDENCIES = libunivalue.la
+test_object_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(test_object_CXXFLAGS) \
+	$(CXXFLAGS) $(test_object_LDFLAGS) $(LDFLAGS) -o $@
+am_test_test_json_OBJECTS = test/test_test_json-test_json.$(OBJEXT)
+test_test_json_OBJECTS = $(am_test_test_json_OBJECTS)
+test_test_json_DEPENDENCIES = libunivalue.la
+test_test_json_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(test_test_json_CXXFLAGS) $(CXXFLAGS) \
+	$(test_test_json_LDFLAGS) $(LDFLAGS) -o $@
 am_test_unitester_OBJECTS = test/test_unitester-unitester.$(OBJEXT)
 test_unitester_OBJECTS = $(am_test_unitester_OBJECTS)
 test_unitester_DEPENDENCIES = libunivalue.la
@@ -199,8 +221,12 @@ AM_V_CXXLD = $(am__v_CXXLD_$(V))
 am__v_CXXLD_ = $(am__v_CXXLD_$(AM_DEFAULT_VERBOSITY))
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(libunivalue_la_SOURCES) $(test_unitester_SOURCES)
-DIST_SOURCES = $(libunivalue_la_SOURCES) $(test_unitester_SOURCES)
+SOURCES = $(libunivalue_la_SOURCES) $(test_no_nul_SOURCES) \
+	$(test_object_SOURCES) $(test_test_json_SOURCES) \
+	$(test_unitester_SOURCES)
+DIST_SOURCES = $(libunivalue_la_SOURCES) $(test_no_nul_SOURCES) \
+	$(test_object_SOURCES) $(test_test_json_SOURCES) \
+	$(test_unitester_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -387,7 +413,7 @@ am__set_TESTS_bases = \
   bases=`echo $$bases`
 RECHECK_LOGS = $(TEST_LOGS)
 TEST_SUITE_LOG = test-suite.log
-TEST_EXTENSIONS =  .test
+TEST_EXTENSIONS = .exe .test
 LOG_DRIVER = $(SHELL) $(top_srcdir)/build-aux/test-driver
 LOG_COMPILE = $(LOG_COMPILER) $(AM_LOG_FLAGS) $(LOG_FLAGS)
 am__set_b = \
@@ -401,7 +427,7 @@ am__set_b = \
       b='$*';; \
   esac
 am__test_logs1 = $(TESTS:=.log)
-am__test_logs2 = $(am__test_logs1:.log=.log)
+am__test_logs2 = $(am__test_logs1:.exe.log=.log)
 TEST_LOGS = $(am__test_logs2:.test.log=.log)
 TEST_LOG_DRIVER = $(SHELL) $(top_srcdir)/build-aux/test-driver
 TEST_LOG_COMPILE = $(TEST_LOG_COMPILER) $(AM_TEST_LOG_FLAGS) \
@@ -416,7 +442,7 @@ am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/univalue-config.h.in \
 	$(top_srcdir)/build-aux/missing \
 	$(top_srcdir)/build-aux/test-driver \
 	$(top_srcdir)/pc/libunivalue-uninstalled.pc.in \
-	$(top_srcdir)/pc/libunivalue.pc.in COPYING README TODO \
+	$(top_srcdir)/pc/libunivalue.pc.in COPYING TODO \
 	build-aux/compile build-aux/config.guess build-aux/config.sub \
 	build-aux/depcomp build-aux/install-sh build-aux/ltmain.sh \
 	build-aux/missing
@@ -437,35 +463,35 @@ distuninstallcheck_listfiles = find . -type f -print
 am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \
   | sed 's|^\./|$(prefix)/|' | grep -v '$(infodir)/dir$$'
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} /work/TTM/ttm/src/univalue/build-aux/missing aclocal-1.15
+ACLOCAL = ${SHELL} /home/freelancer/ttm-17/src/univalue/build-aux/missing aclocal-1.15
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 0
-AR = ar
-AUTOCONF = ${SHELL} /work/TTM/ttm/src/univalue/build-aux/missing autoconf
-AUTOHEADER = ${SHELL} /work/TTM/ttm/src/univalue/build-aux/missing autoheader
-AUTOMAKE = ${SHELL} /work/TTM/ttm/src/univalue/build-aux/missing automake-1.15
+AR = x86_64-w64-mingw32-ar
+AUTOCONF = ${SHELL} /home/freelancer/ttm-17/src/univalue/build-aux/missing autoconf
+AUTOHEADER = ${SHELL} /home/freelancer/ttm-17/src/univalue/build-aux/missing autoheader
+AUTOMAKE = ${SHELL} /home/freelancer/ttm-17/src/univalue/build-aux/missing automake-1.15
 AWK = gawk
 BUILD_EXEEXT = 
-CC = gcc
+CC = x86_64-w64-mingw32-gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -g -O2
-CPP = gcc -E
-CPPFLAGS = 
-CXX = g++
-CXXCPP = g++ -E
+CFLAGS = -pipe -O2 
+CPP = x86_64-w64-mingw32-gcc -E
+CPPFLAGS = -I/root/dash/depends/x86_64-w64-mingw32/share/../include/ 
+CXX = x86_64-w64-mingw32-g++
+CXXCPP = x86_64-w64-mingw32-g++ -E
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -g -O2
+CXXFLAGS = -pipe -static-libstdc++ -O2 
 CYGPATH_W = echo
 DEFS = -DHAVE_CONFIG_H
 DEPDIR = .deps
-DLLTOOL = false
+DLLTOOL = x86_64-w64-mingw32-dlltool
 DSYMUTIL = 
 DUMPBIN = 
 ECHO_C = 
 ECHO_N = -n
 ECHO_T = 
 EGREP = /bin/grep -E
-EXEEXT = 
+EXEEXT = .exe
 FGREP = /bin/grep -F
 GREP = /bin/grep
 INSTALL = /usr/bin/install -c
@@ -473,49 +499,49 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-LD = /usr/bin/ld -m elf_x86_64
-LDFLAGS = 
+LD = /usr/bin/x86_64-w64-mingw32-ld
+LDFLAGS = -L/root/dash/depends/x86_64-w64-mingw32/share/../lib 
 LIBOBJS = 
 LIBS = 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
-LIBTOOL_APP_LDFLAGS = 
+LIBTOOL_APP_LDFLAGS =  -all-static
 LIBUNIVALUE_AGE = 100
 LIBUNIVALUE_CURRENT = 100
-LIBUNIVALUE_REVISION = 2
+LIBUNIVALUE_REVISION = 3
 LIPO = 
 LN_S = ln -s
 LTLIBOBJS = 
 LT_SYS_LIBRARY_PATH = 
-MAKEINFO = ${SHELL} /work/TTM/ttm/src/univalue/build-aux/missing makeinfo
+MAKEINFO = ${SHELL} /home/freelancer/ttm-17/src/univalue/build-aux/missing makeinfo
 MANIFEST_TOOL = :
 MKDIR_P = /bin/mkdir -p
-NM = /usr/bin/nm -B
+NM = x86_64-w64-mingw32-nm
 NMEDIT = 
-OBJDUMP = objdump
+OBJDUMP = x86_64-w64-mingw32-objdump
 OBJEXT = o
 OTOOL = 
 OTOOL64 = 
 PACKAGE = univalue
 PACKAGE_BUGREPORT = http://github.com/jgarzik/univalue/
 PACKAGE_NAME = univalue
-PACKAGE_STRING = univalue 1.0.2
+PACKAGE_STRING = univalue 1.0.3
 PACKAGE_TARNAME = univalue
 PACKAGE_URL = 
-PACKAGE_VERSION = 1.0.2
+PACKAGE_VERSION = 1.0.3
 PATH_SEPARATOR = :
-RANLIB = ranlib
+RANLIB = x86_64-w64-mingw32-ranlib
 SED = /bin/sed
 SET_MAKE = 
 SHELL = /bin/bash
-STRIP = strip
-VERSION = 1.0.2
-abs_builddir = /work/TTM/ttm/src/univalue
-abs_srcdir = /work/TTM/ttm/src/univalue
-abs_top_builddir = /work/TTM/ttm/src/univalue
-abs_top_srcdir = /work/TTM/ttm/src/univalue
-ac_ct_AR = ar
-ac_ct_CC = gcc
-ac_ct_CXX = g++
+STRIP = x86_64-w64-mingw32-strip
+VERSION = 1.0.3
+abs_builddir = /home/freelancer/ttm-17/src/univalue
+abs_srcdir = /home/freelancer/ttm-17/src/univalue
+abs_top_builddir = /home/freelancer/ttm-17/src/univalue
+abs_top_srcdir = /home/freelancer/ttm-17/src/univalue
+ac_ct_AR = 
+ac_ct_CC = 
+ac_ct_CXX = 
 ac_ct_DUMPBIN = 
 am__include = include
 am__leading_dot = .
@@ -534,15 +560,15 @@ datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-host = x86_64-pc-linux-gnu
-host_alias = 
+host = x86_64-w64-mingw32
+host_alias = x86_64-w64-mingw32
 host_cpu = x86_64
-host_os = linux-gnu
-host_vendor = pc
+host_os = mingw32
+host_vendor = w64
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /work/TTM/ttm/src/univalue/build-aux/install-sh
+install_sh = ${SHELL} /home/freelancer/ttm-17/src/univalue/build-aux/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -571,6 +597,7 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = pc/libunivalue.pc
 libunivalue_la_SOURCES = \
 	lib/univalue.cpp \
+	lib/univalue_get.cpp \
 	lib/univalue_read.cpp \
 	lib/univalue_write.cpp
 
@@ -586,6 +613,18 @@ test_unitester_SOURCES = test/unitester.cpp
 test_unitester_LDADD = libunivalue.la
 test_unitester_CXXFLAGS = -I$(top_srcdir)/include -DJSON_TEST_SRC=\"$(srcdir)/$(TEST_DATA_DIR)\"
 test_unitester_LDFLAGS = -static $(LIBTOOL_APP_LDFLAGS)
+test_test_json_SOURCES = test/test_json.cpp
+test_test_json_LDADD = libunivalue.la
+test_test_json_CXXFLAGS = -I$(top_srcdir)/include
+test_test_json_LDFLAGS = -static $(LIBTOOL_APP_LDFLAGS)
+test_no_nul_SOURCES = test/no_nul.cpp
+test_no_nul_LDADD = libunivalue.la
+test_no_nul_CXXFLAGS = -I$(top_srcdir)/include
+test_no_nul_LDFLAGS = -static $(LIBTOOL_APP_LDFLAGS)
+test_object_SOURCES = test/object.cpp
+test_object_LDADD = libunivalue.la
+test_object_CXXFLAGS = -I$(top_srcdir)/include
+test_object_LDFLAGS = -static $(LIBTOOL_APP_LDFLAGS)
 TEST_FILES = \
 	$(TEST_DATA_DIR)/fail10.json \
 	$(TEST_DATA_DIR)/fail11.json \
@@ -621,6 +660,8 @@ TEST_FILES = \
 	$(TEST_DATA_DIR)/fail39.json \
 	$(TEST_DATA_DIR)/fail40.json \
 	$(TEST_DATA_DIR)/fail41.json \
+	$(TEST_DATA_DIR)/fail42.json \
+	$(TEST_DATA_DIR)/fail44.json \
 	$(TEST_DATA_DIR)/fail3.json \
 	$(TEST_DATA_DIR)/fail4.json \
 	$(TEST_DATA_DIR)/fail5.json \
@@ -632,7 +673,12 @@ TEST_FILES = \
 	$(TEST_DATA_DIR)/pass2.json \
 	$(TEST_DATA_DIR)/pass3.json \
 	$(TEST_DATA_DIR)/round1.json \
-	$(TEST_DATA_DIR)/round2.json
+	$(TEST_DATA_DIR)/round2.json \
+	$(TEST_DATA_DIR)/round3.json \
+	$(TEST_DATA_DIR)/round4.json \
+	$(TEST_DATA_DIR)/round5.json \
+	$(TEST_DATA_DIR)/round6.json \
+	$(TEST_DATA_DIR)/round7.json
 
 EXTRA_DIST = $(TEST_FILES) $(GEN_SRCS)
 all: univalue-config.h
@@ -735,6 +781,8 @@ lib/$(DEPDIR)/$(am__dirstamp):
 	@: > lib/$(DEPDIR)/$(am__dirstamp)
 lib/libunivalue_la-univalue.lo: lib/$(am__dirstamp) \
 	lib/$(DEPDIR)/$(am__dirstamp)
+lib/libunivalue_la-univalue_get.lo: lib/$(am__dirstamp) \
+	lib/$(DEPDIR)/$(am__dirstamp)
 lib/libunivalue_la-univalue_read.lo: lib/$(am__dirstamp) \
 	lib/$(DEPDIR)/$(am__dirstamp)
 lib/libunivalue_la-univalue_write.lo: lib/$(am__dirstamp) \
@@ -757,6 +805,24 @@ test/$(am__dirstamp):
 test/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) test/$(DEPDIR)
 	@: > test/$(DEPDIR)/$(am__dirstamp)
+test/test_no_nul-no_nul.$(OBJEXT): test/$(am__dirstamp) \
+	test/$(DEPDIR)/$(am__dirstamp)
+
+test/no_nul$(EXEEXT): $(test_no_nul_OBJECTS) $(test_no_nul_DEPENDENCIES) $(EXTRA_test_no_nul_DEPENDENCIES) test/$(am__dirstamp)
+	@rm -f test/no_nul$(EXEEXT)
+	$(AM_V_CXXLD)$(test_no_nul_LINK) $(test_no_nul_OBJECTS) $(test_no_nul_LDADD) $(LIBS)
+test/test_object-object.$(OBJEXT): test/$(am__dirstamp) \
+	test/$(DEPDIR)/$(am__dirstamp)
+
+test/object$(EXEEXT): $(test_object_OBJECTS) $(test_object_DEPENDENCIES) $(EXTRA_test_object_DEPENDENCIES) test/$(am__dirstamp)
+	@rm -f test/object$(EXEEXT)
+	$(AM_V_CXXLD)$(test_object_LINK) $(test_object_OBJECTS) $(test_object_LDADD) $(LIBS)
+test/test_test_json-test_json.$(OBJEXT): test/$(am__dirstamp) \
+	test/$(DEPDIR)/$(am__dirstamp)
+
+test/test_json$(EXEEXT): $(test_test_json_OBJECTS) $(test_test_json_DEPENDENCIES) $(EXTRA_test_test_json_DEPENDENCIES) test/$(am__dirstamp)
+	@rm -f test/test_json$(EXEEXT)
+	$(AM_V_CXXLD)$(test_test_json_LINK) $(test_test_json_OBJECTS) $(test_test_json_LDADD) $(LIBS)
 test/test_unitester-unitester.$(OBJEXT): test/$(am__dirstamp) \
 	test/$(DEPDIR)/$(am__dirstamp)
 
@@ -774,8 +840,12 @@ distclean-compile:
 	-rm -f *.tab.c
 
 include lib/$(DEPDIR)/libunivalue_la-univalue.Plo
+include lib/$(DEPDIR)/libunivalue_la-univalue_get.Plo
 include lib/$(DEPDIR)/libunivalue_la-univalue_read.Plo
 include lib/$(DEPDIR)/libunivalue_la-univalue_write.Plo
+include test/$(DEPDIR)/test_no_nul-no_nul.Po
+include test/$(DEPDIR)/test_object-object.Po
+include test/$(DEPDIR)/test_test_json-test_json.Po
 include test/$(DEPDIR)/test_unitester-unitester.Po
 
 .cpp.o:
@@ -809,6 +879,13 @@ lib/libunivalue_la-univalue.lo: lib/univalue.cpp
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libunivalue_la_CXXFLAGS) $(CXXFLAGS) -c -o lib/libunivalue_la-univalue.lo `test -f 'lib/univalue.cpp' || echo '$(srcdir)/'`lib/univalue.cpp
 
+lib/libunivalue_la-univalue_get.lo: lib/univalue_get.cpp
+	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libunivalue_la_CXXFLAGS) $(CXXFLAGS) -MT lib/libunivalue_la-univalue_get.lo -MD -MP -MF lib/$(DEPDIR)/libunivalue_la-univalue_get.Tpo -c -o lib/libunivalue_la-univalue_get.lo `test -f 'lib/univalue_get.cpp' || echo '$(srcdir)/'`lib/univalue_get.cpp
+	$(AM_V_at)$(am__mv) lib/$(DEPDIR)/libunivalue_la-univalue_get.Tpo lib/$(DEPDIR)/libunivalue_la-univalue_get.Plo
+#	$(AM_V_CXX)source='lib/univalue_get.cpp' object='lib/libunivalue_la-univalue_get.lo' libtool=yes \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libunivalue_la_CXXFLAGS) $(CXXFLAGS) -c -o lib/libunivalue_la-univalue_get.lo `test -f 'lib/univalue_get.cpp' || echo '$(srcdir)/'`lib/univalue_get.cpp
+
 lib/libunivalue_la-univalue_read.lo: lib/univalue_read.cpp
 	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libunivalue_la_CXXFLAGS) $(CXXFLAGS) -MT lib/libunivalue_la-univalue_read.lo -MD -MP -MF lib/$(DEPDIR)/libunivalue_la-univalue_read.Tpo -c -o lib/libunivalue_la-univalue_read.lo `test -f 'lib/univalue_read.cpp' || echo '$(srcdir)/'`lib/univalue_read.cpp
 	$(AM_V_at)$(am__mv) lib/$(DEPDIR)/libunivalue_la-univalue_read.Tpo lib/$(DEPDIR)/libunivalue_la-univalue_read.Plo
@@ -822,6 +899,48 @@ lib/libunivalue_la-univalue_write.lo: lib/univalue_write.cpp
 #	$(AM_V_CXX)source='lib/univalue_write.cpp' object='lib/libunivalue_la-univalue_write.lo' libtool=yes \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libunivalue_la_CXXFLAGS) $(CXXFLAGS) -c -o lib/libunivalue_la-univalue_write.lo `test -f 'lib/univalue_write.cpp' || echo '$(srcdir)/'`lib/univalue_write.cpp
+
+test/test_no_nul-no_nul.o: test/no_nul.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_no_nul_CXXFLAGS) $(CXXFLAGS) -MT test/test_no_nul-no_nul.o -MD -MP -MF test/$(DEPDIR)/test_no_nul-no_nul.Tpo -c -o test/test_no_nul-no_nul.o `test -f 'test/no_nul.cpp' || echo '$(srcdir)/'`test/no_nul.cpp
+	$(AM_V_at)$(am__mv) test/$(DEPDIR)/test_no_nul-no_nul.Tpo test/$(DEPDIR)/test_no_nul-no_nul.Po
+#	$(AM_V_CXX)source='test/no_nul.cpp' object='test/test_no_nul-no_nul.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_no_nul_CXXFLAGS) $(CXXFLAGS) -c -o test/test_no_nul-no_nul.o `test -f 'test/no_nul.cpp' || echo '$(srcdir)/'`test/no_nul.cpp
+
+test/test_no_nul-no_nul.obj: test/no_nul.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_no_nul_CXXFLAGS) $(CXXFLAGS) -MT test/test_no_nul-no_nul.obj -MD -MP -MF test/$(DEPDIR)/test_no_nul-no_nul.Tpo -c -o test/test_no_nul-no_nul.obj `if test -f 'test/no_nul.cpp'; then $(CYGPATH_W) 'test/no_nul.cpp'; else $(CYGPATH_W) '$(srcdir)/test/no_nul.cpp'; fi`
+	$(AM_V_at)$(am__mv) test/$(DEPDIR)/test_no_nul-no_nul.Tpo test/$(DEPDIR)/test_no_nul-no_nul.Po
+#	$(AM_V_CXX)source='test/no_nul.cpp' object='test/test_no_nul-no_nul.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_no_nul_CXXFLAGS) $(CXXFLAGS) -c -o test/test_no_nul-no_nul.obj `if test -f 'test/no_nul.cpp'; then $(CYGPATH_W) 'test/no_nul.cpp'; else $(CYGPATH_W) '$(srcdir)/test/no_nul.cpp'; fi`
+
+test/test_object-object.o: test/object.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_object_CXXFLAGS) $(CXXFLAGS) -MT test/test_object-object.o -MD -MP -MF test/$(DEPDIR)/test_object-object.Tpo -c -o test/test_object-object.o `test -f 'test/object.cpp' || echo '$(srcdir)/'`test/object.cpp
+	$(AM_V_at)$(am__mv) test/$(DEPDIR)/test_object-object.Tpo test/$(DEPDIR)/test_object-object.Po
+#	$(AM_V_CXX)source='test/object.cpp' object='test/test_object-object.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_object_CXXFLAGS) $(CXXFLAGS) -c -o test/test_object-object.o `test -f 'test/object.cpp' || echo '$(srcdir)/'`test/object.cpp
+
+test/test_object-object.obj: test/object.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_object_CXXFLAGS) $(CXXFLAGS) -MT test/test_object-object.obj -MD -MP -MF test/$(DEPDIR)/test_object-object.Tpo -c -o test/test_object-object.obj `if test -f 'test/object.cpp'; then $(CYGPATH_W) 'test/object.cpp'; else $(CYGPATH_W) '$(srcdir)/test/object.cpp'; fi`
+	$(AM_V_at)$(am__mv) test/$(DEPDIR)/test_object-object.Tpo test/$(DEPDIR)/test_object-object.Po
+#	$(AM_V_CXX)source='test/object.cpp' object='test/test_object-object.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_object_CXXFLAGS) $(CXXFLAGS) -c -o test/test_object-object.obj `if test -f 'test/object.cpp'; then $(CYGPATH_W) 'test/object.cpp'; else $(CYGPATH_W) '$(srcdir)/test/object.cpp'; fi`
+
+test/test_test_json-test_json.o: test/test_json.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_test_json_CXXFLAGS) $(CXXFLAGS) -MT test/test_test_json-test_json.o -MD -MP -MF test/$(DEPDIR)/test_test_json-test_json.Tpo -c -o test/test_test_json-test_json.o `test -f 'test/test_json.cpp' || echo '$(srcdir)/'`test/test_json.cpp
+	$(AM_V_at)$(am__mv) test/$(DEPDIR)/test_test_json-test_json.Tpo test/$(DEPDIR)/test_test_json-test_json.Po
+#	$(AM_V_CXX)source='test/test_json.cpp' object='test/test_test_json-test_json.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_test_json_CXXFLAGS) $(CXXFLAGS) -c -o test/test_test_json-test_json.o `test -f 'test/test_json.cpp' || echo '$(srcdir)/'`test/test_json.cpp
+
+test/test_test_json-test_json.obj: test/test_json.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_test_json_CXXFLAGS) $(CXXFLAGS) -MT test/test_test_json-test_json.obj -MD -MP -MF test/$(DEPDIR)/test_test_json-test_json.Tpo -c -o test/test_test_json-test_json.obj `if test -f 'test/test_json.cpp'; then $(CYGPATH_W) 'test/test_json.cpp'; else $(CYGPATH_W) '$(srcdir)/test/test_json.cpp'; fi`
+	$(AM_V_at)$(am__mv) test/$(DEPDIR)/test_test_json-test_json.Tpo test/$(DEPDIR)/test_test_json-test_json.Po
+#	$(AM_V_CXX)source='test/test_json.cpp' object='test/test_test_json-test_json.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_test_json_CXXFLAGS) $(CXXFLAGS) -c -o test/test_test_json-test_json.obj `if test -f 'test/test_json.cpp'; then $(CYGPATH_W) 'test/test_json.cpp'; else $(CYGPATH_W) '$(srcdir)/test/test_json.cpp'; fi`
 
 test/test_unitester-unitester.o: test/unitester.cpp
 	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_unitester_CXXFLAGS) $(CXXFLAGS) -MT test/test_unitester-unitester.o -MD -MP -MF test/$(DEPDIR)/test_unitester-unitester.Tpo -c -o test/test_unitester-unitester.o `test -f 'test/unitester.cpp' || echo '$(srcdir)/'`test/unitester.cpp
@@ -1090,9 +1209,23 @@ recheck: all
 	        am__force_recheck=am--force-recheck \
 	        TEST_LOGS="$$log_list"; \
 	exit $$?
+test/object.log: test/object$(EXEEXT)
+	@p='test/object$(EXEEXT)'; \
+	b='test/object'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 test/unitester.log: test/unitester$(EXEEXT)
 	@p='test/unitester$(EXEEXT)'; \
 	b='test/unitester'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+test/no_nul.log: test/no_nul$(EXEEXT)
+	@p='test/no_nul$(EXEEXT)'; \
+	b='test/no_nul'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
@@ -1104,13 +1237,13 @@ test/unitester.log: test/unitester$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_TEST_LOG_DRIVER_FLAGS) $(TEST_LOG_DRIVER_FLAGS) -- $(TEST_LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-#.test$(EXEEXT).log:
-#	@p='$<'; \
-#	$(am__set_b); \
-#	$(am__check_pre) $(TEST_LOG_DRIVER) --test-name "$$f" \
-#	--log-file $$b.log --trs-file $$b.trs \
-#	$(am__common_driver_flags) $(AM_TEST_LOG_DRIVER_FLAGS) $(TEST_LOG_DRIVER_FLAGS) -- $(TEST_LOG_COMPILE) \
-#	"$$tst" $(AM_TESTS_FD_REDIRECT)
+.test$(EXEEXT).log:
+	@p='$<'; \
+	$(am__set_b); \
+	$(am__check_pre) $(TEST_LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_TEST_LOG_DRIVER_FLAGS) $(TEST_LOG_DRIVER_FLAGS) -- $(TEST_LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 
 distdir: $(DISTFILES)
 	$(am__remove_distdir)

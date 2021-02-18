@@ -1,10 +1,10 @@
-// Copyright (c) 2018-2019 The Titanium developers
+// Copyright (c) 2018-2019 The Ttm Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "evodb.h"
+#include <evo/evodb.h>
 
-CEvoDB* evoDb;
+std::unique_ptr<CEvoDB> evoDb;
 
 CEvoDBScopedCommitter::CEvoDBScopedCommitter(CEvoDB &_evoDB) :
     evoDB(_evoDB)
@@ -53,6 +53,7 @@ void CEvoDB::RollbackCurTransaction()
 
 bool CEvoDB::CommitRootTransaction()
 {
+    LOCK(cs);
     assert(curDBTransaction.IsClean());
     rootDBTransaction.Commit();
     bool ret = db.WriteBatch(rootBatch);

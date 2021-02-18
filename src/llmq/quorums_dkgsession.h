@@ -1,20 +1,20 @@
-// Copyright (c) 2018-2020 The Titanium developers
+// Copyright (c) 2018-2020 The Ttm Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef TTM_QUORUMS_DKGSESSION_H
-#define TTM_QUORUMS_DKGSESSION_H
+#ifndef BITCOIN_LLMQ_QUORUMS_DKGSESSION_H
+#define BITCOIN_LLMQ_QUORUMS_DKGSESSION_H
 
-#include "consensus/params.h"
-#include "net.h"
-#include "batchedlogger.h"
+#include <consensus/params.h>
+#include <net.h>
+#include <batchedlogger.h>
 
-#include "bls/bls_ies.h"
-#include "bls/bls_worker.h"
+#include <bls/bls_ies.h>
+#include <bls/bls_worker.h>
 
-#include "evo/deterministicmns.h"
+#include <evo/deterministicmns.h>
 
-#include "llmq/quorums_utils.h"
+#include <llmq/quorums_utils.h>
 
 class UniValue;
 
@@ -30,7 +30,7 @@ class CDKGLogger : public CBatchedLogger
 {
 public:
     CDKGLogger(const CDKGSession& _quorumDkg, const std::string& _func);
-    CDKGLogger(Consensus::LLMQType _llmqType, const uint256& _quorumHash, int _height, bool _areWeMember, const std::string& _func);
+    CDKGLogger(const std::string& _llmqTypeName, const uint256& _quorumHash, int _height, bool _areWeMember, const std::string& _func);
 };
 
 class CDKGContribution
@@ -96,8 +96,8 @@ public:
     CBLSSignature sig;
 
 public:
-    CDKGComplaint() {}
-    CDKGComplaint(const Consensus::LLMQParams& params);
+    CDKGComplaint() = default;
+    explicit CDKGComplaint(const Consensus::LLMQParams& params);
 
     ADD_SERIALIZE_METHODS
 
@@ -169,8 +169,8 @@ public:
     CBLSSignature sig; // single member sig of quorumHash+validMembers+pubKeyHash+vvecHash
 
 public:
-    CDKGPrematureCommitment() {}
-    CDKGPrematureCommitment(const Consensus::LLMQParams& params);
+    CDKGPrematureCommitment() = default;
+    explicit CDKGPrematureCommitment(const Consensus::LLMQParams& params);
 
     int CountValidMembers() const
     {
@@ -217,6 +217,7 @@ public:
     std::set<uint256> complaintsFromOthers;
 
     bool bad{false};
+    bool badConnection{false};
     bool weComplain{false};
     bool someoneComplain{false};
 };
@@ -253,6 +254,7 @@ private:
 private:
     std::vector<std::unique_ptr<CDKGMember>> members;
     std::map<uint256, size_t> membersMap;
+    std::set<uint256> relayMembers;
     BLSVerificationVectorPtr vvecContribution;
     BLSSecretKeyVector skContributions;
 
@@ -260,6 +262,8 @@ private:
     std::vector<BLSVerificationVectorPtr> receivedVvecs;
     // these are not necessarily verified yet. Only trust in what was written to the DB
     BLSSecretKeyVector receivedSkContributions;
+    /// Contains the received unverified/encrypted DKG contributions
+    std::vector<std::shared_ptr<CBLSIESMultiRecipientObjects<CBLSSecretKey>>> vecEncryptedContributions;
 
     uint256 myProTxHash;
     CBLSId myId;
@@ -275,6 +279,7 @@ private:
     std::map<uint256, CDKGJustification> justifications;
     std::map<uint256, CDKGPrematureCommitment> prematureCommitments;
 
+    mutable CCriticalSection cs_pending;
     std::vector<size_t> pendingContributionVerifications;
 
     // filled by ReceivePrematureCommitment and used by FinalizeCommitments
@@ -304,27 +309,28 @@ public:
     // Phase 1: contribution
     void Contribute(CDKGPendingMessages& pendingMessages);
     void SendContributions(CDKGPendingMessages& pendingMessages);
-    bool PreVerifyMessage(const uint256& hash, const CDKGContribution& qc, bool& retBan) const;
-    void ReceiveMessage(const uint256& hash, const CDKGContribution& qc, bool& retBan);
+    bool PreVerifyMessage(const CDKGContribution& qc, bool& retBan) const;
+    void ReceiveMessage(const CDKGContribution& qc, bool& retBan);
     void VerifyPendingContributions();
 
     // Phase 2: complaint
     void VerifyAndComplain(CDKGPendingMessages& pendingMessages);
+    void VerifyConnectionAndMinProtoVersions();
     void SendComplaint(CDKGPendingMessages& pendingMessages);
-    bool PreVerifyMessage(const uint256& hash, const CDKGComplaint& qc, bool& retBan) const;
-    void ReceiveMessage(const uint256& hash, const CDKGComplaint& qc, bool& retBan);
+    bool PreVerifyMessage(const CDKGComplaint& qc, bool& retBan) const;
+    void ReceiveMessage(const CDKGComplaint& qc, bool& retBan);
 
     // Phase 3: justification
     void VerifyAndJustify(CDKGPendingMessages& pendingMessages);
     void SendJustification(CDKGPendingMessages& pendingMessages, const std::set<uint256>& forMembers);
-    bool PreVerifyMessage(const uint256& hash, const CDKGJustification& qj, bool& retBan) const;
-    void ReceiveMessage(const uint256& hash, const CDKGJustification& qj, bool& retBan);
+    bool PreVerifyMessage(const CDKGJustification& qj, bool& retBan) const;
+    void ReceiveMessage(const CDKGJustification& qj, bool& retBan);
 
     // Phase 4: commit
     void VerifyAndCommit(CDKGPendingMessages& pendingMessages);
     void SendCommitment(CDKGPendingMessages& pendingMessages);
-    bool PreVerifyMessage(const uint256& hash, const CDKGPrematureCommitment& qc, bool& retBan) const;
-    void ReceiveMessage(const uint256& hash, const CDKGPrematureCommitment& qc, bool& retBan);
+    bool PreVerifyMessage(const CDKGPrematureCommitment& qc, bool& retBan) const;
+    void ReceiveMessage(const CDKGPrematureCommitment& qc, bool& retBan);
 
     // Phase 5: aggregate/finalize
     std::vector<CFinalCommitment> FinalizeCommitments();
@@ -336,10 +342,13 @@ public:
 
 public:
     CDKGMember* GetMember(const uint256& proTxHash) const;
+
+private:
+    bool ShouldSimulateError(const std::string& type);
 };
 
 void SetSimulatedDKGErrorRate(const std::string& type, double rate);
 
 } // namespace llmq
 
-#endif //TTM_QUORUMS_DKGSESSION_H
+#endif // BITCOIN_LLMQ_QUORUMS_DKGSESSION_H

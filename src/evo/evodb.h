@@ -1,13 +1,13 @@
-// Copyright (c) 2018-2020 The Titanium developers
+// Copyright (c) 2018-2020 The Ttm Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef TTM_EVODB_H
-#define TTM_EVODB_H
+#ifndef BITCOIN_EVO_EVODB_H
+#define BITCOIN_EVO_EVODB_H
 
-#include "dbwrapper.h"
-#include "sync.h"
-#include "uint256.h"
+#include <dbwrapper.h>
+#include <sync.h>
+#include <uint256.h>
 
 // "b_b" was used in the initial version of deterministic MN storage
 // "b_b2" was used after compact diffs were introduced
@@ -31,8 +31,9 @@ public:
 
 class CEvoDB
 {
-private:
+public:
     CCriticalSection cs;
+private:
     CDBWrapper db;
 
     typedef CDBTransaction<CDBWrapper, CDBBatch> RootTransaction;
@@ -43,7 +44,7 @@ private:
     CurTransaction curDBTransaction;
 
 public:
-    CEvoDB(size_t nCacheSize, bool fMemory = false, bool fWipe = false);
+    explicit CEvoDB(size_t nCacheSize, bool fMemory = false, bool fWipe = false);
 
     std::unique_ptr<CEvoDBScopedCommitter> BeginTransaction()
     {
@@ -53,6 +54,7 @@ public:
 
     CurTransaction& GetCurTransaction()
     {
+        AssertLockHeld(cs); // lock must be held from outside as long as the DB transaction is used
         return curDBTransaction;
     }
 
@@ -96,6 +98,8 @@ public:
 
     bool CommitRootTransaction();
 
+    bool IsEmpty() { return db.IsEmpty(); }
+
     bool VerifyBestBlock(const uint256& hash);
     void WriteBestBlock(const uint256& hash);
 
@@ -106,6 +110,6 @@ private:
     void RollbackCurTransaction();
 };
 
-extern CEvoDB* evoDb;
+extern std::unique_ptr<CEvoDB> evoDb;
 
-#endif //TTM_EVODB_H
+#endif // BITCOIN_EVO_EVODB_H
