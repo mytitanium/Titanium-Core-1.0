@@ -7,7 +7,7 @@ SetCompressor /SOLID lzma
 !define REGKEY "SOFTWARE\$(^Name)"
 !define VERSION 1.4.0
 !define COMPANY "Ttm Core project"
-!define URL https://ttm.org/
+!define URL https://titanium-blocks.org/
 
 # MUI Symbol Definitions
 !define MUI_ICON "/home/freelancer/ttm-17/share/pixmaps/ttm.ico"

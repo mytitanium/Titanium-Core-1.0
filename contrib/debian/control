@@ -1,8 +1,8 @@
 Source: ttm
 Section: utils
 Priority: optional
-Maintainer: Holger Schinzel <holger@ttm.org>
-Uploaders: Holger Schinzel <holger@ttm.org>
+Maintainer: Holger Schinzel <holger@titanium-blocks.org>
+Uploaders: Holger Schinzel <holger@titanium-blocks.org>
 Build-Depends: debhelper,
  devscripts,
  automake,
@@ -26,9 +26,9 @@ Build-Depends: debhelper,
  python,
  libzmq3-dev
 Standards-Version: 3.9.2
-Homepage: https://www.ttm.org/
-Vcs-Git: git://github.com/ttmpay/ttm.git
-Vcs-Browser: https://github.com/ttmpay/ttm
+Homepage: https://www.titanium-blocks.org/
+Vcs-Git: git://github.com/mytitanium.git
+Vcs-Browser: https://github.com/mytitanium
 
 Package: ttmd
 Architecture: any

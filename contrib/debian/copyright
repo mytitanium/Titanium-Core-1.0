@@ -1,7 +1,7 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Ttm Core
-Upstream-Contact: Ttm Core Group, Inc https://www.ttm.org/team/
-Source: https://github.com/ttmpay/ttm
+Upstream-Contact: Ttm Core Group, Inc https://www.titanium-blocks.org/team/
+Source: https://github.com/mytitanium
 
 Files: *
 Copyright: 2009-2017, Bitcoin Core Developers,
@@ -9,7 +9,7 @@ Copyright: 2009-2017, Bitcoin Core Developers,
 License: Expat
 Comment: The Bitcoin Core Developers encompasses the current developers listed on bitcoin.org,
          as well as the numerous contributors to the project. The Ttm Core Developers
-         encompasses the current developers listed on https://www.ttm.org/team/, as well as
+         encompasses the current developers listed on https://www.titanium-blocks.org/team/, as well as
          the numerous contributors to the project.
 
 Files: debian/*

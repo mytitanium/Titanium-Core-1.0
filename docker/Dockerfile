@@ -1,5 +1,5 @@
 FROM phusion/baseimage:bionic-1.0.0
-LABEL maintainer="Ttm Developers <dev@ttm.org>"
+LABEL maintainer="Ttm Developers <dev@titanium-blocks.org>"
 LABEL description="Dockerised TtmCore, built from Travis"
 
 ARG USER_ID

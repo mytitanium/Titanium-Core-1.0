@@ -4,7 +4,7 @@ run using Python 3 but are compatible with Python 2.
 
 ## Step 0: Install ttm_hash
 
-https://github.com/ttmpay/ttm_hash
+https://github.com/mytitanium_hash
 
 ## Step 1: Download hash list
 

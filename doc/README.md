@@ -1,7 +1,7 @@
 Ttm Core
 ==========
 
-This is the official reference wallet for Ttm digital currency and comprises the backbone of the Ttm peer-to-peer network. You can [download Ttm Core](https://www.ttm.org/downloads/) or [build it yourself](#building) using the guides below.
+This is the official reference wallet for Ttm digital currency and comprises the backbone of the Ttm peer-to-peer network. You can [download Ttm Core](https://www.titanium-blocks.org/downloads/) or [build it yourself](#building) using the guides below.
 
 Running
 ---------------------
@@ -24,12 +24,12 @@ Drag Ttm-Qt to your applications folder, and then run Ttm-Qt.
 
 ### Need Help?
 
-* See the [Ttm documentation](https://docs.ttm.org)
+* See the [Ttm documentation](https://docs.titanium-blocks.org)
 for help and more information.
 * See the [Ttm Developer Documentation](https://ttm-docs.github.io/) 
 for technical specifications and implementation details.
 * Ask for help on [Ttm Nation Discord](http://ttmchat.org)
-* Ask for help on the [Ttm Forum](https://ttm.org/forum)
+* Ask for help on the [Ttm Forum](https://titanium-blocks.org/forum)
 
 Building
 ---------------------
@@ -59,7 +59,7 @@ The Ttm Core repo's [root README](/README.md) contains relevant information on t
 - [Benchmarking](benchmarking.md)
 
 ### Resources
-* Discuss on the [Ttm Forum](https://ttm.org/forum), in the Development & Technical Discussion board.
+* Discuss on the [Ttm Forum](https://titanium-blocks.org/forum), in the Development & Technical Discussion board.
 * Discuss on [Ttm Nation Discord](http://ttmchat.org)
 
 ### Miscellaneous

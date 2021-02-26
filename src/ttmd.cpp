@@ -30,7 +30,7 @@
  *
  * \section intro_sec Introduction
  *
- * This is the developer documentation of the reference client for an experimental new digital currency called Ttm (https://www.ttm.org/),
+ * This is the developer documentation of the reference client for an experimental new digital currency called Ttm (https://www.titanium-blocks.org/),
  * which enables instant payments to anyone, anywhere in the world. Ttm uses peer-to-peer technology to operate
  * with no central authority: managing transactions and issuing money are carried out collectively by the network.
  *

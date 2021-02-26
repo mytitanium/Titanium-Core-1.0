@@ -3,9 +3,9 @@ Ttm Core staging tree 0.17
 
 |CI|master|develop|
 |-|-|-|
-|Gitlab|[![Build Status](https://gitlab.com/ttmpay/ttm/badges/master/pipeline.svg)](https://gitlab.com/ttmpay/ttm/-/tree/master)|[![Build Status](https://gitlab.com/ttmpay/ttm/badges/develop/pipeline.svg)](https://gitlab.com/ttmpay/ttm/-/tree/develop)|
+|Gitlab|[![Build Status](https://gitlab.com/mytitanium/badges/master/pipeline.svg)](https://gitlab.com/mytitanium/-/tree/master)|[![Build Status](https://gitlab.com/mytitanium/badges/develop/pipeline.svg)](https://gitlab.com/mytitanium/-/tree/develop)|
 
-https://www.ttm.org
+https://www.titanium-blocks.org
 
 
 What is Ttm?
@@ -18,7 +18,7 @@ are carried out collectively by the network. Ttm Core is the name of the open
 source software which enables the use of this currency.
 
 For more information, as well as an immediately useable, binary version of
-the Ttm Core software, see https://www.ttm.org/get-ttm/.
+the Ttm Core software, see https://www.titanium-blocks.org/get-ttm/.
 
 
 License
@@ -31,7 +31,7 @@ Development Process
 -------------------
 
 The `master` branch is meant to be stable. Development is normally done in separate branches.
-[Tags](https://github.com/ttmpay/ttm/tags) are created to indicate new official,
+[Tags](https://github.com/mytitanium/tags) are created to indicate new official,
 stable release versions of Ttm Core.
 
 The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
@@ -76,4 +76,4 @@ Translations are periodically pulled from Transifex and merged into the git repo
 **Important**: We do not accept translation changes as GitHub pull requests because the next
 pull from Transifex would automatically overwrite them again.
 
-Translators should also follow the [forum](https://www.ttm.org/forum/topic/ttm-worldwide-collaboration.88/).
+Translators should also follow the [forum](https://www.titanium-blocks.org/forum/topic/ttm-worldwide-collaboration.88/).

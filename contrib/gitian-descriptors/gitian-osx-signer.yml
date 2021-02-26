@@ -7,7 +7,7 @@ architectures:
 packages:
 - "faketime"
 remotes:
-- "url": "https://github.com/ttmpay/ttm-detached-sigs.git"
+- "url": "https://github.com/mytitanium-detached-sigs.git"
   "dir": "signature"
 files:
 - "ttmcore-osx-unsigned.tar.gz"

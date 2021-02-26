@@ -368,7 +368,7 @@
 #define LT_OBJDIR ".libs/"
 
 /* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT "https://github.com/ttmpay/ttm/issues"
+#define PACKAGE_BUGREPORT "https://github.com/mytitanium/issues"
 
 /* Define to the full name of this package. */
 #define PACKAGE_NAME "Ttm Core"
@@ -380,7 +380,7 @@
 #define PACKAGE_TARNAME "ttmcore"
 
 /* Define to the home page for this package. */
-#define PACKAGE_URL "https://ttm.org/"
+#define PACKAGE_URL "https://titanium-blocks.org/"
 
 /* Define to the version of this package. */
 #define PACKAGE_VERSION "1.4.0"

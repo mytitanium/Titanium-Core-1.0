@@ -42,7 +42,7 @@ static const int MAX_URI_LENGTH = 255;
 #define SPINNER_FRAMES 90
 
 #define QAPP_ORG_NAME "Ttm"
-#define QAPP_ORG_DOMAIN "ttm.org"
+#define QAPP_ORG_DOMAIN "titanium-blocks.org"
 #define QAPP_APP_NAME_DEFAULT "Ttm-Qt"
 #define QAPP_APP_NAME_TESTNET "Ttm-Qt-testnet"
 #define QAPP_APP_NAME_DEVNET "Ttm-Qt-%s"

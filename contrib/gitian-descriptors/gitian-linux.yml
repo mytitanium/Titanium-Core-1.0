@@ -32,7 +32,7 @@ packages:
 - "libxkbcommon0"
 - "ccache"
 remotes:
-- "url": "https://github.com/ttmpay/ttm.git"
+- "url": "https://github.com/mytitanium.git"
   "dir": "ttm"
 files: []
 script: |

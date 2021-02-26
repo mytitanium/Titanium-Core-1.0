@@ -18,7 +18,7 @@ RUN pip3 install jinja2
 RUN pip3 install flake8
 
 # ttm_hash
-RUN git clone https://github.com/ttmpay/ttm_hash
+RUN git clone https://github.com/mytitanium_hash
 RUN cd ttm_hash && python3 setup.py install
 
 ARG USER_ID=1000

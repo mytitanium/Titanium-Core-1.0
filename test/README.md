@@ -25,7 +25,7 @@ Build for your system first. Be sure to enable wallet, utils and daemon when you
 
 Many Ttm specific tests require ttm_hash. To install it:
 
-- Clone the repo `git clone https://github.com/ttmpay/ttm_hash`
+- Clone the repo `git clone https://github.com/mytitanium_hash`
 - Install ttm_hash `cd ttm_hash && python3 setup.py install`
 
 The ZMQ functional test requires a python ZMQ library. To install it:
