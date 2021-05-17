@@ -190,7 +190,6 @@ public:
         READWRITE(nTime);
         READWRITE(nBits);
         READWRITE(nHeight);
-        READWRITE(nNonce);
     }
 };
 
