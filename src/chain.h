@@ -292,13 +292,11 @@ public:
         block.hashMerkleRoot = hashMerkleRoot;
         block.nTime          = nTime;
         block.nBits          = nBits;
-        if(nTime <= 1613414171 ) {
-        	block.nNonce         = nNonce;
-        } else {
-	        block.nHeight		 = nHeight;
-	        block.mix_hash		 = mix_hash;
-	        block.nNonce64		 = nNonce64;
-        }
+        block.nNonce         = nNonce;
+        block.nHeight		 = nHeight;
+        block.mix_hash		 = mix_hash;
+        block.nNonce64		 = nNonce64;
+	        
         return block;
     }
 
@@ -414,8 +412,6 @@ public:
         if (nStatus & BLOCK_HAVE_UNDO)
             READWRITE(VARINT(nUndoPos));
 
-        // block hash
-        READWRITE(hash);
         // block header
         READWRITE(this->nVersion);
         READWRITE(hashPrev);
@@ -425,7 +421,6 @@ public:
         if(nTime <= 1613414171 ){
 			READWRITE(nNonce);
 	    } else {
-	    	READWRITE(nHeight);
 	    	READWRITE(nNonce64);
             READWRITE(mix_hash);
 	    }
