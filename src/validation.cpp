@@ -3551,7 +3551,7 @@ static bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, 
 static bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true)
 {
 	if (fCheckPOW && block.nTime >= 1613414171) {
-         if (!CheckProofOfWork(block.GetKAWPOWHeaderHash(), block.nBits, consensusParams)) {
+         if (!CheckProofOfWork(block.GetHash(), block.nBits, consensusParams)) {
               return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed with mix_hash only check");
          }
 
