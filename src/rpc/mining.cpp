@@ -1008,8 +1008,9 @@ static UniValue getkawpowhash(const JSONRPCRequest& request) {
     std::string str_header_hash = request.params[0].get_str();
     std::string mix_hash = request.params[1].get_str();
     std::string hex_nonce = request.params[2].get_str();
+    //uint32_t nHeight = stoi(request.params[3].get_str());
     uint32_t nHeight = request.params[3].get_int();
-
+    
     uint64_t nNonce;
     if (!ParseUInt64(hex_nonce, &nNonce))
         throw JSONRPCError(RPC_INVALID_PARAMS, "Invalid nonce hex string");
@@ -1033,6 +1034,8 @@ static UniValue getkawpowhash(const JSONRPCRequest& request) {
     if (!context || context->epoch_number != epoch_number)
         context = ethash::create_epoch_context(epoch_number);
 
+	
+	
     // ProgPow hash
     const auto result = progpow::hash(*context, nHeight, header_hash, nNonce);
 
@@ -1095,7 +1098,7 @@ static UniValue pprpcsb(const JSONRPCRequest& request) {
     std::shared_ptr<CBlock> blockptr = std::make_shared<CBlock>();
     *blockptr = mapRVNKAWBlockTemplates.at(header_hash);
 
-    blockptr->nNonce = nonce;
+    blockptr->nNonce64 = nonce;
     blockptr->mix_hash = uint256S(mix_hash);
 
     if (blockptr->vtx.empty() || !blockptr->vtx[0]->IsCoinBase()) {

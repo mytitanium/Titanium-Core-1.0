@@ -165,6 +165,9 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     result.pushKV("difficulty", GetDifficulty(blockindex));
     result.pushKV("chainwork", blockindex->nChainWork.GetHex());
     result.pushKV("nTx", (uint64_t)blockindex->nTx);
+    result.pushKV("headerhash", block.GetKAWPOWHeaderHash().GetHex());
+    result.pushKV("mixhash", block.mix_hash.GetHex());
+    result.pushKV("nonce64", (uint64_t)block.nNonce64);
 
     if (blockindex->pprev)
         result.pushKV("previousblockhash", blockindex->pprev->GetBlockHash().GetHex());
